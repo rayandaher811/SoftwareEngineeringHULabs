@@ -2,8 +2,8 @@ package org.lab1.utilities;
 
 import org.lab1.MathematicExpression;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class IoFilesHandler {
@@ -13,7 +13,11 @@ public class IoFilesHandler {
      * @return object represents read mathematical expression
      */
     public static MathematicExpression readExpressionInputFromFile(String pathToFile) {
-        return new MathematicExpression(readExpectedResultFromOutputFile(pathToFile));
+        File inputFile = new File(pathToFile);
+        String filePath = inputFile.getParentFile().toPath().toString();
+        String fileName = inputFile.getName();
+
+        return new MathematicExpression(readExpectedResultFromOutputFile(pathToFile), filePath, fileName);
     }
 
     /**
@@ -34,6 +38,31 @@ public class IoFilesHandler {
         }
 
         return "ERROR";
+    }
+
+    public static boolean writeToOutputFile(String path, String fileName, Collection<String> data) throws IOException {
+//        try {
+            String outputFileName = path + "bg" + fileName;
+            FileWriter fileWriter = new FileWriter(outputFileName);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            data.forEach(printWriter::println);
+            printWriter.close();
+//            File outputFile = new File(outputFileName);
+//            if (outputFile.createNewFile()){
+//                FileWriter writer = new FileWriter(outputFileName);
+//                data.stream().forEach(s -> {
+//                    try {
+//                        writer.write(s);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+        return true;
     }
 
     private static String getRawDataFromFile(String pathToFile){
