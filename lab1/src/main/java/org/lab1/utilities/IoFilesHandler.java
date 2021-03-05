@@ -1,6 +1,6 @@
-package org.example.utilities;
+package org.lab1.utilities;
 
-import org.example.MathematicExpression;
+import org.lab1.MathematicExpression;
 
 import java.io.File;
 import java.io.FileNotFoundException;

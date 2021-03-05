@@ -23,6 +23,7 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
@@ -31,4 +32,8 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClassName = 'org.lab1.App'
+}
+
+test {
+    useJUnitPlatform()
 }

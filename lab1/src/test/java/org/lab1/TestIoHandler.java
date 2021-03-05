@@ -1,10 +1,12 @@
-import org.example.utilities.IoFilesHandler;
+package org.lab1;
+
+import org.lab1.utilities.IoFilesHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class testIoHandler {
+public class TestIoHandler {
     private static String basePathForFiles = "C:\\Users\\barak\\IdeaProjects\\SoftwareEngineeringHULabs\\lab1\\src\\";
     private static String basePathForInputFiles = basePathForFiles + "inputFiles\\";
     private static String basePathForOutputFiles = basePathForFiles + "outputFiles\\";
