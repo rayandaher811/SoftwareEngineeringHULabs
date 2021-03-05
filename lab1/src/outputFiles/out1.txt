@@ -1,0 +1,2 @@
+Please enter expression:
+The value of expression 15+22/0.5*0.25-4 is: 22.00000

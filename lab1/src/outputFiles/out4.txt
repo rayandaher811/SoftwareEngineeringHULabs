@@ -1,0 +1,2 @@
+Please enter expression:
+The value of expression -5*-60+300-360 is: 240.00000

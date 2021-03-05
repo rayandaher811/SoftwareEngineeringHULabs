@@ -1,0 +1,2 @@
+Please enter expression:
+The value of expression 22.75*15.2-3+14*9/5-1200 is: -832.00000
