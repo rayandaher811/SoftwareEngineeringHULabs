@@ -41,27 +41,11 @@ public class IoFilesHandler {
     }
 
     public static boolean writeToOutputFile(String path, String fileName, Collection<String> data) throws IOException {
-//        try {
             String outputFileName = path + "bg" + fileName;
             FileWriter fileWriter = new FileWriter(outputFileName);
             PrintWriter printWriter = new PrintWriter(fileWriter);
             data.forEach(printWriter::println);
             printWriter.close();
-//            File outputFile = new File(outputFileName);
-//            if (outputFile.createNewFile()){
-//                FileWriter writer = new FileWriter(outputFileName);
-//                data.stream().forEach(s -> {
-//                    try {
-//                        writer.write(s);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                });
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
         return true;
     }
 
