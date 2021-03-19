@@ -9,3 +9,5 @@
 
 rootProject.name = 'SoftwareEngineeringHULabs'
 include ':lab1'
+include 'lab2'
+
