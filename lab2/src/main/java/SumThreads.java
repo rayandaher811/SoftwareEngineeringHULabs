@@ -30,10 +30,10 @@ public class SumThreads {
 
     public static void main(String[] args) {
         long totalNanos = 0;
-        int expectedRuns = 1;
+        int expectedRuns = 500;
         int numberOfThreads = 10;
 
-        long value = 4294967296L;
+        long value = (long) Math.pow(2, 32);
 
         for (int runsCounter = 1; runsCounter <= expectedRuns; runsCounter++) {
             // Starting to measure time

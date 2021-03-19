@@ -10,6 +10,7 @@ public class Sum {
     public static void main(String[] args) {
         long totalNanos = 0;
         int expectedRuns = 150;
+        long val = (long) Math.pow(2, 32);
 
         for (int runsCounter = 1; runsCounter <= expectedRuns; runsCounter++) {
             // Starting to measure time
@@ -17,7 +18,7 @@ public class Sum {
             long sum = 0;
 
             // Computation
-            for (long startIndex = 0; startIndex < 4_294_967_296L; startIndex++){
+            for (long startIndex = 0; startIndex < val; startIndex++){
                 sum += 1;
             }
 
