@@ -1,76 +1,26 @@
-
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
 
 public class ArithmeticApp {
-    public static final String BASE_PATH_FOR_TEST_FILES
-            = "C:\\Users\\barak\\IdeaProjects\\SoftwareEngineeringHULabs\\lab1\\src\\";
-    public static final String BASE_PATH_FOR_INPUT_FILES = BASE_PATH_FOR_TEST_FILES + "inputFiles\\";
 
-    public static boolean writeToOutputFile(String path, String fileName, Collection<String> data) throws IOException {
-        String outputFileName = path + "\\" + fileName;
-        removeIfFileExists(outputFileName);
-        FileWriter fileWriter = new FileWriter(outputFileName);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        data.forEach(printWriter::println);
-        printWriter.close();
-        return true;
+    public static void main(String[] args) {
+        String expression = "";
+        System.out.println("Please enter expression:");
+        Scanner in = new Scanner(System.in);
+        expression = in.nextLine();
+
+        ArithmeticApp.solveAndPrintToConsole(expression);
     }
 
-    private static void removeIfFileExists(String fileName){
-        try {
-            File f = new File(fileName);
-            if (f.exists()) {
-                f.delete();
-            }
-        } catch (Exception e) {
-
-        }
-    }
-
-    public static String getRawDataFromFile(String pathToFile) {
-        String inputFileAsString = "";
-        try {
-            File myFile = new File(System.getProperty("user.dir") + "\\" + pathToFile);
-            Scanner fileScanner = new Scanner(myFile);
-
-            while (fileScanner.hasNextLine()) {
-                inputFileAsString += fileScanner.nextLine() + "\n";
-            }
-            inputFileAsString = inputFileAsString.substring(0, inputFileAsString.lastIndexOf('\n'));
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return inputFileAsString;
-    }
-
-    public static void solveAndWriteResultToOutputFile(String fileName, String rawExpression) {
-        String outputPath = System.getProperty("user.dir");
-        Collection<String> result = getResult(rawExpression);
-        try {
-            if (!writeToOutputFile(outputPath, fileName, result))
-                System.out.println("ERROR!!!");
-            result.stream().forEach(s -> System.out.println(s));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Collection<String> getResult(String rawExpression) {
-        ArrayList<String> result = new ArrayList<>();
-        result.add("Please enter expression:");
+    private static void solveAndPrintToConsole(String rawExpression) {
 
         // Fixing spaces to none and +- to - in the expression
         var fixedExpression = rawExpression.replace(" ", "").replace("+-", "-");
 
         var expressionResult = calculateExpression(fixedExpression);
 
-        result.add("The value of expression " + rawExpression.replaceAll(" ", "") + " is: " + expressionResult);
-
-        return result;
+        System.out.println("The value of expression " + rawExpression.replaceAll(" ", "") + " is: " + expressionResult);
     }
 
     private static String calculateExpression(String expression) {
@@ -80,7 +30,7 @@ public class ArithmeticApp {
     /**
      * The method replaces the expression's parenthesis with it's actual result
      *
-     * @param expression
+     * @param expression the expression to calculate
      * @return new expression with no parenthesis (all of them has been calculated)
      */
     private static String calculateParenthesis(String expression) {
@@ -120,7 +70,7 @@ public class ArithmeticApp {
      * The method replaces the expression's * and  / expression with it's actual result
      * Note: The expression must have no parenthesis
      *
-     * @param expression
+     * @param expression the expression to calculate
      * @return new expression with no * or / (all of them has been calculated)
      */
     private static String calculateMultiplyAndDivide(String expression) {
@@ -131,7 +81,7 @@ public class ArithmeticApp {
 
                 var leftNumber = Double.parseDouble(leftNumberString);
                 var rightNumber = Double.parseDouble(rightNumberString);
-                Double result = 0.0;
+                double result = 0.0;
 
                 if (expression.charAt(i) == '*')
                     result = leftNumber * rightNumber;
@@ -156,7 +106,7 @@ public class ArithmeticApp {
      * The method replaces the expression's + and  - expression with it's actual result
      * Note: The expression must have no parenthesis
      *
-     * @param expression
+     * @param expression the expression to calculate
      * @return new expression with no + or - (all of them has been calculated)
      */
     private static String calculatePlusAndMinus(String expression) {
@@ -168,7 +118,7 @@ public class ArithmeticApp {
 
                 var leftNumber = Double.parseDouble(leftNumberString);
                 var rightNumber = Double.parseDouble(rightNumberString);
-                Double result = 0.0;
+                double result = 0.0;
 
                 if (expression.charAt(i) == '+')
                     result = leftNumber + rightNumber;
@@ -220,19 +170,5 @@ public class ArithmeticApp {
         return expression;
     }
 
-    public static void main(String[] args) {
-        String expression = "";
-        String outputFileName = "out.txt";
-        System.out.println("Enter Expression:");
-        if (args.length == 0) {
-            // User didn't specify input file, thus need to get an input
-            Scanner in = new Scanner(System.in);
-            expression = in.nextLine();
-        } else {
-            expression = ArithmeticApp.getRawDataFromFile(args[0]);
-            if (args.length > 2)
-                outputFileName = args[1];
-        }
-        ArithmeticApp.solveAndWriteResultToOutputFile(outputFileName, expression);
-    }
+
 }
