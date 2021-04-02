@@ -1,7 +1,10 @@
 package org.example;
 
-public class Calculator implements ICalculator {
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
+public class Calculator implements ICalculator {
     @Override
     public String calculate(String rawExpression) {
         // Fixing few chars in our expression:
@@ -12,7 +15,11 @@ public class Calculator implements ICalculator {
                                                   .replace("+-", "-")
                                                   .replace(":", "/");
 
-        return calculateExpression(fixedExpression);
+        return "" + scaleExpressionResult(calculateExpression(fixedExpression));
+    }
+
+    private BigDecimal scaleExpressionResult(String result){
+        return BigDecimal.valueOf(Double.parseDouble(result)).setScale(5, RoundingMode.DOWN);
     }
 
     private static String calculateExpression(String expression) {
@@ -81,7 +88,7 @@ public class Calculator implements ICalculator {
                     result = leftNumber / rightNumber;
 
                 // Parsing the result to string
-                String resultStr = String.format("%.5f", result);
+                String resultStr = ""+ result;
 
                 // Replacing the detected  * or / expression with it's calculated value
                 expression = expression.substring(0, i - leftNumberString.length()) + resultStr + expression.substring(i + rightNumberString.length() + 1);
@@ -118,7 +125,7 @@ public class Calculator implements ICalculator {
                     result = leftNumber - rightNumber;
 
                 // Parsing the result to string
-                String resultStr = String.format("%.5f", result);
+                String resultStr = "" + result;
 
                 // Replacing the detected  + or - expression with it's calculated value
                 expression = expression.substring(0, i - leftNumberString.length()) + resultStr + expression.substring(i + rightNumberString.length() + 1);
@@ -137,9 +144,12 @@ public class Calculator implements ICalculator {
 
             if (currentChar == '+' || currentChar == '*' || currentChar == '/')
                 return expression.substring(i + 1);
-            // In case our number is negative
-            if (currentChar == '-' && i - 1 < 0) {
-                return expression.substring(i);
+            if (currentChar == '-') {
+                // In case our number is negative
+                if(i - 1 < 0)
+                    return expression.substring(i);
+                else
+                    return expression.substring(i + 1);
             }
         }
 

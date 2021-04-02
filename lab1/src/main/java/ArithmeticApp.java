@@ -1,3 +1,7 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
@@ -18,8 +22,7 @@ public class ArithmeticApp {
         // Fixing spaces to none and +- to - in the expression
         var fixedExpression = rawExpression.replace(" ", "").replace("+-", "-");
 
-        var expressionResult = calculateExpression(fixedExpression);
-
+        var expressionResult = "" + BigDecimal.valueOf(Double.parseDouble(calculateExpression(fixedExpression))).setScale(5, RoundingMode.DOWN);
         System.out.println("The value of expression " + rawExpression.replaceAll(" ", "") + " is: " + expressionResult);
     }
 
@@ -89,7 +92,7 @@ public class ArithmeticApp {
                     result = leftNumber / rightNumber;
 
                 // Parsing the result to string
-                String resultStr = String.format("%.5f", result);
+                String resultStr = "" + result;
 
                 // Replacing the detected  * or / expression with it's calculated value
                 expression = expression.substring(0, i - leftNumberString.length()) + resultStr + expression.substring(i + rightNumberString.length() + 1);
@@ -126,7 +129,7 @@ public class ArithmeticApp {
                     result = leftNumber - rightNumber;
 
                 // Parsing the result to string
-                String resultStr = String.format("%.5f", result);
+                String resultStr = "" +  result;
 
                 // Replacing the detected  + or - expression with it's calculated value
                 expression = expression.substring(0, i - leftNumberString.length()) + resultStr + expression.substring(i + rightNumberString.length() + 1);
@@ -146,8 +149,11 @@ public class ArithmeticApp {
             if (currentChar == '+' || currentChar == '*' || currentChar == '/')
                 return expression.substring(i + 1);
             // In case our number is negative
-            if (currentChar == '-' && i - 1 < 0) {
-                return expression.substring(i);
+            if (currentChar == '-') {
+                if(i - 1 < 0)
+                    return expression.substring(i);
+                else
+                    return expression.substring(i + 1);
             }
         }
 
