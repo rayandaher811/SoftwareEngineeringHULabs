@@ -17,6 +17,11 @@ public class Car {
     @JoinColumn(name="person_id", nullable = true)
     private Person person;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "picture_id", nullable = true)
+    private Picture picture;
+
     public Car(String licensePlate, double price, int year) {
         super();
         this.licensePlate = licensePlate;
@@ -30,6 +35,11 @@ public class Car {
     public Car(String licensePlate, double price, int year, Person person) {
         this(licensePlate, price, year);
         this.person = person;
+    }
+
+    public Car(String licensePlate, double price, int year, Person person, Picture pic) {
+        this(licensePlate, price, year, person);
+        this.picture = pic;
     }
 
     public void setPerson(Person person) {

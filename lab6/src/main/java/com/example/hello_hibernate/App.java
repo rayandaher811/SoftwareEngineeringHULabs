@@ -21,6 +21,7 @@ public class App {
         // Add ALL of your entities here. You can also try adding a whole package.
         configuration.addAnnotatedClass(Car.class);
         configuration.addAnnotatedClass(Person.class);
+        configuration.addAnnotatedClass(Picture.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -69,11 +70,26 @@ public class App {
         Person p4 = new Person("DDDDD", "ddddd", "ddddDDDDD", "ddddd@gmail.com");
         Person p5 = new Person("EEEEE", "eeeee", "eeEEeeEEe", "eeee@gmail.com");
 
-        Car a = new Car("A1234a", 32.2, 33333, p1);
-        Car b = new Car("B1234b", 32, 33333, p2);
-        Car c = new Car("C1234c", 32, 33333, p2);
-        Car d = new Car("D1234d", 32, 33333, p3);
-        Car e = new Car("E1234e", 32, 33333, p4);
+        Picture one = new Picture();
+        Picture two = new Picture();
+        Picture three = new Picture();
+        Picture four = new Picture();
+        Picture five = new Picture();
+
+
+        Car a = new Car("A1234a", 32.2, 33333, p1, one);
+        Car b = new Car("B1234b", 32, 33333, p2, two);
+        Car c = new Car("C1234c", 32, 33333, p2, three);
+        Car d = new Car("D1234d", 32, 33333, p3, four);
+        Car e = new Car("E1234e", 32, 33333, p4, five);
+
+        // Assigning car to picture
+        one.setCar(a);
+        two.setCar(b);
+        three.setCar(c);
+        four.setCar(d);
+        five.setCar(e);
+
         // Adding cars to p1, and saving
         HashSet<Car> p1Cars = new HashSet<>();
         p1Cars.add(a);
@@ -101,6 +117,11 @@ public class App {
         // p5 without cars
         session.save(p4);
         session.save(p5);
+
+        // saving pictures
+        session.save(one);
+        session.save(two);
+        session.save(three);
         session.flush();
     }
 
