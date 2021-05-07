@@ -1,6 +1,7 @@
 package com.example.hello_hibernate;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "CARS")
@@ -22,24 +23,23 @@ public class Car {
     @JoinColumn(name = "picture_id", nullable = true)
     private Picture picture;
 
-    public Car(String licensePlate, double price, int year) {
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "Car_Garage",
+            joinColumns = { @JoinColumn(name = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "garage_id") }
+    )
+    private Set<Garage> garages;
+
+    public Car(String licensePlate, double price, int year, Picture pic) {
         super();
         this.licensePlate = licensePlate;
         this.price = price;
         this.year = year;
+        this.picture = pic;
     }
 
     public Car() {
-    }
-
-    public Car(String licensePlate, double price, int year, Person person) {
-        this(licensePlate, price, year);
-        this.person = person;
-    }
-
-    public Car(String licensePlate, double price, int year, Person person, Picture pic) {
-        this(licensePlate, price, year, person);
-        this.picture = pic;
     }
 
     public void setPerson(Person person) {
@@ -72,5 +72,9 @@ public class Car {
 
     public int getId() {
         return id;
+    }
+
+    public void setGarages(Set<Garage> garages) {
+        this.garages = garages;
     }
 }
