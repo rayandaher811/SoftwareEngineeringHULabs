@@ -4,6 +4,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="GARAGES")
@@ -39,5 +40,15 @@ public class Garage {
 
     public void setCars(Set<Car> cars) {
         this.cars = cars;
+    }
+
+    @Override
+    public String toString() {
+        String allowedCarsIds = cars.stream().map(Car::getLicensePlate).collect(Collectors.toSet()).toString();
+        return "Garage Id: " + id + ", Address: " + address + ", allowed cars ids: (license plate num): " + allowedCarsIds;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

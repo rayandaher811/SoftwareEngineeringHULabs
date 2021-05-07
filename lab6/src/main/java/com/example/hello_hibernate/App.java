@@ -218,6 +218,28 @@ public class App {
         return true;
     }
 
+    /**
+     *
+     * For each garage, we should print the following:
+     * Garage details - ID & Address
+     * Allowed cars id's
+     */
+    private static void printGarageData() {
+        System.out.println("List of registered garages:");
+        getAllGarages().forEach(System.out::println);
+    }
+
+    /**
+     *
+     * For each car, we should print the following:
+     * Car's details
+     * Owners data
+     * Addresses of registered garages for specific car
+     */
+    private static void printCarsData() {
+        System.out.println("List of registered cars:");
+        getAllCars().forEach(System.out::println);
+    }
     public static void main(String[] args) {
         try {
             SessionFactory sessionFactory = getSessionFactory();
@@ -231,6 +253,9 @@ public class App {
                 session.getTransaction().commit(); // Save everything.
                 if (!isDataStoredAsExpected()) {
                     System.err.println("Data not stored as expected! :(");
+                } else {
+                    printGarageData();
+                    printCarsData();
                 }
             }
         } catch (Exception exception) {

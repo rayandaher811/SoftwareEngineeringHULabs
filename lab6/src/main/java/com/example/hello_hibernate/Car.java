@@ -2,6 +2,7 @@ package com.example.hello_hibernate;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CARS")
@@ -77,4 +78,12 @@ public class Car {
     public void setGarages(Set<Garage> garages) {
         this.garages = garages;
     }
+
+    @Override
+    public String toString(){
+        String allowedGaragesAddresses = garages.stream().map(Garage::getAddress).collect(Collectors.toSet()).toString();
+        return "Car details: ID: " + id + ", license plate: " + licensePlate + ", price: " + price + ", year: " + year + ", person: " + person + ", picture: " + picture + ", registerd garages addresses: " + allowedGaragesAddresses;
+    }
 }
+
+//    private Set<Garage> garages;

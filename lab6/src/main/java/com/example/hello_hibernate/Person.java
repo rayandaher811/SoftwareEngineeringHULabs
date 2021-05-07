@@ -51,4 +51,9 @@ public class Person {
         this.garages = garages;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "First name: " + firstName + ", lastName: " + lastName + ", password: " + password + ", email: " + email + ", owned garages: " + garages;
+    }
 }
