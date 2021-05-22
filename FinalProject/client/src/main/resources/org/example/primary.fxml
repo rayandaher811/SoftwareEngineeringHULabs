@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="340.0" prefWidth="580.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controllers.PrimaryController">
+   <children>
+      <BorderPane prefHeight="368.0" prefWidth="618.0">
+         <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="ברוך הבא למערכת הסרטייה" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+         </top>
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="logInButton" onAction="#popUpLoginDialog" prefHeight="25.0" prefWidth="170.0" text="התחברות עובדים" />
+                  <Separator prefWidth="200.0" />
+                  <Button fx:id="continueAsCustomer" onAction="#switchToCustomerView" prefHeight="25.0" prefWidth="170.0" text="המשך כלקוח" />
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
