@@ -23,35 +23,59 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f1e55b9-65e0-42a8-9546-939bdaca4f7c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/server.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AbstractConnectionFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AbstractServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AdaptableServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ConnectionToClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/MessageHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ObservableOriginatorServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ObservableServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/OriginatorMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/.idea/libraries/Maven__com_google_code_gson_gson_2_8_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/.idea/libraries/Maven__org_json_json_20210307.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/AbstractClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/ServerCommunicationHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/messages/AllMoviesRequestMsg.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/messages/AllMoviesRequestResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/messages/BaseClientServerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/CustomerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20210307.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/messages/AllMoviesRequestMsg.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/messages/AllMoviesRequestResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/messages/BaseClientServerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/controllers/MoviesController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/pojos/Movie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/pojos/ScreeningMovie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../lab6/hello_hibernate.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/client.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/ActiveUserData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/ActiveUserData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/controllers/CustomerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/controllers/EmployeesForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/EmployeesForm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/controllers/PrimaryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/PrimaryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/dialogs/AbstractInteractiveDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/AbstractInteractiveDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/dialogs/AvailableMoviesDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/AvailableMoviesDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/dialogs/LoginDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/LoginDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/dialogs/UpdateMoviesTimeDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/UpdateMoviesTimeDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/global/LoggedInUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/global/LoggedInUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/pojos/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/pojos/Movie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/pojos/ScreeningMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/pojos/ScreeningMovie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/org/example/customerView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/customerView.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/org/example/employeesForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/employeesForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/org/example/loginForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/loginForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/org/example/primary.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/primary.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/server.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sertia_server.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SertiaCinema/design/design.vpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../SertiaCinema/design/design.vpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/abstractA.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/abstractA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/classB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/classB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/classC.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../testModule/src/main/java/org/test/classC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AbstractServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AbstractServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/AdaptableServer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ConnectionToClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ConnectionToClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/MessageHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/MessageHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ObservableOriginatorServer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/ObservableServer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/communication/OriginatorMessage.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +114,7 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\barak\IdeaProjects\SoftwareEngineeringHULabs\FinalProject\server\src\main\java\org\sertia\server\communication" />
+      <recent name="C:\Users\barak\IdeaProjects\SoftwareEngineeringHULabs\FinalProject\server\src\main\java\org\sertia\server\pojos" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.sertia.server.communication" />
@@ -97,6 +122,26 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\barak\IdeaProjects\SoftwareEngineeringHULabs\FinalProject\server\src\main\java\org\sertia\server\communication" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.sertia.server.Main" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.sertia.server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -120,5 +165,55 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1621693289768">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621693289768" />
+    <state x="429" y="446" width="1414" height="594" key="#xdebugger.evaluate" timestamp="1621694560490">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="429" y="446" width="1414" height="594" key="#xdebugger.evaluate/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621694560490" />
+    <state width="1877" height="262" key="GridCell.Tab.0.bottom" timestamp="1621696042357">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="262" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696042357" />
+    <state width="1877" height="262" key="GridCell.Tab.0.center" timestamp="1621696042356">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="262" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696042356" />
+    <state width="1877" height="262" key="GridCell.Tab.0.left" timestamp="1621696042356">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="262" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696042356" />
+    <state width="1877" height="262" key="GridCell.Tab.0.right" timestamp="1621696042356">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="262" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696042356" />
+    <state width="1877" height="373" key="GridCell.Tab.1.bottom" timestamp="1621695285212">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="373" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621695285212" />
+    <state width="1877" height="373" key="GridCell.Tab.1.center" timestamp="1621695285212">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="373" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621695285212" />
+    <state width="1877" height="373" key="GridCell.Tab.1.left" timestamp="1621695285212">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="373" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621695285212" />
+    <state width="1877" height="373" key="GridCell.Tab.1.right" timestamp="1621695285212">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="373" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621695285212" />
+    <state x="490" y="175" key="Maven.ArtifactSearchDialog" timestamp="1621692967872">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="490" y="175" key="Maven.ArtifactSearchDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621692967872" />
+    <state x="667" y="224" width="585" height="592" key="find.popup" timestamp="1621688974332">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="667" y="224" width="585" height="592" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621688974332" />
   </component>
 </project>
