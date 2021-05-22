@@ -58,19 +58,7 @@ public class ServerCommunicationHandler extends AbstractClient {
     }
 
     public Collection<ScreeningMovie> getScreeningMovies() {
-
-//        try {
         AllMoviesRequestMsg allMoviesRequestMsg = new AllMoviesRequestMsg(clientId);
-//            client.sendToServer(new Gson().toJson(allMoviesRequestMsg));
-//
-//            String response = client.getResponse(allMoviesRequestMsg.getMessageId());
-//
-//            while (response == null) {
-//                Thread.sleep(5);
-//                response = client.getResponse(allMoviesRequestMsg.getMessageId());
-//            }
-//
-//            AllMoviesRequestResponse requestResponse = new Gson().fromJson(response, AllMoviesRequestResponse.class);
 
         Optional<AllMoviesRequestResponse> res =
                 client.requestAndWaitForResponse(allMoviesRequestMsg, allMoviesRequestMsg.getMessageId(), AllMoviesRequestResponse.class);
@@ -78,11 +66,5 @@ public class ServerCommunicationHandler extends AbstractClient {
             return res.get().getScreeningMovieCollection();
         else
             return Collections.emptyList();
-
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return Collections.emptyList();
-//    }
     }
 }

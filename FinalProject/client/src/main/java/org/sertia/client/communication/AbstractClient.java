@@ -111,6 +111,8 @@ public abstract class AbstractClient implements Runnable {
     private int port;
 
     private HashMap<String, String> clientIdsToResponses;
+    private static Gson GSON = new Gson();
+
 // CONSTRUCTORS *****************************************************
 
     /**
@@ -387,14 +389,12 @@ public abstract class AbstractClient implements Runnable {
         return null;
     }
 
-    private static Gson GSON = new Gson();
-
     protected <Req, Res> Optional<Res> requestAndWaitForResponse(Req requestType, String requestId, Class<Res> destClass) {
         try {
             this.sendToServer(GSON.toJson(requestType));
             String response = getResponse(requestId);
             while (response == null) {
-                Thread.sleep(5);
+                Thread.sleep(1);
                 response = getResponse(requestId);
             }
             return Optional.of(GSON.fromJson(response, destClass));
@@ -404,4 +404,3 @@ public abstract class AbstractClient implements Runnable {
         return Optional.empty();
     }
 }
-// end of AbstractClient class
