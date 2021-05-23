@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.controllers.AvailableMoviesForEdit">
+    <children>
+        <BorderPane prefHeight="368.0" prefWidth="618.0">
+            <top>
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="מסך עריכת זמני הקרנה" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="26.0" />
+                    </font>
+                </Label>
+            </top>
+            <bottom>
+                <Button fx:id="backBtn" mnemonicParsing="false" onAction="#back" text="Back" BorderPane.alignment="CENTER" />
+            </bottom>
+         <center>
+            <Accordion fx:id="moviesAccordion" BorderPane.alignment="CENTER">
+<!--              <panes>-->
+<!--                <TitledPane animated="false" text="untitled 1">-->
+<!--                  <content>-->
+<!--                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
+<!--                  </content>-->
+<!--                </TitledPane>-->
+<!--                <TitledPane animated="false" text="untitled 2">-->
+<!--                  <content>-->
+<!--                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
+<!--                  </content>-->
+<!--                </TitledPane>-->
+<!--                <TitledPane animated="false" text="untitled 3">-->
+<!--                  <content>-->
+<!--                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
+<!--                  </content>-->
+<!--                </TitledPane>-->
+<!--              </panes>-->
+            </Accordion>
+         </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

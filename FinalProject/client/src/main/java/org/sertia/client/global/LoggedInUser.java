@@ -1,13 +1,17 @@
 package org.sertia.client.global;
 
+import java.util.UUID;
+
 public class LoggedInUser {
     // User
     private String userName;
+    private String uuid;
 
     private static LoggedInUser loggedInUser = null;
 
     private LoggedInUser(String userName){
         this.userName = userName;
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public static LoggedInUser getInstance(){
@@ -16,6 +20,10 @@ public class LoggedInUser {
         }
 
         return loggedInUser;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     public static void setConnectionStatus(String userName) {

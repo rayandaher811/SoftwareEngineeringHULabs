@@ -403,4 +403,12 @@ public abstract class AbstractClient implements Runnable {
         }
         return Optional.empty();
     }
+
+    protected <Req> void publishToServer(Req requestType, String requestId) {
+        try {
+            this.sendToServer(GSON.toJson(requestType));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

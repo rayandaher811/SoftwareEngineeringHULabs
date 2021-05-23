@@ -17,7 +17,7 @@ public class CustomerController {
     }
 
     @FXML
-    private void presentAvailableMovies() throws IOException {
+    private void presentAvailableMovies() {
         Collection<ScreeningMovie> movies = ServerCommunicationHandler.getInstance().getScreeningMovies();
 
         AvailableMoviesDialog.loginAndGetUserData(movies);

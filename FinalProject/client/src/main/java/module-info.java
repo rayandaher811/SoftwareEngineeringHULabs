@@ -4,6 +4,7 @@ module org.example {
     requires java.logging;
     requires com.google.gson;
     requires org.json;
+    requires org.joda.time;
 
     opens org.sertia.client.pojos to com.google.gson;
     opens org.sertia.client.communication.messages to com.google.gson;

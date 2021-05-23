@@ -2,6 +2,7 @@ package org.sertia.client.communication;
 
 import org.sertia.client.communication.messages.AllMoviesRequestMsg;
 import org.sertia.client.communication.messages.AllMoviesRequestResponse;
+import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.client.pojos.ScreeningMovie;
 
 import java.io.IOException;
@@ -66,5 +67,9 @@ public class ServerCommunicationHandler extends AbstractClient {
             return res.get().getScreeningMovieCollection();
         else
             return Collections.emptyList();
+    }
+
+    public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {
+        client.publishToServer(updateMovieScreeningTimeMsg, updateMovieScreeningTimeMsg.getMessageId());
     }
 }

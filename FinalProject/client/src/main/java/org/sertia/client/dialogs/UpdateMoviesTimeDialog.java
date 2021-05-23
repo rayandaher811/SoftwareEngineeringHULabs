@@ -7,7 +7,12 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.joda.time.DateTime;
 import org.sertia.client.ActiveUserData;
+import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
+import org.sertia.client.global.LoggedInUser;
+import org.sertia.client.pojos.Movie;
 import org.sertia.client.pojos.ScreeningMovie;
 
 import java.util.Collection;
@@ -23,16 +28,13 @@ public class UpdateMoviesTimeDialog extends AbstractInteractiveDialog {
         String dialogTitle;
         String dialogHeaderText;
         // Create the custom dialog.
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Available Movies Dialog");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Update Movies Dialog");
         dialog.setHeaderText("This is the available movies list");
 
-// Set the icon (must be included in the project).
-//        dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
-
-// Set the button types.
         ButtonType closeButtonType = new ButtonType("סגור", ButtonBar.ButtonData.BACK_PREVIOUS);
-        dialog.getDialogPane().getButtonTypes().addAll(closeButtonType);
+        ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(closeButtonType, submitButtonType);
 
 // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -48,7 +50,16 @@ public class UpdateMoviesTimeDialog extends AbstractInteractiveDialog {
         }
 
         dialog.getDialogPane().setContent(grid);
-        Optional<Pair<String, String>> result = dialog.showAndWait();
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if (result.get().getText().equals("Submit")){
+            Movie m = new Movie("A", "");
+            ScreeningMovie screeningMovie = new ScreeningMovie(m, 1223, 2);
+
+            UpdateMovieScreeningTime request = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), screeningMovie, DateTime.now());
+            ServerCommunicationHandler.getInstance().requestMovieScreeningTimeChange(request);
+            return new ActiveUserData("bbbb", "gggg");
+        }
 
         return new ActiveUserData("userName.get()", "role.get()");
 
