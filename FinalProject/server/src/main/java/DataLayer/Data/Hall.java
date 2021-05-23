@@ -12,16 +12,8 @@ public class Hall {
     private int id;
 
     private int maximumCapacity;
+    private int numberOfSeats;
 
     @ManyToOne
     private Cinema cinema;
-
-    public Hall(int maximumCapacity) {
-        this.maximumCapacity = maximumCapacity;
-        this.cinema = cinema;
-    }
-
-    public void setCinema(Cinema cinema) {
-        this.cinema = cinema;
-    }
 }

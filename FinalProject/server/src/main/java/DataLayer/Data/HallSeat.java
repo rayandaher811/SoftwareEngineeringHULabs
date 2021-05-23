@@ -12,15 +12,13 @@ public class HallSeat {
 
     private int rowNumber;
     private int numberInRow;
-    private boolean disabled;
 
     @ManyToOne
     private Hall hall;
 
-    public HallSeat(int rowNumber, int numberInRow, boolean disabled) {
+    public HallSeat(int rowNumber, int numberInRow) {
         this.rowNumber = rowNumber;
         this.numberInRow = numberInRow;
-        this.disabled = disabled;
     }
 
     public void setHall(Hall hall) {
