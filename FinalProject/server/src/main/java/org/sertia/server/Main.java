@@ -1,10 +1,7 @@
 package org.sertia.server;
 
-<<<<<<< HEAD
-=======
 import DataLayer.SessionSupplier;
 import org.hibernate.Session;
->>>>>>> de7a8b1... project compiles, added docker-compose.yml with DB presenter
 import org.sertia.server.communication.MessageHandler;
 
 import java.io.IOException;

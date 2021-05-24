@@ -109,8 +109,6 @@
                         </execution>
                     </executions>
                 </plugin>
-<<<<<<< HEAD
-=======
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -120,20 +118,7 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
-
->>>>>>> de7a8b1... project compiles, added docker-compose.yml with DB presenter
             </plugins>
-
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>14</source>
-                    <target>14</target>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 </project>

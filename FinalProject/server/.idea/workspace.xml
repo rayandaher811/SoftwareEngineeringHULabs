@@ -23,34 +23,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f1e55b9-65e0-42a8-9546-939bdaca4f7c" name="Default Changelist" comment="">
-<<<<<<< HEAD
-      <change afterPath="$PROJECT_DIR$/../client/.idea/libraries/Maven__joda_time_joda_time_2_10_10.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/messages/UpdateMovieScreeningTime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/AvailableMoviesForEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/availableMoviesForEdit.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/client.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/AbstractClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/AbstractClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/ServerCommunicationHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/communication/ServerCommunicationHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/CustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/EmployeesForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/controllers/EmployeesForm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/UpdateMoviesTimeDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/dialogs/UpdateMoviesTimeDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/global/LoggedInUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/org/sertia/client/global/LoggedInUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/employeesForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/org/sertia/client/employeesForm.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-=======
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__joda_time_joda_time_2_10_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_classmate_1_5_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_protobuf_protobuf_java_3_6_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_3_0_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_xml_fastinfoset_FastInfoset_1_2_15.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_activation_javax_activation_api_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_persistence_javax_persistence_api_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_xml_bind_jaxb_api_2_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_8_0_19.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_10_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_dom4j_dom4j_2_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_2_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_txw2_2_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_1_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_4_12_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_24_0_GA.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_2_1_1_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_3_2_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_transaction_jboss_transaction_api_1_2_spec_1_1_1_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jvnet_staxex_stax_ex_1_8.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/server.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compose/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/compose/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DataLayer/Data/Screening.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DataLayer/Data/Screening.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/server.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/controllers/MoviesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/controllers/MoviesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/sertia/server/pojos/ScreeningMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/sertia/server/pojos/ScreeningMovie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hibernate.properties" afterDir="false" />
->>>>>>> de7a8b1... project compiles, added docker-compose.yml with DB presenter
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,30 +149,6 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="429" y="446" width="1414" height="594" key="#xdebugger.evaluate/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621694560490" />
-<<<<<<< HEAD
-    <state width="1877" height="262" key="GridCell.Tab.0.bottom" timestamp="1621787461446">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="373" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696582882" />
-    <state width="1877" height="262" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1621787461446" />
-    <state width="1877" height="262" key="GridCell.Tab.0.center" timestamp="1621787461445">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="373" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696582881" />
-    <state width="1877" height="262" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1621787461445" />
-    <state width="1877" height="262" key="GridCell.Tab.0.left" timestamp="1621787461445">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="373" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696582881" />
-    <state width="1877" height="262" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1621787461445" />
-    <state width="1877" height="262" key="GridCell.Tab.0.right" timestamp="1621787461445">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="373" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696582881" />
-    <state width="1877" height="262" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1621787461445" />
-    <state width="1877" height="373" key="GridCell.Tab.1.bottom" timestamp="1621696582882">
-      <screen x="0" y="0" width="1920" height="1040" />
-=======
     <state x="429" y="478" key="#xdebugger.evaluate/0.27.1920.1053@0.27.1920.1053" timestamp="1621882526601" />
     <state width="505" height="526" key="DebuggerActiveHint" timestamp="1621882400581">
       <screen x="0" y="27" width="1920" height="1053" />
@@ -205,7 +180,6 @@
     <state width="1874" height="536" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1621882623619" />
     <state width="1874" height="435" key="GridCell.Tab.1.bottom" timestamp="1621882527875">
       <screen x="0" y="27" width="1920" height="1053" />
->>>>>>> de7a8b1... project compiles, added docker-compose.yml with DB presenter
     </state>
     <state width="1877" height="373" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1621696582882" />
     <state width="1874" height="435" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1621882527875" />
