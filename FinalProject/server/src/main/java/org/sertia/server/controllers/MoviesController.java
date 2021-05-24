@@ -42,14 +42,7 @@ public class MoviesController {
                                                     screening.getScreeningTime(),
                                                     screening.getPrice()));
         }
-        ScreeningMovie one = new ScreeningMovie(new Movie("a", "b"), 3, 2);
-        ScreeningMovie two = new ScreeningMovie(new Movie("ab", "b"), 3, 2);
-        ScreeningMovie three = new ScreeningMovie(new Movie("abc", "b"), 3, 2);
-        ScreeningMovie four = new ScreeningMovie(new Movie("a", "b"), 3, 2);
-        ScreeningMovie five = new ScreeningMovie(new Movie("abw", "b"), 3, 2);
 
-        Collection<ScreeningMovie> screenningMovies = new ArrayList<>();
-        Collections.addAll(screenningMovies, one, two, three, four, five);
-        return screenningMovies;
+        return screeningMovies;
     }
 }

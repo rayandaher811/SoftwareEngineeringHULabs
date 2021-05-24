@@ -1,5 +1,7 @@
 package DataLayer.Data;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -14,7 +16,7 @@ public class Screening {
 
     private double price;
 
-    private Date screeningTime;
+    private DateTime screeningTime;
 
     @ManyToOne
     private Hall hall;
@@ -26,7 +28,7 @@ public class Screening {
         return price;
     }
 
-    public Date getScreeningTime() {
+    public DateTime getScreeningTime() {
         return screeningTime;
     }
 

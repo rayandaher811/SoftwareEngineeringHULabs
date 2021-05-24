@@ -1,14 +1,15 @@
 package org.sertia.server.pojos;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.Objects;
 
 public class ScreeningMovie {
     private Movie movie;
-    private Date playingTime;
+    private DateTime playingTime;
     private double price;
 
-    public ScreeningMovie(Movie movie, long playingTime, double price) {
+    public ScreeningMovie(Movie movie, DateTime playingTime, double price) {
         this.movie = movie;
         this.playingTime = playingTime;
         this.price = price;
@@ -18,7 +19,7 @@ public class ScreeningMovie {
         this.movie = movie;
     }
 
-    public void setPlayingTime(long playingTime) {
+    public void setPlayingTime(DateTime playingTime) {
         this.playingTime = playingTime;
     }
 
@@ -30,7 +31,7 @@ public class ScreeningMovie {
         return movie;
     }
 
-    public long getPlayingTime() {
+    public DateTime getPlayingTime() {
         return playingTime;
     }
 
