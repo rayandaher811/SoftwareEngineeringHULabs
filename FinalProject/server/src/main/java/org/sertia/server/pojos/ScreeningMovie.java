@@ -1,10 +1,11 @@
 package org.sertia.server.pojos;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class ScreeningMovie {
     private Movie movie;
-    private long playingTime;
+    private Date playingTime;
     private double price;
 
     public ScreeningMovie(Movie movie, long playingTime, double price) {

@@ -14,4 +14,8 @@ public class Actor {
     public Actor(String fullName) {
         this.fullName = fullName;
     }
+
+    public String getFullName() {
+        return fullName;
+    }
 }

@@ -31,4 +31,32 @@ public class Movie {
         this.description = description;
         this.imageUrl = imageUrl;
     }
+
+    public Producer getProducer() {
+        return producer;
+    }
+
+    public Actor getMainActor() {
+        return mainActor;
+    }
+
+    public String getHebrewName() {
+        return hebrewName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isComingSoon() {
+        return isComingSoon;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }

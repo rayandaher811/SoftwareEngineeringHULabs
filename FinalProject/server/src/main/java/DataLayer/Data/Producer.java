@@ -14,4 +14,8 @@ public class Producer {
     public Producer(String fullName) {
         this.fullName = fullName;
     }
+
+    public String getFullName() {
+        return fullName;
+    }
 }
