@@ -53,4 +53,18 @@ public class CinemaScreeningMovie {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    @Override
+    public String toString() {
+        return "CinemaScreeningMovie{" +
+                "id=" + id +
+                ", producerName='" + producerName + '\'' +
+                ", mainActorName='" + mainActorName + '\'' +
+                ", hebrewName='" + hebrewName + '\'' +
+                ", name='" + name + '\'' +
+                ", isComingSoon=" + isComingSoon +
+                ", description='" + description + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }
