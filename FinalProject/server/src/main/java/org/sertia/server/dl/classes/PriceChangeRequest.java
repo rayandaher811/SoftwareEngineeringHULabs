@@ -26,5 +26,13 @@ public class PriceChangeRequest {
 
     public PriceChangeRequest() {
     }
+
+    public PriceChangeRequest(StreamingType streamingType, User requester, User handler, Movie movie, boolean accepted) {
+        this.streamingType = streamingType;
+        this.requester = requester;
+        this.handler = handler;
+        this.movie = movie;
+        this.accepted = accepted;
+    }
 }
 

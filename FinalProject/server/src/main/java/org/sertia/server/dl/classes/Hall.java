@@ -16,6 +16,12 @@ public class Hall {
     public Hall() {
     }
 
+    public Hall(int maximumCapacity, int numberOfSeats, Cinema cinema) {
+        this.maximumCapacity = maximumCapacity;
+        this.numberOfSeats = numberOfSeats;
+        this.cinema = cinema;
+    }
+
     @ManyToOne
     private Cinema cinema;
 }

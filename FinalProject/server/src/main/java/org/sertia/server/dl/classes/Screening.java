@@ -3,6 +3,7 @@ package org.sertia.server.dl.classes;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="screenings")
@@ -14,7 +15,7 @@ public class Screening {
 
     private double price;
 
-    private long screeningTime;
+    private Date screeningTime;
 
     @ManyToOne
     private Hall hall;
@@ -25,11 +26,18 @@ public class Screening {
     public Screening() {
     }
 
+    public Screening(double price, Date screeningTime, Hall hall, Movie movie) {
+        this.price = price;
+        this.screeningTime = screeningTime;
+        this.hall = hall;
+        this.movie = movie;
+    }
+
     public double getPrice() {
         return price;
     }
 
-    public long getScreeningTime() {
+    public Date getScreeningTime() {
         return screeningTime;
     }
 
@@ -39,12 +47,5 @@ public class Screening {
 
     public Movie getMovie() {
         return movie;
-    }
-
-    public Screening(double price, long screeningTime, Hall hall, Movie movie) {
-        this.price = price;
-        this.screeningTime = screeningTime;
-        this.hall = hall;
-        this.movie = movie;
     }
 }

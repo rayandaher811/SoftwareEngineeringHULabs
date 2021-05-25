@@ -20,4 +20,10 @@ public class Refund {
 
     public Refund() {
     }
+
+    public Refund(double price, CostumerComplaint complaint, RefundReason reason) {
+        this.price = price;
+        this.complaint = complaint;
+        this.reason = reason;
+    }
 }

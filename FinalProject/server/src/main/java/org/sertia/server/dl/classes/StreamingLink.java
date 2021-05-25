@@ -17,6 +17,8 @@ public class StreamingLink {
 
     private double paidPrice;
 
+    private String link;
+
     @ManyToOne
     private Streaming movie;
 

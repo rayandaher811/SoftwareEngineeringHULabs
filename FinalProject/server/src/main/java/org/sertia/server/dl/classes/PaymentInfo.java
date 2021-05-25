@@ -19,6 +19,15 @@ public class PaymentInfo {
     public PaymentInfo() {
     }
 
+    public PaymentInfo(String fullName, int creditNumber, Date experationDate, int cvv, int payerId, PaymentMethod paymentMethod) {
+        this.fullName = fullName;
+        this.creditNumber = creditNumber;
+        this.experationDate = experationDate;
+        this.cvv = cvv;
+        this.payerId = payerId;
+        this.paymentMethod = paymentMethod;
+    }
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 }

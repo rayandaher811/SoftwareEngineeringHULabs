@@ -19,6 +19,13 @@ public class CostumerComplaint {
     public CostumerComplaint() {
     }
 
+    public CostumerComplaint(Date openedDate, Date closedDate, CostumerInfo costumerInfo, User handler) {
+        this.openedDate = openedDate;
+        this.closedDate = closedDate;
+        this.costumerInfo = costumerInfo;
+        this.handler = handler;
+    }
+
     @ManyToOne
     private User handler;
 

@@ -19,9 +19,10 @@ public class HallSeat {
     @ManyToOne
     private Hall hall;
 
-    public HallSeat(int rowNumber, int numberInRow) {
+    public HallSeat(int rowNumber, int numberInRow, Hall hall) {
         this.rowNumber = rowNumber;
         this.numberInRow = numberInRow;
+        this.hall = hall;
     }
 
     public void setHall(Hall hall) {

@@ -14,10 +14,13 @@ public class Streaming {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    private String fullName;
-    private String link;
     private double pricePerStream;
 
     public Streaming() {
+    }
+
+    public Streaming(Movie movie, double pricePerStream) {
+        this.movie = movie;
+        this.pricePerStream = pricePerStream;
     }
 }

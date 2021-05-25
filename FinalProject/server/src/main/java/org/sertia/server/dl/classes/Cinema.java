@@ -18,6 +18,27 @@ public class Cinema {
     public Cinema() {
     }
 
+    public Cinema(String name, User manager) {
+        this.name = name;
+        Manager = manager;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public User getManager() {
+        return Manager;
+    }
+
+    public void setManager(User manager) {
+        Manager = manager;
+    }
+
     public Cinema(String name) {
         this.name = name;
     }
