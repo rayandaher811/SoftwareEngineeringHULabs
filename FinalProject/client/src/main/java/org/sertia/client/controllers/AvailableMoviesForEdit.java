@@ -28,7 +28,7 @@ public class AvailableMoviesForEdit implements Initializable {
         tiledPane.setAnimated(false);
         tiledPane.setText(screeningMovie.getName());
         Button btn = new Button();
-        btn.setText(String.valueOf(screeningMovie.getDescription()));
+        btn.setText(String.valueOf(screeningMovie.getScreeningTime()));
         btn.setOnMouseClicked(mouseEvent -> {
             try {
                 LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(screeningMovie);

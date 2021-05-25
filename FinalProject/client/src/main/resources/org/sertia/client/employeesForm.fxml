@@ -18,7 +18,7 @@
                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                    <children>
                        <Separator prefWidth="200.0" />
-                       <Button onAction="#updateMovie" prefHeight="25.0" prefWidth="170.0" text="צפה בסרטים" />
+                       <Button onAction="#updateMovie" prefHeight="25.0" prefWidth="170.0" text="Update screening time for movies" />
                    </children>
                </VBox>
            </center>

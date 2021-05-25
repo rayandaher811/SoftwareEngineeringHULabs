@@ -1,5 +1,11 @@
 package org.sertia.client.communication.messages;
 
+import org.joda.time.DateTime;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class CinemaScreeningMovie {
     private int id;
     private String producerName;
@@ -9,9 +15,10 @@ public class CinemaScreeningMovie {
     private boolean isComingSoon;
     private String description;
     private String imageUrl;
+    private Date screeningTime;
 
     public CinemaScreeningMovie(int id, String producerName, String mainActorName, String hebrewName, String name,
-                                boolean isComingSoon, String description, String imageUrl) {
+                                boolean isComingSoon, String description, String imageUrl, long screeningTime) {
         this.id = id;
         this.producerName = producerName;
         this.mainActorName = mainActorName;
@@ -20,6 +27,9 @@ public class CinemaScreeningMovie {
         this.isComingSoon = isComingSoon;
         this.description = description;
         this.imageUrl = imageUrl;
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.setTimeZone(TimeZone.getDefault());
+        this.screeningTime = new Date(screeningTime);
     }
 
     public int getId() {
@@ -52,6 +62,10 @@ public class CinemaScreeningMovie {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public Date getScreeningTime() {
+        return screeningTime;
     }
 
     @Override

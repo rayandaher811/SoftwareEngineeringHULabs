@@ -23,7 +23,7 @@ public class MoviesCatalogController {
     }
 
     private static Collection<Screening> queryScreenings() {
-        try{
+        try {
             Session session = HibernateSessionFactory.getInstance().openSession();
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
@@ -31,22 +31,23 @@ public class MoviesCatalogController {
             List<Screening> screeningList = session.createQuery(query).getResultList();
             session.close();
             return screeningList;
-        } catch (Exception e){
+        } catch (Exception e) {
             return Collections.emptyList();
         }
 
     }
 
-    private static CinemaScreeningMovie screeningToCinemaScreeningMovie(Screening screening){
+    private static CinemaScreeningMovie screeningToCinemaScreeningMovie(Screening screening) {
         final Movie movie = screening.getMovie();
         return new CinemaScreeningMovie(movie.getId(),
-                                        movie.getProducer().getFullName(),
-                                        movie.getMainActor().getFullName(),
-                                        movie.getHebrewName(),
-                                        movie.getName(),
-                                        movie.isComingSoon(),
-                                        movie.getDescription(),
-                                        movie.getImageUrl());
+                movie.getProducer().getFullName(),
+                movie.getMainActor().getFullName(),
+                movie.getHebrewName(),
+                movie.getName(),
+                movie.isComingSoon(),
+                movie.getDescription(),
+                movie.getImageUrl(),
+                screening.getScreeningTime());
     }
 
 }

@@ -15,7 +15,7 @@
                 </Label>
             </top>
             <center>
-                <Button mnemonicParsing="false" onAction="#requestChangeFromServer" text="Update" BorderPane.alignment="CENTER" />
+                <Button mnemonicParsing="false" onAction="#send" text="Update" BorderPane.alignment="CENTER" />
             </center>
             <bottom>
                 <Button mnemonicParsing="false" onAction="#backToEmployeesView" text="Back" BorderPane.alignment="CENTER" />
