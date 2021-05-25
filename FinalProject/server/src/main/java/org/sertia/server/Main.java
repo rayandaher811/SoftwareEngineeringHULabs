@@ -1,6 +1,6 @@
 package org.sertia.server;
 
-import DataLayer.SessionSupplier;
+import org.sertia.server.dl.DbSessionSupplier;
 import org.hibernate.Session;
 import org.sertia.server.communication.MessageHandler;
 
@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         MessageHandler messageHandler = new MessageHandler(1325);
-        Session session = SessionSupplier.getInstance();
+        Session session = DbSessionSupplier.getInstance();
         session.beginTransaction();
 
         try {

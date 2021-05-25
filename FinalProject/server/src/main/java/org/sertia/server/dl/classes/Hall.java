@@ -1,7 +1,6 @@
-package DataLayer.Data;
+package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name="halls")

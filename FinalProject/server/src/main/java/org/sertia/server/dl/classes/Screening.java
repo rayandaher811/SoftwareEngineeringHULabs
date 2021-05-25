@@ -1,10 +1,8 @@
-package DataLayer.Data;
+package org.sertia.server.dl.classes;
 
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Table(name="screenings")

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.sertia.server.communication.messages.AllMoviesRequestMsg;
 import org.sertia.server.communication.messages.AllMoviesRequestResponse;
-import org.sertia.server.controllers.MoviesController;
+import org.sertia.server.bl.MoviesCatalogController;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class MessageHandler extends AbstractServer {
         AllMoviesRequestMsg receivedMessage = GSON.fromJson(msg, AllMoviesRequestMsg.class);
         try {
             AllMoviesRequestResponse requestResponse = new AllMoviesRequestResponse(receivedMessage,
-                    MoviesController.getScreeningMovies());
+                    MoviesCatalogController.getAllMoviesCatalog());
             client.sendToClient(GSON.toJson(requestResponse));
         } catch (IOException e) {
             e.printStackTrace();

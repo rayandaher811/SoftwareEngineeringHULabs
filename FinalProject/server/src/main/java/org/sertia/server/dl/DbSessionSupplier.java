@@ -1,27 +1,25 @@
-package DataLayer;
+package org.sertia.server.dl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import DataLayer.Data.*;
-import org.sertia.server.pojos.ScreeningMovie;
+import org.sertia.server.dl.classes.*;
 
-import java.util.Date;
-
-public class SessionSupplier {
+public class DbSessionSupplier {
     private static Session session;
 
-    private SessionSupplier(){}
+    private DbSessionSupplier() {
+    }
 
-    public static Session getInstance(){
-        if(session == null)
-            try{
+    public static Session getInstance() {
+        if (session == null)
+            try {
                 Configuration configuration = new Configuration();
 
                 // Adding the data objects package.
-                configuration.addAnnotatedClass(DataLayer.Data.Actor.class);
+                configuration.addAnnotatedClass(Actor.class);
                 configuration.addAnnotatedClass(Cinema.class);
                 configuration.addAnnotatedClass(CostumerComplaint.class);
                 configuration.addAnnotatedClass(CostumerInfo.class);
@@ -45,8 +43,7 @@ public class SessionSupplier {
 
                 SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 session = sessionFactory.openSession();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw e;
             }
         return session;

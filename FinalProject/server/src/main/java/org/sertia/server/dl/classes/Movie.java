@@ -1,4 +1,4 @@
-package DataLayer.Data;
+package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
 
@@ -58,5 +58,9 @@ public class Movie {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public int getId() {
+        return id;
     }
 }
