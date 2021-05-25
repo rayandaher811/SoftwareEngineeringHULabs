@@ -10,6 +10,8 @@ import org.sertia.server.dl.classes.Screening;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,24 +29,15 @@ public class MoviesCatalogController {
     public static void updateScreeningMovie(UpdateMovieScreeningTime updateMovieRequest) {
         Session session = HibernateSessionFactory.getInstance().openSession();
 
-        // TODO validations
-        CinemaScreeningMovie movieFromClient = updateMovieRequest.getCurrentMovie();
-        movieFromClient.setScreeningTime(updateMovieRequest.getNewDateTime());
-
-        Collection<Screening> screenings = queryScreenings();
-        AtomicReference<Screening> expected = new AtomicReference<>();
-
-        screenings.forEach(screening -> {
-            if (screening.getId() == movieFromClient.getScreeningId()){
-                screening.setScreeningTime(updateMovieRequest.getNewDateTime());
-                expected.set(screening);
-                return;
-            }
-        });
-
         try {
+            // Getting the real screening to avoid redunant changes
+            Screening screeningToUpdate = session.get(Screening.class,
+                                                        updateMovieRequest.getCurrentMovie().getScreeningId());
+
+            // Updating
+            screeningToUpdate.setScreeningTime(updateMovieRequest.getNewDateTime());
             session.beginTransaction();
-            session.update(expected.get());
+            session.update(screeningToUpdate);
             session.getTransaction().commit();
         } catch (Exception e) {
         } finally {
