@@ -5,6 +5,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import org.sertia.client.ActiveUserData;
+import org.sertia.client.communication.messages.CinemaScreeningMovie;
+import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.pojos.ScreeningMovie;
 
 import java.util.Collection;
@@ -12,11 +14,11 @@ import java.util.Optional;
 
 public class AvailableMoviesDialog extends AbstractInteractiveDialog {
 
-    public static ActiveUserData loginAndGetUserData(Collection<ScreeningMovie> movies) {
-        return doSomething(movies);
+    public static ActiveUserData loginAndGetUserData(MoviesCatalog moviesCatalog) {
+        return doSomething(moviesCatalog);
     }
 
-    private static ActiveUserData doSomething(Collection<ScreeningMovie> movies) {
+    private static ActiveUserData doSomething(MoviesCatalog moviesCatalog) {
         String dialogTitle;
         String dialogHeaderText;
         // Create the custom dialog.
@@ -39,8 +41,8 @@ public class AvailableMoviesDialog extends AbstractInteractiveDialog {
 
         int i = 0;
 //        int j = 0;
-        for (final ScreeningMovie m : movies){
-            grid.add(new Label(m.getMovie().getName()), 0, i);
+        for (final CinemaScreeningMovie m : moviesCatalog.getMoviesCatalog()){
+            grid.add(new Label(m.getName()), 0, i);
             i++;
         }
 

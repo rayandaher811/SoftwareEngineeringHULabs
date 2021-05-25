@@ -3,6 +3,7 @@ package org.sertia.client.controllers;
 import javafx.fxml.FXML;
 import org.sertia.client.App;
 import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.dialogs.AvailableMoviesDialog;
 import org.sertia.client.pojos.ScreeningMovie;
 
@@ -18,7 +19,7 @@ public class CustomerController {
 
     @FXML
     private void presentAvailableMovies() {
-        Collection<ScreeningMovie> movies = ServerCommunicationHandler.getInstance().getScreeningMovies();
+        MoviesCatalog movies = ServerCommunicationHandler.getInstance().getMoviesCatalog();
 
         AvailableMoviesDialog.loginAndGetUserData(movies);
     }

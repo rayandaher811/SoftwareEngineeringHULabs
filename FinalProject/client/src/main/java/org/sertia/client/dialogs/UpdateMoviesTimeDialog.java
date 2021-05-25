@@ -10,6 +10,8 @@ import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.sertia.client.ActiveUserData;
 import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.messages.CinemaScreeningMovie;
+import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.client.global.LoggedInUser;
 import org.sertia.client.pojos.Movie;
@@ -20,11 +22,11 @@ import java.util.Optional;
 
 public class UpdateMoviesTimeDialog extends AbstractInteractiveDialog {
 
-    public static ActiveUserData loginAndGetUserData(Collection<ScreeningMovie> movies) {
-        return doSomething(movies);
+    public static ActiveUserData loginAndGetUserData(CinemaScreeningMovie moviesCatalog) {
+        return doSomething(moviesCatalog);
     }
 
-    private static ActiveUserData doSomething(Collection<ScreeningMovie> movies) {
+    private static ActiveUserData doSomething(CinemaScreeningMovie moviesCatalog) {
         String dialogTitle;
         String dialogHeaderText;
         // Create the custom dialog.
@@ -44,10 +46,10 @@ public class UpdateMoviesTimeDialog extends AbstractInteractiveDialog {
 
         int i = 0;
 //        int j = 0;
-        for (final ScreeningMovie m : movies){
-            grid.add(new Label(m.getMovie().getName()), 0, i);
-            i++;
-        }
+//        for (final CinemaScreeningMovie m : moviesCatalog.getMoviesCatalog()){
+//            grid.add(new Label(m.getName()), 0, i);
+//            i++;
+//        }
 
         dialog.getDialogPane().setContent(grid);
         Optional<ButtonType> result = dialog.showAndWait();

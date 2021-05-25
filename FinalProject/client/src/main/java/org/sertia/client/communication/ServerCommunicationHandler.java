@@ -2,6 +2,7 @@ package org.sertia.client.communication;
 
 import org.sertia.client.communication.messages.AllMoviesRequestMsg;
 import org.sertia.client.communication.messages.AllMoviesRequestResponse;
+import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.client.pojos.ScreeningMovie;
 
@@ -58,15 +59,16 @@ public class ServerCommunicationHandler extends AbstractClient {
         super.connectionClosed();
     }
 
-    public Collection<ScreeningMovie> getScreeningMovies() {
+    public MoviesCatalog getMoviesCatalog() {
         AllMoviesRequestMsg allMoviesRequestMsg = new AllMoviesRequestMsg(clientId);
 
         Optional<AllMoviesRequestResponse> res =
                 client.requestAndWaitForResponse(allMoviesRequestMsg, allMoviesRequestMsg.getMessageId(), AllMoviesRequestResponse.class);
+
         if (res.isPresent())
-            return res.get().getScreeningMovieCollection();
+            return res.get().getMoviesCatalog();
         else
-            return Collections.emptyList();
+            return null;
     }
 
     public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {

@@ -1,17 +1,13 @@
 package org.sertia.client.communication.messages;
 
-import org.sertia.client.pojos.ScreeningMovie;
-
-import java.util.Collection;
-
 public class AllMoviesRequestResponse {
     private AllMoviesRequestMsg originReq;
-    private Collection<ScreeningMovie> screeningMovieCollection;
+    private MoviesCatalog moviesCatalog;
     private String originRequestId;
 
-    public AllMoviesRequestResponse(AllMoviesRequestMsg originReq, Collection<ScreeningMovie> screeningMovieCollection) {
+    public AllMoviesRequestResponse(AllMoviesRequestMsg originReq, MoviesCatalog moviesCatalog) {
         this.originReq = originReq;
-        this.screeningMovieCollection = screeningMovieCollection;
+        this.moviesCatalog = moviesCatalog;
         this.originRequestId = this.originReq.getMessageId();
     }
 
@@ -22,7 +18,11 @@ public class AllMoviesRequestResponse {
         return originReq;
     }
 
-    public Collection<ScreeningMovie> getScreeningMovieCollection() {
-        return screeningMovieCollection;
+    public MoviesCatalog getMoviesCatalog() {
+        return moviesCatalog;
+    }
+
+    public String getOriginRequestId() {
+        return originRequestId;
     }
 }

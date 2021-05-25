@@ -11,14 +11,7 @@ public class BaseClientServerMessage {
         this.clientId = clientId;
     }
 
-    public BaseClientServerMessage() {
-    }
-
     public String getMessageId(){
         return messageId;
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 }
