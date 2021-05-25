@@ -18,12 +18,12 @@
                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                    <children>
                        <Separator prefWidth="200.0" />
-                       <Button onAction="#updateMovie" prefHeight="25.0" prefWidth="170.0" text="Update screening time for movies" />
+                       <Button onAction="#updateMovie" prefHeight="25.0" prefWidth="170.0" text="עדכון זמן הקרנה לסרט" />
                    </children>
                </VBox>
            </center>
          <bottom>
-            <Button fx:id="logOutBtn" mnemonicParsing="false" text="Logout" BorderPane.alignment="CENTER"  onAction="#logOut"/>
+            <Button fx:id="logOutBtn" mnemonicParsing="false" onAction="#logOut" text="התנתק" BorderPane.alignment="CENTER" />
          </bottom>
        </BorderPane>
    </children>

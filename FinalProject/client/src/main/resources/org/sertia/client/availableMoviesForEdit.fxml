@@ -14,13 +14,11 @@
                     </font>
                 </Label>
             </top>
-            <bottom>
-                <Button fx:id="backBtn" mnemonicParsing="false" onAction="#back" text="Back" BorderPane.alignment="CENTER" />
-            </bottom>
          <center>
             <Accordion fx:id="moviesAccordion" BorderPane.alignment="CENTER">
             </Accordion>
          </center>
         </BorderPane>
+          <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#back" text="חזרה" />
     </children>
 </AnchorPane>
