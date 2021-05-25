@@ -16,6 +16,9 @@ public class CostumerComplaint {
     @ManyToOne
     private CostumerInfo costumerInfo;
 
+    public CostumerComplaint() {
+    }
+
     @ManyToOne
     private User handler;
 

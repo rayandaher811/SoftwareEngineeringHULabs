@@ -11,6 +11,9 @@ public class Producer {
     private int id;
     private String fullName;
 
+    public Producer() {
+    }
+
     public Producer(String fullName) {
         this.fullName = fullName;
     }

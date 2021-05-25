@@ -26,5 +26,7 @@ public class StreamingLink {
     @ManyToOne
     private CostumerInfo costumer;
 
+    public StreamingLink() {
+    }
 }
 

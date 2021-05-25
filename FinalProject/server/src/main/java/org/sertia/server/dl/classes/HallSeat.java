@@ -13,6 +13,9 @@ public class HallSeat {
     private int rowNumber;
     private int numberInRow;
 
+    public HallSeat() {
+    }
+
     @ManyToOne
     private Hall hall;
 

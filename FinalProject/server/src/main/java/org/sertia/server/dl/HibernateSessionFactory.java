@@ -7,14 +7,17 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.sertia.server.dl.classes.*;
 
-public class DbSessionSupplier {
-    private static Session session;
+import javax.persistence.PersistenceContext;
 
-    private DbSessionSupplier() {
+public class HibernateSessionFactory {
+    @PersistenceContext
+    private static SessionFactory sessionFactory;
+
+    private HibernateSessionFactory() {
     }
 
-    public static Session getInstance() {
-        if (session == null)
+    public static SessionFactory getInstance() {
+        if (sessionFactory == null){
             try {
                 Configuration configuration = new Configuration();
 
@@ -41,11 +44,12 @@ public class DbSessionSupplier {
                         .applySettings(configuration.getProperties())
                         .build();
 
-                SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-                session = sessionFactory.openSession();
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
                 throw e;
             }
-        return session;
+        }
+
+        return sessionFactory;
     }
 }

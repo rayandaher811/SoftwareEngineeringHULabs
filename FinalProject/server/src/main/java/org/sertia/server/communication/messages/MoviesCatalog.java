@@ -1,20 +1,19 @@
 package org.sertia.server.communication.messages;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.LinkedList;
 
 public class MoviesCatalog {
-    private Collection<CinemaScreeningMovie> moviesCatalog;
+    private LinkedList<CinemaScreeningMovie> moviesCatalog;
 
-    public MoviesCatalog(Collection<CinemaScreeningMovie> moviesCatalog) {
+    public MoviesCatalog(LinkedList<CinemaScreeningMovie> moviesCatalog) {
         this.moviesCatalog = moviesCatalog;
     }
 
     public MoviesCatalog() {
-        this.moviesCatalog = Collections.emptyList();
+        this.moviesCatalog = new LinkedList<>();
     }
 
-    public void addMovie(CinemaScreeningMovie cinemaScreeningMovie){
+    public void addMovie(CinemaScreeningMovie cinemaScreeningMovie) {
         moviesCatalog.add(cinemaScreeningMovie);
     }
 }

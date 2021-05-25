@@ -12,6 +12,9 @@ public class TicketsVoucher {
 
     private int ticketsBalance;
 
+    public TicketsVoucher() {
+    }
+
     @OneToOne
     private PaymentInfo paymentInfo;
 

@@ -18,4 +18,7 @@ public class CostumerInfo {
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
+
+    public CostumerInfo() {
+    }
 }

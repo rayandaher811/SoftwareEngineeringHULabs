@@ -16,6 +16,9 @@ public class PaymentInfo {
     private int cvv;
     private int payerId;
 
+    public PaymentInfo() {
+    }
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 }

@@ -17,4 +17,7 @@ public class Refund {
 
     @Enumerated(EnumType.STRING)
     private RefundReason reason;
+
+    public Refund() {
+    }
 }

@@ -14,7 +14,7 @@ public class Screening {
 
     private double price;
 
-    private DateTime screeningTime;
+    private long screeningTime;
 
     @ManyToOne
     private Hall hall;
@@ -22,11 +22,14 @@ public class Screening {
     @ManyToOne
     private Movie movie;
 
+    public Screening() {
+    }
+
     public double getPrice() {
         return price;
     }
 
-    public DateTime getScreeningTime() {
+    public long getScreeningTime() {
         return screeningTime;
     }
 
@@ -36,5 +39,12 @@ public class Screening {
 
     public Movie getMovie() {
         return movie;
+    }
+
+    public Screening(double price, long screeningTime, Hall hall, Movie movie) {
+        this.price = price;
+        this.screeningTime = screeningTime;
+        this.hall = hall;
+        this.movie = movie;
     }
 }

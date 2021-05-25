@@ -24,5 +24,7 @@ public class PriceChangeRequest {
 
     private boolean accepted;
 
+    public PriceChangeRequest() {
+    }
 }
 

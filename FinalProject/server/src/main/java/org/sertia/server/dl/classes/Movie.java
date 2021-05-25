@@ -22,6 +22,9 @@ public class Movie {
     private String description;
     private String imageUrl;
 
+    public Movie() {
+    }
+
     public Movie(Producer producer, Actor mainActor, String hebrewName, String name, boolean isComingSoon, String description, String imageUrl) {
         this.producer = producer;
         this.mainActor = mainActor;

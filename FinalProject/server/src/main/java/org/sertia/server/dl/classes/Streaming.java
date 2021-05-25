@@ -17,4 +17,7 @@ public class Streaming {
     private String fullName;
     private String link;
     private double pricePerStream;
+
+    public Streaming() {
+    }
 }

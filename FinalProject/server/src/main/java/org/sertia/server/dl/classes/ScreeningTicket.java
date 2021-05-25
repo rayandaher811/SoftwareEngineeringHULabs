@@ -20,4 +20,7 @@ public class ScreeningTicket {
     private PaymentInfo paymentInfo;
     @ManyToOne
     private Screening screening;
+
+    public ScreeningTicket() {
+    }
 }

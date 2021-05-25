@@ -15,6 +15,9 @@ public class Cinema {
     @ManyToOne
     private User Manager;
 
+    public Cinema() {
+    }
+
     public Cinema(String name) {
         this.name = name;
     }

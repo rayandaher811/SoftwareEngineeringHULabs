@@ -13,6 +13,9 @@ public class Hall {
     private int maximumCapacity;
     private int numberOfSeats;
 
+    public Hall() {
+    }
+
     @ManyToOne
     private Cinema cinema;
 }
