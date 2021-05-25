@@ -13,40 +13,43 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-
+        fillDb();
         MessageHandler messageHandler = new MessageHandler(1325);
-
-        initDb();
-        Session session = HibernateSessionFactory.getInstance().openSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
-        query.from(Screening.class);
-
-        List<Screening> s =  session.createQuery(query).getResultList();
         try {
             messageHandler.startListening();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        session.close();;
     }
 
-    private static void initDb() {
+    private static void fillDb() {
         Session session = HibernateSessionFactory.getInstance().openSession();
-        Producer pOne = new Producer("ONE TWO");
-        Actor aOne = new Actor(" ATHREE");
-        Movie mOne = new Movie(pOne, aOne, "a", "AAA", false, "bla bla", "walla.co.il");
-        Hall hOne = new Hall();
-        Screening s = new Screening(1, DateTime.now().getMillis(), hOne, mOne);
 
-        session.beginTransaction();
+        try {
+            DBFiller dbFiller = new DBFiller();
+            dbFiller.initialize();
+            session.beginTransaction();
+            dbFiller.getActors().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getProducers().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getMovies().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getUsers().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getCinemas().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getScreenings().forEach(obj->session.save(obj));
+            session.flush();
+            dbFiller.getStreamings().forEach(obj->session.save(obj));
+            session.flush();
 
-        session.save(aOne);
-        session.save(pOne);
-        session.save(mOne);
-        session.save(hOne);
-        session.save(s);
-        session.getTransaction().commit();
+            session.getTransaction().commit();
+        }
+        catch (Exception e){
+        } finally {
+            session.close();
+        }
     }
 }
