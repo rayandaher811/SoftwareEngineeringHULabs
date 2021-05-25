@@ -4,26 +4,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import org.sertia.client.ActiveUserData;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import org.sertia.client.App;
 import org.sertia.client.communication.ServerCommunicationHandler;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.dialogs.UpdateMoviesTimeDialog;
 import org.sertia.client.global.LoggedInUser;
-import org.sertia.client.pojos.ScreeningMovie;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class AvailableMoviesForEdit implements Initializable {
 
-//    @FXML
-//    private ListView<ScreeningMovie> lstView;
     @FXML
     private Accordion moviesAccordion;
 
@@ -34,13 +30,11 @@ public class AvailableMoviesForEdit implements Initializable {
         Button btn = new Button();
         btn.setText(String.valueOf(screeningMovie.getDescription()));
         btn.setOnMouseClicked(mouseEvent -> {
-            ActiveUserData userData = UpdateMoviesTimeDialog.loginAndGetUserData(screeningMovie);
-            if (userData.getUserName().equals("bbbb")){
-                try {
-                    App.setRoot("employeesForm");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(screeningMovie);
+                App.setRoot("editMovieScreeningTimePresenter");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
         tiledPane.setContent(btn);

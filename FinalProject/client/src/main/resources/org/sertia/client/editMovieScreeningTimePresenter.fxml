@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.controllers.EditMovieScreeningTimePresenter">
+    <children>
+        <BorderPane prefHeight="400.0" prefWidth="600.0">
+            <top>
+                <Label fx:id="mainLabel" alignment="TOP_CENTER" prefWidth="305.0" text="Edit screening time for: " BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="26.0" />
+                    </font>
+                </Label>
+            </top>
+            <center>
+                <Button mnemonicParsing="false" onAction="#requestChangeFromServer" text="Update" BorderPane.alignment="CENTER" />
+            </center>
+            <bottom>
+                <Button mnemonicParsing="false" onAction="#backToEmployeesView" text="Back" BorderPane.alignment="CENTER" />
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

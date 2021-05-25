@@ -5,24 +5,30 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import org.sertia.client.App;
 import org.sertia.client.communication.ServerCommunicationHandler;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.dialogs.AvailableMoviesDialog;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AvailableMoviesPresenter implements Initializable {
 
     @FXML
-    private ListView<CinemaScreeningMovie> lstView;
+    private ListView<String> lstView;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<CinemaScreeningMovie> list = FXCollections.observableArrayList();
+        ObservableList<String> list = FXCollections.observableArrayList();
         MoviesCatalog catalog = ServerCommunicationHandler.getInstance().getMoviesCatalog();
-        list.addAll(catalog.getMoviesCatalog());
+        catalog.getMoviesCatalog().forEach(cinemaScreeningMovie -> list.add(cinemaScreeningMovie.getName()));
         lstView.setItems(list);
+    }
+
+    @FXML
+    private void backToClientsView() throws IOException {
+        App.setRoot("customerView");
     }
 }
