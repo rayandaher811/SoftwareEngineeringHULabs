@@ -15,7 +15,7 @@
                 </Label>
             </top>
             <center>
-                <GridPane BorderPane.alignment="CENTER">
+                <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -26,30 +26,33 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints />
 
                     </rowConstraints>
                     <children>
-                        <DatePicker prefHeight="25.0" prefWidth="217.0" GridPane.rowIndex="4" />
                         <Label alignment="CENTER" prefHeight="17.0" prefWidth="246.0" text="שם הסרט" GridPane.columnIndex="1" />
-                  <Label alignment="CENTER" layoutX="310.0" layoutY="30.0" prefHeight="17.0" prefWidth="246.0" text="שם הבמאי" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label alignment="CENTER" layoutX="310.0" layoutY="87.0" prefHeight="17.0" prefWidth="246.0" text="שם סניף" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label alignment="CENTER" layoutX="310.0" layoutY="143.0" prefHeight="17.0" prefWidth="246.0" text="מספר אולם" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="310.0" layoutY="199.0" prefHeight="17.0" prefWidth="246.0" text="תאריך הקרנה" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <Label alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="287.0" GridPane.rowIndex="3" />
-                  <Label alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="317.0" GridPane.rowIndex="2" />
-                  <Label alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="292.0" GridPane.rowIndex="1" />
-                  <Label alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="294.0" />
+                        <Label fx:id="movieNameLabel" alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="292.0" GridPane.rowIndex="0" />
+                        <Label alignment="CENTER" layoutX="310.0" layoutY="30.0" prefHeight="17.0" prefWidth="246.0" text="שם הבמאי" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="actorNameLabel" alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="317.0" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER" layoutX="310.0" layoutY="87.0" prefHeight="17.0" prefWidth="246.0" text="שם סניף" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="branchNameLabel" alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="287.0" GridPane.rowIndex="2" />
+                        <Label alignment="CENTER" layoutX="310.0" layoutY="143.0" prefHeight="17.0" prefWidth="246.0" text="מספר אולם" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="hallNumber" alignment="CENTER" disable="true" prefHeight="17.0" prefWidth="287.0" GridPane.rowIndex="3" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="310.0" layoutY="199.0" prefHeight="17.0" prefWidth="246.0" text="תאריך הקרנה" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <DatePicker fx:id="datePickerComp" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="217.0" GridPane.rowIndex="4" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="310.0" layoutY="199.0" prefHeight="17.0" prefWidth="246.0" text="שעת הקרנה" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <TextField fx:id="screeningTimeTxt" alignment="CENTER" prefHeight="17.0" prefWidth="294.0" GridPane.rowIndex="5"/>
                     </children>
                 </GridPane>
             </center>
-         <bottom>
-            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="חזור" />
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="עדכן" />
-               </children>
-            </HBox>
-         </bottom>
+            <bottom>
+                <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#backToEmployeesView" text="חזור" />
+                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#requestChangeFromServer" text="עדכן" />
+                    </children>
+                </HBox>
+            </bottom>
         </BorderPane>
     </children>
 </AnchorPane>

@@ -8,13 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="hello_hibernate" />
         <module name="client" />
+        <module name="lab6" />
         <module name="lab3" />
         <module name="lab3Calculator" />
         <module name="lab2Maven" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="server" target="15" />
+      <module name="server" target="14" />
     </bytecodeTargetLevel>
   </component>
 </project>

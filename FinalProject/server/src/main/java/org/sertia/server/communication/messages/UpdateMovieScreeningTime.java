@@ -1,4 +1,4 @@
-package org.sertia.client.communication.messages;
+package org.sertia.server.communication.messages;
 
 import java.util.Date;
 
