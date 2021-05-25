@@ -17,4 +17,20 @@ public class UpdateMovieScreeningTime {
     public String getMessageId() {
         return metadata.getMessageId();
     }
+
+    public CinemaScreeningMovie getCurrentMovie() {
+        return currentMovie;
+    }
+
+    public void setCurrentMovie(CinemaScreeningMovie currentMovie) {
+        this.currentMovie = currentMovie;
+    }
+
+    public Date getNewDateTime() {
+        return newDateTime;
+    }
+
+    public void setNewDateTime(Date newDateTime) {
+        this.newDateTime = newDateTime;
+    }
 }

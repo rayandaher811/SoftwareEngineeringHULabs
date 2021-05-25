@@ -1,9 +1,9 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.sertia.server.DBFiller;
 import org.sertia.server.communication.messages.CinemaScreeningMovie;
 import org.sertia.server.communication.messages.MoviesCatalog;
+import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.Movie;
 import org.sertia.server.dl.classes.Screening;
@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MoviesCatalogController {
 
@@ -23,15 +24,29 @@ public class MoviesCatalogController {
         return catalog;
     }
 
-    public static void updateScreeningMovie(CinemaScreeningMovie screeningMovie){
+    public static void updateScreeningMovie(UpdateMovieScreeningTime updateMovieRequest) {
         Session session = HibernateSessionFactory.getInstance().openSession();
+
+        // TODO validations
+        CinemaScreeningMovie movieFromClient = updateMovieRequest.getCurrentMovie();
+        movieFromClient.setScreeningTime(updateMovieRequest.getNewDateTime());
+
+        Collection<Screening> screenings = queryScreenings();
+        AtomicReference<Screening> expected = new AtomicReference<>();
+
+        screenings.forEach(screening -> {
+            if (screening.getId() == movieFromClient.getScreeningId()){
+                screening.setScreeningTime(updateMovieRequest.getNewDateTime());
+                expected.set(screening);
+                return;
+            }
+        });
 
         try {
             session.beginTransaction();
-            session.update(screeningMovie);
+            session.update(expected.get());
             session.getTransaction().commit();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
         } finally {
             session.close();
         }
@@ -51,12 +66,11 @@ public class MoviesCatalogController {
         } finally {
             session.close();
         }
-
     }
 
     private static CinemaScreeningMovie screeningToCinemaScreeningMovie(Screening screening) {
         final Movie movie = screening.getMovie();
-        return new CinemaScreeningMovie(movie.getId(),
+        return new CinemaScreeningMovie(screening.getId(),
                 movie.getProducer().getFullName(),
                 movie.getMainActor().getFullName(),
                 movie.getHebrewName(),

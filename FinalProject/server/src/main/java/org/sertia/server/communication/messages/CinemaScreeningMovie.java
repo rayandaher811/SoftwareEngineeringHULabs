@@ -1,13 +1,11 @@
 package org.sertia.server.communication.messages;
 
-import org.joda.time.DateTime;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class CinemaScreeningMovie {
-    private int id;
+    private int screeningId;
     private String producerName;
     private String mainActorName;
     private String hebrewName;
@@ -17,9 +15,9 @@ public class CinemaScreeningMovie {
     private String imageUrl;
     private Date screeningTime;
 
-    public CinemaScreeningMovie(int id, String producerName, String mainActorName, String hebrewName, String name,
-                                boolean isComingSoon, String description, String imageUrl, long screeningTime) {
-        this.id = id;
+    public CinemaScreeningMovie(int screeningId, String producerName, String mainActorName, String hebrewName, String name,
+                                boolean isComingSoon, String description, String imageUrl, Date screeningTime) {
+        this.screeningId = screeningId;
         this.producerName = producerName;
         this.mainActorName = mainActorName;
         this.hebrewName = hebrewName;
@@ -29,11 +27,11 @@ public class CinemaScreeningMovie {
         this.imageUrl = imageUrl;
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.setTimeZone(TimeZone.getDefault());
-        this.screeningTime = new Date(screeningTime);
+        this.screeningTime = screeningTime;
     }
 
-    public int getId() {
-        return id;
+    public int getScreeningId() {
+        return screeningId;
     }
 
     public String getProducerName() {
@@ -68,10 +66,14 @@ public class CinemaScreeningMovie {
         return screeningTime;
     }
 
+    public void setScreeningTime(Date screeningTime) {
+        this.screeningTime = screeningTime;
+    }
+
     @Override
     public String toString() {
         return "CinemaScreeningMovie{" +
-                "id=" + id +
+                "id=" + screeningId +
                 ", producerName='" + producerName + '\'' +
                 ", mainActorName='" + mainActorName + '\'' +
                 ", hebrewName='" + hebrewName + '\'' +

@@ -52,14 +52,12 @@ public class EditMovieScreeningTimePresenter implements Initializable {
         LocalDate inputDate = datePickerComp.getValue();
 
         if (isCorrectHour(newHour)) {
-            //int year, int month, int date, int hrs, int min
-            Date newDate = new Date(inputDate.getYear(), inputDate.getMonth().getValue(), inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
+            Date newDate = new Date(inputDate.getYear(), inputDate.getMonth().getValue() - 1, inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
             CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
             UpdateMovieScreeningTime updateMovieScreeningTime = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), movie, newDate);
             ServerCommunicationHandler.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
         }
-//        App.setRoot("employeesForm");
-//        datePickerComp.getDa
+        App.setRoot("availableMoviesForEdit");
     }
 
     private int getHour(String hour){

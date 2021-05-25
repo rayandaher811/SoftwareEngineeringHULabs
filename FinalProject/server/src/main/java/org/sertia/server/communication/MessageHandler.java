@@ -6,6 +6,7 @@ import org.sertia.server.communication.messages.AllMoviesRequestMsg;
 import org.sertia.server.communication.messages.AllMoviesRequestResponse;
 import org.sertia.server.bl.MoviesCatalogController;
 import org.sertia.server.communication.messages.CinemaScreeningMovie;
+import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.server.dl.classes.Movie;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class MessageHandler extends AbstractServer {
                 break;
             case "UPDATE_SCREENING_REQ":
                 handleMovieScreeningUpdate(msg.toString(),client);
+                break;
             default:
                 System.out.println("Got uknown message: " + msg);
         }
@@ -46,7 +48,7 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleMovieScreeningUpdate(String msg, ConnectionToClient client) {
-        CinemaScreeningMovie receivedScreening = GSON.fromJson(msg, CinemaScreeningMovie.class);
+        UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
         try {
             MoviesCatalogController.updateScreeningMovie(receivedScreening);
             client.sendToClient(GSON.toJson(true));

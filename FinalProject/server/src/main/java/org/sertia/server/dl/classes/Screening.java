@@ -48,4 +48,12 @@ public class Screening {
     public Movie getMovie() {
         return movie;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setScreeningTime(Date screeningTime) {
+        this.screeningTime = screeningTime;
+    }
 }
