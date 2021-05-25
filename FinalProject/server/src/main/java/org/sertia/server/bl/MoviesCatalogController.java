@@ -1,6 +1,7 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.sertia.server.DBFiller;
 import org.sertia.server.communication.messages.CinemaScreeningMovie;
 import org.sertia.server.communication.messages.MoviesCatalog;
 import org.sertia.server.dl.HibernateSessionFactory;
@@ -22,17 +23,33 @@ public class MoviesCatalogController {
         return catalog;
     }
 
-    private static Collection<Screening> queryScreenings() {
+    public static void updateScreeningMovie(CinemaScreeningMovie screeningMovie){
+        Session session = HibernateSessionFactory.getInstance().openSession();
+
         try {
-            Session session = HibernateSessionFactory.getInstance().openSession();
+            session.beginTransaction();
+            session.update(screeningMovie);
+            session.getTransaction().commit();
+        }
+        catch (Exception e){
+        } finally {
+            session.close();
+        }
+    }
+
+    private static Collection<Screening> queryScreenings() {
+        Session session = HibernateSessionFactory.getInstance().openSession();
+
+        try {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
             query.from(Screening.class);
             List<Screening> screeningList = session.createQuery(query).getResultList();
-            session.close();
             return screeningList;
         } catch (Exception e) {
             return Collections.emptyList();
+        } finally {
+            session.close();
         }
 
     }
