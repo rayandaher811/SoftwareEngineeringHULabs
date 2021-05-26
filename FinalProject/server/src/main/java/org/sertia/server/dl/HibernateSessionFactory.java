@@ -1,6 +1,5 @@
 package org.sertia.server.dl;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -17,7 +16,7 @@ public class HibernateSessionFactory {
     }
 
     public static SessionFactory getInstance() {
-        if (sessionFactory == null){
+        if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
 

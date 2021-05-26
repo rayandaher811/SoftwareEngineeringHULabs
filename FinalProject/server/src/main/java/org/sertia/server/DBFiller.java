@@ -1,15 +1,10 @@
 package org.sertia.server;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.joda.time.Months;
-import org.joda.time.format.DateTimeFormat;
 import org.sertia.server.dl.classes.*;
 
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class DBFiller {
     private ArrayList<Actor> actors;
@@ -146,35 +141,18 @@ public class DBFiller {
         screenings = new ArrayList<>();
 
         for (int i = 1; i < 29; i++) {
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30, true), halls.get(0), movies.get(0)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10, false), halls.get(1), movies.get(1)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40, false), halls.get(2), movies.get(2)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25, false), halls.get(3), movies.get(3)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 11, 30, false), halls.get(4), movies.get(0)));
+            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), movies.get(0)));
+            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10), halls.get(1), movies.get(1)));
+            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40), halls.get(2), movies.get(2)));
+            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25), halls.get(3), movies.get(3)));
+            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 11, 30), halls.get(4), movies.get(0)));
         }
     }
 
-    private String dateToTimeStamp(int year, int month, int day, int hour, int min, boolean am){
-        String input = "";
-        if (day < 10)
-            input = "0";
-        input += String.valueOf(day) + "-";
-//        input += Month.of(month).getDisplayName() // TODO: fixme
-
-
-        input += "AUG-";
-        String yearAsString = String.valueOf(year);
-        input += yearAsString.substring(yearAsString.length() / 2) + " ";
-        input += hour + ".";
-        if (min < 10)
-            input += "0";
-        input += min + ".00";
-        if (am)
-            input += " AM";
-        else
-            input += " PM";
-        String pattern = "dd-MMM-yy hh.mm.ss aa";
-        LocalDateTime localDateTime = LocalDateTime.parse(input, DateTimeFormat.forPattern(pattern));
+    private String dateToTimeStamp(int year, int month, int day, int hour, int min) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, hour, min);
+        LocalDateTime localDateTime = LocalDateTime.fromCalendarFields(calendar);
         return localDateTime.toString();
     }
 

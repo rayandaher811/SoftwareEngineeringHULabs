@@ -29,7 +29,7 @@ public class MoviesCatalogController {
         try {
             // Getting the real screening to avoid redundant changes
             Screening screeningToUpdate = session.get(Screening.class,
-                                                        updateMovieRequest.getCurrentMovie().getScreeningId());
+                    updateMovieRequest.getCurrentMovie().getScreeningId());
 
             // Updating
             screeningToUpdate.setScreeningTimeStampAsString(updateMovieRequest.getNewDateTimeAsString());
