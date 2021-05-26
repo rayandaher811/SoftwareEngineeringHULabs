@@ -4,11 +4,8 @@ import org.sertia.client.communication.messages.AllMoviesRequestMsg;
 import org.sertia.client.communication.messages.AllMoviesRequestResponse;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
-import org.sertia.client.pojos.ScreeningMovie;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;

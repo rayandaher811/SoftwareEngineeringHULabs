@@ -32,7 +32,7 @@ public class MoviesCatalogController {
                                                         updateMovieRequest.getCurrentMovie().getScreeningId());
 
             // Updating
-            screeningToUpdate.setScreeningTimeStampAsString(updateMovieRequest.getNewDateTimeStampAsString());
+            screeningToUpdate.setScreeningTimeStampAsString(updateMovieRequest.getNewDateTimeAsString());
             session.beginTransaction();
             session.update(screeningToUpdate);
             session.getTransaction().commit();

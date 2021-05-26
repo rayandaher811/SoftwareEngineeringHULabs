@@ -4,10 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import org.sertia.client.App;
 import org.sertia.client.communication.ServerCommunicationHandler;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
@@ -16,29 +16,90 @@ import org.sertia.client.global.LoggedInUser;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AvailableMoviesForEdit implements Initializable {
 
     @FXML
     private Accordion moviesAccordion;
 
-    private TitledPane screeningMovieToTilePane(CinemaScreeningMovie screeningMovie) {
+    private HashMap<String, ArrayList<CinemaScreeningMovie>> mapMoviesByMovieNameToCinemaScreeningMovie(Map.Entry<String,
+            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies){
+        HashMap<String, ArrayList<CinemaScreeningMovie>> movieToDetailsMapping = new HashMap<>();
+        for (int i = 0; i < cinemaToScreeningMovies.getValue().size(); i++) {
+            final CinemaScreeningMovie screeningMovie = cinemaToScreeningMovies.getValue().get(i);
+            if (movieToDetailsMapping.containsKey(screeningMovie.getName())) {
+                movieToDetailsMapping.get(screeningMovie.getName()).add(screeningMovie);
+            } else {
+                movieToDetailsMapping.put(screeningMovie.getName(), new ArrayList<>() {{
+                    add(screeningMovie);
+                }});
+            }
+        }
+
+        return movieToDetailsMapping;
+    }
+
+    private TitledPane screeningMovieToTilePane(Map.Entry<String,
+            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies) {
+        Accordion moviesAccordion = new Accordion();
+        ObservableList<TitledPane> list = FXCollections.observableArrayList();
+
+        HashMap<String, ArrayList<CinemaScreeningMovie>> moviesToScreening =
+                mapMoviesByMovieNameToCinemaScreeningMovie(cinemaToScreeningMovies);
+        ArrayList<TitledPane> values = new ArrayList<>();
+
+        moviesToScreening.entrySet().forEach(s -> {
+            ListView<Button> buttonListView = new ListView<>();
+
+            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+            s.getValue().stream().forEach(cinemaScreeningMovie -> {
+
+
+                Button btn = new Button();
+                btn.setText(cinemaScreeningMovie.getScreeningTimeStampStr());
+                buttonObservableList.add(btn);
+                btn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
+                        App.setRoot("editMovieScreeningTimePresenter");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+//                buttonListView.add(btn);
+
+            });
+            buttonListView.getItems().setAll(buttonObservableList);
+            values.add(new TitledPane(s.getKey(), buttonListView));
+        });
+
+        list.addAll(values);
+
+        moviesAccordion.getPanes().setAll(values);
+
         TitledPane tiledPane = new TitledPane("BGBG", new Label("show all BGGBG"));
         tiledPane.setAnimated(false);
-        tiledPane.setText(screeningMovie.getName());
-        Button btn = new Button();
-        btn.setText(String.valueOf(screeningMovie.getScreeningTime()));
-        btn.setOnMouseClicked(mouseEvent -> {
-            try {
-                LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(screeningMovie);
-                App.setRoot("editMovieScreeningTimePresenter");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        tiledPane.setContent(btn);
+        tiledPane.setText(cinemaToScreeningMovies.getKey());
+        tiledPane.setContent(moviesAccordion);
+//        Collection<Button> editableButtons = new ArrayList<>();
+//        cinemaToScreeningMovies.getValue().forEach(cinemaScreeningMovie -> {
+//
+//            Button btn = new Button();
+//            btn.setText(String.valueOf(cinemaScreeningMovie.getScreeningTime()));
+//            btn.setOnMouseClicked(mouseEvent -> {
+//                try {
+//                    LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
+//                    App.setRoot("editMovieScreeningTimePresenter");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//            editableButtons.add(btn);
+////            tiledPane.setContent(btn);
+//        });
 
+//        tiledPane.setContent(editableButtons);
         return tiledPane;
     }
 
@@ -57,7 +118,22 @@ public class AvailableMoviesForEdit implements Initializable {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         // Need to get movies by start time
         MoviesCatalog catalog = ServerCommunicationHandler.getInstance().getMoviesCatalog();
-        catalog.getMoviesCatalog().forEach(screeningMovie -> list.add(screeningMovieToTilePane(screeningMovie)));
+
+        HashMap<String, ArrayList<CinemaScreeningMovie>> cinemaNameToMovie = new HashMap<>();
+
+        ArrayList<CinemaScreeningMovie> screeningMovieArrayList = (ArrayList<CinemaScreeningMovie>) catalog.getMoviesCatalog();
+        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
+            final CinemaScreeningMovie screeningMovie = screeningMovieArrayList.get(i);
+            if (cinemaNameToMovie.containsKey(screeningMovie.getBranchName())) {
+                cinemaNameToMovie.get(screeningMovie.getBranchName()).add(screeningMovie);
+            } else {
+                cinemaNameToMovie.put(screeningMovie.getBranchName(), new ArrayList<>() {{
+                    add(screeningMovie);
+                }});
+            }
+        }
+
+        cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
 //
 //        list.addAll(movies);
 //

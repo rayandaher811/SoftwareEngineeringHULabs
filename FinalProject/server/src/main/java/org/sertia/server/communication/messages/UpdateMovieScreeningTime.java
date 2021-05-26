@@ -3,13 +3,13 @@ package org.sertia.server.communication.messages;
 public class UpdateMovieScreeningTime {
     private BaseClientServerMessage metadata;
     private CinemaScreeningMovie currentMovie;
-    private String newDateTimeStampAsString;
+    private String newDateTimeAsString;
     private final String messageName = "UPDATE_SCREENING_REQ";
 
-    public UpdateMovieScreeningTime(String clientId, CinemaScreeningMovie currentMovie, String newDateTimeStampAsString) {
+    public UpdateMovieScreeningTime(String clientId, CinemaScreeningMovie currentMovie, String newDateTimeAsString) {
         this.metadata = new BaseClientServerMessage(clientId);
         this.currentMovie = currentMovie;
-        this.newDateTimeStampAsString = newDateTimeStampAsString;
+        this.newDateTimeAsString = newDateTimeAsString;
     }
 
     public String getMessageId() {
@@ -24,11 +24,11 @@ public class UpdateMovieScreeningTime {
         this.currentMovie = currentMovie;
     }
 
-    public String getNewDateTimeStampAsString() {
-        return newDateTimeStampAsString;
+    public String getNewDateTimeAsString() {
+        return newDateTimeAsString;
     }
 
-    public void setNewDateTimeStampAsString(String newDateTimeStampAsString) {
-        this.newDateTimeStampAsString = newDateTimeStampAsString;
+    public void setNewDateTimeAsString(String newDateTimeAsString) {
+        this.newDateTimeAsString = newDateTimeAsString;
     }
 }
