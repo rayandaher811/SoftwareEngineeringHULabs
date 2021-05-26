@@ -13,28 +13,24 @@ public class CostumerComplaint {
     private Date openedDate;
     private Date closedDate;
 
-    @ManyToOne
-    private CostumerInfo costumerInfo;
-
     @Enumerated(EnumType.STRING)
     private TicketType ticketType;
 
-    @ManyToOne
+    @OneToOne
     private ScreeningTicket screeningTicket;
 
-    @ManyToOne
+    @OneToOne
     private StreamingLink streamingLink;
 
-    @ManyToOne
+    @OneToOne
     private TicketsVoucher ticketsVoucher;
 
     public CostumerComplaint() {
     }
 
-    public CostumerComplaint(Date openedDate, Date closedDate, CostumerInfo costumerInfo, User handler) {
+    public CostumerComplaint(Date openedDate, Date closedDate, User handler) {
         this.openedDate = openedDate;
         this.closedDate = closedDate;
-        this.costumerInfo = costumerInfo;
         this.handler = handler;
     }
 
