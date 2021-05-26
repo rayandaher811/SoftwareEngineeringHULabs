@@ -11,7 +11,7 @@ public class PriceChangeRequest {
     private int id;
 
     @Enumerated(EnumType.STRING)
-    private StreamingType streamingType;
+    private TicketType ticketType;
 
     @ManyToOne
     private User requester;
@@ -27,8 +27,8 @@ public class PriceChangeRequest {
     public PriceChangeRequest() {
     }
 
-    public PriceChangeRequest(StreamingType streamingType, User requester, User handler, Movie movie, boolean accepted) {
-        this.streamingType = streamingType;
+    public PriceChangeRequest(TicketType ticketType, User requester, User handler, Movie movie, boolean accepted) {
+        this.ticketType = ticketType;
         this.requester = requester;
         this.handler = handler;
         this.movie = movie;

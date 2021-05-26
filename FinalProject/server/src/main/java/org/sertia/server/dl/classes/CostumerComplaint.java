@@ -16,6 +16,18 @@ public class CostumerComplaint {
     @ManyToOne
     private CostumerInfo costumerInfo;
 
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
+
+    @ManyToOne
+    private ScreeningTicket screeningTicket;
+
+    @ManyToOne
+    private StreamingLink streamingLink;
+
+    @ManyToOne
+    private TicketsVoucher ticketsVoucher;
+
     public CostumerComplaint() {
     }
 

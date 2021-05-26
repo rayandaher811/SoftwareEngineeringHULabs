@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="refunds")
@@ -10,20 +11,13 @@ public class Refund {
     @Column(name ="refund_id")
     private int id;
 
+    private Date refundDate;
+
     private double price;
 
-    @OneToOne
-    private CostumerComplaint complaint;
-
     @Enumerated(EnumType.STRING)
-    private RefundReason reason;
+    private RefundReason refundReason;
 
     public Refund() {
-    }
-
-    public Refund(double price, CostumerComplaint complaint, RefundReason reason) {
-        this.price = price;
-        this.complaint = complaint;
-        this.reason = reason;
     }
 }

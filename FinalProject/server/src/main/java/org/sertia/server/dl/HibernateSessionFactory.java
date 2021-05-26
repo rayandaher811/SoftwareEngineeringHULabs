@@ -39,6 +39,8 @@ public class HibernateSessionFactory {
                 configuration.addAnnotatedClass(StreamingLink.class);
                 configuration.addAnnotatedClass(TicketsVoucher.class);
                 configuration.addAnnotatedClass(User.class);
+                configuration.addAnnotatedClass(VouchersInfo.class);
+                configuration.addAnnotatedClass(CovidRegulationsInfo.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties())

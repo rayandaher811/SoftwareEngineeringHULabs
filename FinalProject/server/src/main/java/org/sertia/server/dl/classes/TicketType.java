@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
-public enum StreamingType {
+public enum TicketType {
     Streaming,
-    Screening
+    Screening,
+    Voucher
 }
