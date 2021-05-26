@@ -59,7 +59,7 @@ public class MoviesCatalogController {
     }
 
     private static CinemaScreeningMovie screeningToCinemaScreeningMovie(Screening screening) {
-        final Movie movie = screening.getMovie();
+        final Movie movie = screening.getScreenableMovie().getMovie();
         return new CinemaScreeningMovie(screening.getId(),
                 movie.getProducer().getFullName(),
                 movie.getMainActor().getFullName(),

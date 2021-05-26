@@ -10,6 +10,7 @@ public class DBFiller {
     private ArrayList<Actor> actors;
     private ArrayList<Producer> producers;
     private ArrayList<Movie> movies;
+    private ArrayList<ScreenableMovie> screenableMovies;
     private ArrayList<HallSeat> hallSeats;
     private ArrayList<Hall> halls;
     private ArrayList<Cinema> cinemas;
@@ -28,6 +29,7 @@ public class DBFiller {
         fillActors();
         fillProducers();
         fillMovies();
+        fillScreenableMovies();
         fillUsers();
         fillCinema();
         fillHalls();
@@ -50,6 +52,10 @@ public class DBFiller {
 
     public ArrayList<Movie> getMovies() {
         return movies;
+    }
+
+    public ArrayList<ScreenableMovie> getScreenableMovies() {
+        return screenableMovies;
     }
 
     public ArrayList<HallSeat> getHallSeats() {
@@ -94,6 +100,14 @@ public class DBFiller {
         movies.add(new Movie(producers.get(1), actors.get(1), "אנטמםן", "Antman", false, "Action movie with many ants", "walla.com"));
         movies.add(new Movie(producers.get(2), actors.get(2), "קפטן אמריקה", "captin America", false, "Action movie with many americans", "walla.com"));
         movies.add(new Movie(producers.get(3), actors.get(3), "עלי באבא", "Ali baba", true, "Action movie with many thieves", "walla.com"));
+    }
+
+    private void fillScreenableMovies() {
+        screenableMovies = new ArrayList<ScreenableMovie>();
+        screenableMovies.add(new ScreenableMovie(30 ,movies.get(0)));
+        screenableMovies.add(new ScreenableMovie(40 ,movies.get(1)));
+        screenableMovies.add(new ScreenableMovie(50 ,movies.get(2)));
+        screenableMovies.add(new ScreenableMovie(60 ,movies.get(3)));
     }
 
     private void fillUsers() {
@@ -141,11 +155,11 @@ public class DBFiller {
         screenings = new ArrayList<>();
 
         for (int i = 1; i < 29; i++) {
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), movies.get(0)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10), halls.get(1), movies.get(1)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40), halls.get(2), movies.get(2)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25), halls.get(3), movies.get(3)));
-            screenings.add(new Screening(50, dateToTimeStamp(2021, Calendar.NOVEMBER, i, 11, 30), halls.get(4), movies.get(0)));
+            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), screenableMovies.get(0)));
+            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10), halls.get(1), screenableMovies.get(1)));
+            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40), halls.get(2), screenableMovies.get(2)));
+            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25), halls.get(3), screenableMovies.get(3)));
+            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 11, 30), halls.get(4), screenableMovies.get(0)));
         }
     }
 

@@ -10,28 +10,21 @@ public class Screening {
     @Column(name = "screening_id")
     private int id;
 
-    private double price;
-
     private String screeningTimeStampAsString;
 
     @ManyToOne
     private Hall hall;
 
     @ManyToOne
-    private Movie movie;
+    private ScreenableMovie movie;
 
     public Screening() {
     }
 
-    public Screening(double price, String screeningTimeAsString, Hall hall, Movie movie) {
-        this.price = price;
+    public Screening(String screeningTimeAsString, Hall hall, ScreenableMovie movie) {
         this.screeningTimeStampAsString = screeningTimeAsString;
         this.hall = hall;
         this.movie = movie;
-    }
-
-    public double getPrice() {
-        return price;
     }
 
     public String getScreeningTimeStampAsString() {
@@ -42,7 +35,7 @@ public class Screening {
         return hall;
     }
 
-    public Movie getMovie() {
+    public ScreenableMovie getScreenableMovie() {
         return movie;
     }
 

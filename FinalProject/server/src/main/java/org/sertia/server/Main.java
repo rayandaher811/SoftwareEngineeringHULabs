@@ -31,6 +31,8 @@ public class Main {
             session.flush();
             dbFiller.getMovies().forEach(obj -> session.save(obj));
             session.flush();
+            dbFiller.getScreenableMovies().forEach(obj -> session.save(obj));
+            session.flush();
             dbFiller.getUsers().forEach(obj -> session.save(obj));
             session.flush();
             dbFiller.getCinemas().forEach(obj -> session.save(obj));

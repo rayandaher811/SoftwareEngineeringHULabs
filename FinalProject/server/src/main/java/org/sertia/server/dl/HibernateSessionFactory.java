@@ -28,6 +28,7 @@ public class HibernateSessionFactory {
                 configuration.addAnnotatedClass(Hall.class);
                 configuration.addAnnotatedClass(HallSeat.class);
                 configuration.addAnnotatedClass(Movie.class);
+                configuration.addAnnotatedClass(ScreenableMovie.class);
                 configuration.addAnnotatedClass(PaymentInfo.class);
                 configuration.addAnnotatedClass(PriceChangeRequest.class);
                 configuration.addAnnotatedClass(Producer.class);
