@@ -8,7 +8,7 @@
     <children>
         <BorderPane prefHeight="400.0" prefWidth="600.0">
             <top>
-                <Label fx:id="mainLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="534.0" text="עדכון זמן הקרנה לסרט: " BorderPane.alignment="CENTER">
+                <Label fx:id="mainLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="602.0" text="עדכון זמן הקרנה לסרט: " textAlignment="CENTER" BorderPane.alignment="CENTER">
                     <font>
                         <Font size="26.0" />
                     </font>
@@ -41,14 +41,14 @@
                         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="310.0" layoutY="199.0" prefHeight="17.0" prefWidth="246.0" text="תאריך הקרנה" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <DatePicker fx:id="datePickerComp" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="217.0" GridPane.rowIndex="4" />
                         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="310.0" layoutY="199.0" prefHeight="17.0" prefWidth="246.0" text="שעת הקרנה" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <TextField fx:id="screeningTimeTxt" alignment="CENTER" prefHeight="17.0" prefWidth="294.0" GridPane.rowIndex="5"/>
+                        <TextField fx:id="screeningTimeTxt" alignment="CENTER" prefHeight="17.0" prefWidth="294.0" GridPane.rowIndex="5" />
                     </children>
                 </GridPane>
             </center>
             <bottom>
                 <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#backToEmployeesView" text="חזור" />
+                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#backToPreviusPage" text="חזור" />
                         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#requestChangeFromServer" text="עדכן" />
                     </children>
                 </HBox>

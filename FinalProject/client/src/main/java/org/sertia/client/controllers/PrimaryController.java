@@ -14,10 +14,7 @@ public class PrimaryController {
     }
 
     @FXML
-    private void popUpLoginDialog() throws IOException {
-//        App.setRoot("loginForm");
-        System.out.println("Need to open login form");
-        ActiveUserData activeUserData = LoginController.loginAndGetUserData();
-        App.setRoot("employeesForm");
+    private void switchToLogInView() throws IOException {
+        App.setRoot("loginForm");
     }
 }

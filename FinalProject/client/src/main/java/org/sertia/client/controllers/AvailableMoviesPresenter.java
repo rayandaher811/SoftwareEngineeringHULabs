@@ -2,13 +2,11 @@ package org.sertia.client.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import org.sertia.client.App;
 import org.sertia.client.communication.ServerCommunicationHandler;
-import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
 
 import java.io.IOException;

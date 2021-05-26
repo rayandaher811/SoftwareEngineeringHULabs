@@ -12,13 +12,14 @@
          <children>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="53.0" prefWidth="160.0">
               <items>
-                  <TextField alignment="CENTER" promptText="שם משתמש" />
-                  <PasswordField alignment="CENTER" promptText="סיסמא" />
+                  <TextField fx:id="userNameTextField" alignment="CENTER" promptText="שם משתמש" />
+                  <PasswordField fx:id="passwordField" alignment="CENTER" promptText="סיסמא" />
               </items>
             </SplitPane>
          </children>
       </Group>
-        <Button fx:id="secondaryButton" onAction="#switchToPrimary" text="התחבר!" />
+        <Button fx:id="loginBtn" onAction="#login" text="התחבר!" />
+        <Button fx:id="backBtn" onAction="#back" text="חזור" />
     </children>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

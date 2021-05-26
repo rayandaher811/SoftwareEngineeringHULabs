@@ -18,7 +18,7 @@
          <center>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="logInButton" onAction="#popUpLoginDialog" prefHeight="25.0" prefWidth="170.0" text="התחברות עובדים" />
+                  <Button fx:id="logInButton" onAction="#switchToLogInView" prefHeight="25.0" prefWidth="170.0" text="התחברות עובדים" />
                   <Separator prefWidth="200.0" />
                   <Button fx:id="continueAsCustomer" onAction="#switchToCustomerView" prefHeight="25.0" prefWidth="170.0" text="המשך כלקוח" />
                </children>

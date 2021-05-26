@@ -16,10 +16,7 @@ import org.sertia.client.global.LoggedInUser;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class EditMovieScreeningTimePresenter implements Initializable {
@@ -45,9 +42,26 @@ public class EditMovieScreeningTimePresenter implements Initializable {
     @FXML
     private TextField screeningTimeTxt;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
+        if (movie != null) {
+            mainLabel.setText(mainLabel.getText() + movie.getName());
+            mainLabel.setMaxWidth(400);
+            movieNameLabel.setText(movie.getName());
+            actorNameLabel.setText(movie.getMainActorName());
+            branchNameLabel.setText(movie.getBranchName());
+            hallNumber.setText(String.valueOf(movie.getHallNumber()));
+            String movieScreeningTime = movie.getScreeningTimeStampStr();
+            DateTime dateTime = DateTime.parse(movieScreeningTime);
+            datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
+            screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
+        }
+    }
+
     @FXML
-    private void backToEmployeesView() throws IOException {
-        App.setRoot("employeesForm");
+    private void backToPreviusPage() throws IOException {
+        App.setRoot("availableMoviesForEdit");
     }
 
     @FXML
@@ -83,26 +97,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
         return false;
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
-        if (movie != null) {
-            mainLabel.setText(mainLabel.getText() + movie.getName());
-            mainLabel.setMaxWidth(400);
-            movieNameLabel.setText(movie.getName());
-            actorNameLabel.setText(movie.getMainActorName());
-            branchNameLabel.setText(movie.getBranchName());
-            hallNumber.setText(String.valueOf(movie.getHallNumber()));
-            String movieScreeningTime = movie.getScreeningTimeStampStr();
-            DateTime dateTime = DateTime.parse(movieScreeningTime);
-            datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
-//            datePickerComp.setValue(LocalDateTime.parse(movieScreeningTime).toLocalDate());
-            screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
-        }
-    }
-
     private String parseTimeWithoutDate(String dateTime) {
-//        2021-08-01T01:30:00.000
         int pivotIndex = dateTime.indexOf(":");
         return dateTime.substring(pivotIndex - 2, pivotIndex + 3);
     }

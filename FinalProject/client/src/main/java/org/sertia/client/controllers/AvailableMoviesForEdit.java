@@ -67,7 +67,6 @@ public class AvailableMoviesForEdit implements Initializable {
                         e.printStackTrace();
                     }
                 });
-//                buttonListView.add(btn);
 
             });
             buttonListView.getItems().setAll(buttonObservableList);
@@ -75,31 +74,12 @@ public class AvailableMoviesForEdit implements Initializable {
         });
 
         list.addAll(values);
-
         moviesAccordion.getPanes().setAll(values);
 
-        TitledPane tiledPane = new TitledPane("BGBG", new Label("show all BGGBG"));
+        TitledPane tiledPane = new TitledPane("AllMoviesByCinema", moviesAccordion);
         tiledPane.setAnimated(false);
         tiledPane.setText(cinemaToScreeningMovies.getKey());
-        tiledPane.setContent(moviesAccordion);
-//        Collection<Button> editableButtons = new ArrayList<>();
-//        cinemaToScreeningMovies.getValue().forEach(cinemaScreeningMovie -> {
-//
-//            Button btn = new Button();
-//            btn.setText(String.valueOf(cinemaScreeningMovie.getScreeningTime()));
-//            btn.setOnMouseClicked(mouseEvent -> {
-//                try {
-//                    LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
-//                    App.setRoot("editMovieScreeningTimePresenter");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//            editableButtons.add(btn);
-////            tiledPane.setContent(btn);
-//        });
-
-//        tiledPane.setContent(editableButtons);
+//        tiledPane.setContent(moviesAccordion);
         return tiledPane;
     }
 
