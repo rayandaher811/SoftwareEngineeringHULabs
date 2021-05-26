@@ -10,12 +10,9 @@ import org.sertia.server.dl.classes.Screening;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MoviesCatalogController {
 
@@ -30,12 +27,12 @@ public class MoviesCatalogController {
         Session session = HibernateSessionFactory.getInstance().openSession();
 
         try {
-            // Getting the real screening to avoid redunant changes
+            // Getting the real screening to avoid redundant changes
             Screening screeningToUpdate = session.get(Screening.class,
                                                         updateMovieRequest.getCurrentMovie().getScreeningId());
 
             // Updating
-            screeningToUpdate.setScreeningTime(updateMovieRequest.getNewDateTime());
+            screeningToUpdate.setScreeningTimeStampAsString(updateMovieRequest.getNewDateTimeStampAsString());
             session.beginTransaction();
             session.update(screeningToUpdate);
             session.getTransaction().commit();
@@ -71,7 +68,8 @@ public class MoviesCatalogController {
                 movie.isComingSoon(),
                 movie.getDescription(),
                 movie.getImageUrl(),
-                screening.getScreeningTime());
+                screening.getScreeningTimeStampAsString(),
+                screening.getHall().getCinema().getName(),
+                screening.getHall().getId());
     }
-
 }

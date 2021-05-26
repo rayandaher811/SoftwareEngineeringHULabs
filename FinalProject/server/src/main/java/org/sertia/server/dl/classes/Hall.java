@@ -13,6 +13,9 @@ public class Hall {
     private int maximumCapacity;
     private int numberOfSeats;
 
+    @ManyToOne
+    private Cinema cinema;
+
     public Hall() {
     }
 
@@ -22,6 +25,11 @@ public class Hall {
         this.cinema = cinema;
     }
 
-    @ManyToOne
-    private Cinema cinema;
+    public Cinema getCinema() {
+        return cinema;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

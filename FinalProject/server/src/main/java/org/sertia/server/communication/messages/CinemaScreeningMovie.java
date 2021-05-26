@@ -1,9 +1,5 @@
 package org.sertia.server.communication.messages;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class CinemaScreeningMovie {
     private int screeningId;
     private String producerName;
@@ -13,10 +9,12 @@ public class CinemaScreeningMovie {
     private boolean isComingSoon;
     private String description;
     private String imageUrl;
-    private Date screeningTime;
+    private String screeningTimeStampStr;
+    private String branchName;
+    private int hallNumber;
 
     public CinemaScreeningMovie(int screeningId, String producerName, String mainActorName, String hebrewName, String name,
-                                boolean isComingSoon, String description, String imageUrl, Date screeningTime) {
+                                boolean isComingSoon, String description, String imageUrl, String screeningTimeStampStr, String branchName, int hallNumber) {
         this.screeningId = screeningId;
         this.producerName = producerName;
         this.mainActorName = mainActorName;
@@ -25,9 +23,9 @@ public class CinemaScreeningMovie {
         this.isComingSoon = isComingSoon;
         this.description = description;
         this.imageUrl = imageUrl;
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        sdf.setTimeZone(TimeZone.getDefault());
-        this.screeningTime = screeningTime;
+        this.screeningTimeStampStr = screeningTimeStampStr;
+        this.branchName = branchName;
+        this.hallNumber = hallNumber;
     }
 
     public int getScreeningId() {
@@ -62,12 +60,20 @@ public class CinemaScreeningMovie {
         return imageUrl;
     }
 
-    public Date getScreeningTime() {
-        return screeningTime;
+    public String getScreeningTimeStampStr() {
+        return screeningTimeStampStr;
     }
 
-    public void setScreeningTime(Date screeningTime) {
-        this.screeningTime = screeningTime;
+    public void setScreeningTimeStampStr(String screeningTimeStampStr) {
+        this.screeningTimeStampStr = screeningTimeStampStr;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public int getHallNumber() {
+        return hallNumber;
     }
 
     @Override

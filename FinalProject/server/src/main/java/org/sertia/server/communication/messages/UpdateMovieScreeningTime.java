@@ -1,17 +1,15 @@
 package org.sertia.server.communication.messages;
 
-import java.util.Date;
-
 public class UpdateMovieScreeningTime {
     private BaseClientServerMessage metadata;
     private CinemaScreeningMovie currentMovie;
-    private Date newDateTime;
+    private String newDateTimeStampAsString;
     private final String messageName = "UPDATE_SCREENING_REQ";
 
-    public UpdateMovieScreeningTime(String clientId, CinemaScreeningMovie currentMovie, Date newDateTime) {
+    public UpdateMovieScreeningTime(String clientId, CinemaScreeningMovie currentMovie, String newDateTimeStampAsString) {
         this.metadata = new BaseClientServerMessage(clientId);
         this.currentMovie = currentMovie;
-        this.newDateTime = newDateTime;
+        this.newDateTimeStampAsString = newDateTimeStampAsString;
     }
 
     public String getMessageId() {
@@ -26,11 +24,11 @@ public class UpdateMovieScreeningTime {
         this.currentMovie = currentMovie;
     }
 
-    public Date getNewDateTime() {
-        return newDateTime;
+    public String getNewDateTimeStampAsString() {
+        return newDateTimeStampAsString;
     }
 
-    public void setNewDateTime(Date newDateTime) {
-        this.newDateTime = newDateTime;
+    public void setNewDateTimeStampAsString(String newDateTimeStampAsString) {
+        this.newDateTimeStampAsString = newDateTimeStampAsString;
     }
 }
