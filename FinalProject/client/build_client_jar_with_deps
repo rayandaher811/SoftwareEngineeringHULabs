@@ -1,0 +1,14 @@
+#!/bin/bash
+
+mvn clean install -q
+exitCode=$?
+
+if [ $exitCode -eq "0" ]
+then
+  echo "Client's jar is ready"
+else
+  echo "Client's jar build had failed"
+fi
+exit $exitCode
+
+

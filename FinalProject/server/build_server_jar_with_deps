@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Building server's jar"
+mvn clean compile -q assembly:single
+exitCode=$?
+
+if [ $exitCode -eq "0" ]
+then
+  echo "Server's jar is ready"
+else
+  echo "Server's jar build had failed"
+fi
+exit $exitCode

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd server &>/dev/null
+pwd
+./build_server_jar_with_deps
+echo "Server's jar built!"
+cd - &>/dev/null
+cd client &>/dev/null
+echo "Client's jar built!"
+./build_client_jar_with_deps
+cd - &>/dev/null
+mkdir results
+cp server/target/server*dependencies.jar results/
+cp client/target/client*.jar results/
+echo "Good luck"
