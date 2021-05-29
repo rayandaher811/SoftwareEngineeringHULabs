@@ -32,7 +32,7 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    public static void main(String[] args) {
+    public static void run(String[] args) {
         ServerCommunicationHandler client;
         if (ServerCommunicationHandler.initializeClientServerConnection("127.0.0.1", 1325)) {
             client = ServerCommunicationHandler.getInstance();
