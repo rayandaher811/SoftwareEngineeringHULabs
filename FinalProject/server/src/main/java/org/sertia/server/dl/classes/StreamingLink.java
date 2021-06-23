@@ -22,11 +22,8 @@ public class StreamingLink {
     @ManyToOne
     private Streaming movie;
 
-    @OneToOne
-    private PaymentInfo paymentInfo;
-
     @ManyToOne
-    private CostumerInfo costumer;
+    private CustomerPaymentDetails customerPaymentDetails;
 
     public StreamingLink() {
     }

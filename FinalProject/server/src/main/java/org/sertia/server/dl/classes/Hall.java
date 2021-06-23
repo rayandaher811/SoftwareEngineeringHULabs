@@ -1,6 +1,8 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="halls")
@@ -9,6 +11,10 @@ public class Hall {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="hall_id")
     private int id;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="hall_hall_id")
+    private Set<HallSeat> seats;
 
     private int maximumCapacity;
     private int numberOfSeats;
@@ -31,5 +37,9 @@ public class Hall {
 
     public int getId() {
         return id;
+    }
+
+    public Set<HallSeat> getSeats() {
+        return seats;
     }
 }

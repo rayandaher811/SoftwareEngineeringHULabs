@@ -7,6 +7,7 @@ import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.server.bl.MoviesCatalogController;
+import org.sertia.server.bl.ScreeningTicketController;
 import org.sertia.server.bl.UserLoginController;
 import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class MessageHandler extends AbstractServer {
     private static Gson GSON = new Gson();
     private final MoviesCatalogController moviesCatalogController;
+    private final ScreeningTicketController screeningTicketController;
 
 
     private UserLoginController userLoginController;
@@ -22,8 +24,9 @@ public class MessageHandler extends AbstractServer {
     private final String ClientSessionIdType = "Session";
     private RoleValidator roleValidator;
 
-    public MessageHandler(int port) {
+    public MessageHandler(int port, ScreeningTicketController screeningTicketController) {
         super(port);
+        this.screeningTicketController = screeningTicketController;
         userLoginController = new UserLoginController();
         roleValidator = new RoleValidator();
 

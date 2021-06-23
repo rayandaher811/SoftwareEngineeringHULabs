@@ -17,6 +17,7 @@ public class HallSeat {
     }
 
     @ManyToOne
+    @JoinColumn(name="hall_hall_id", nullable=false)
     private Hall hall;
 
     public HallSeat(int rowNumber, int numberInRow, Hall hall) {
@@ -27,5 +28,17 @@ public class HallSeat {
 
     public void setHall(Hall hall) {
         this.hall = hall;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public int getNumberInRow() {
+        return numberInRow;
+    }
+
+    public int getId() {
+        return id;
     }
 }

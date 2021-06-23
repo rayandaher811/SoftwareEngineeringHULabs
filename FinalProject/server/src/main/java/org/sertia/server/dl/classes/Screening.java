@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "screenings")
@@ -17,6 +18,10 @@ public class Screening {
 
     @ManyToOne
     private ScreenableMovie movie;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="screening_screening_id")
+    private List<ScreeningTicket> tickets;
 
     public Screening() {
     }
@@ -45,5 +50,9 @@ public class Screening {
 
     public void setScreeningTimeStampAsString(String screeningTimeStampAsString) {
         this.screeningTimeStampAsString = screeningTimeStampAsString;
+    }
+
+    public List<ScreeningTicket> getTickets() {
+        return tickets;
     }
 }

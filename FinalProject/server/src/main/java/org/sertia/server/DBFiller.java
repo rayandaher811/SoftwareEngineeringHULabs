@@ -17,9 +17,8 @@ public class DBFiller {
     private ArrayList<Screening> screenings;
     private ArrayList<Streaming> streamings;
     private ArrayList<StreamingLink> streamingLinks;
-    private ArrayList<CostumerInfo> costumerInfos;
     private ArrayList<TicketsVoucher> ticketsVouchers;
-    private ArrayList<PaymentInfo> paymentInfos;
+    private ArrayList<CustomerPaymentDetails> customerPaymentDetails;
     private ArrayList<CostumerComplaint> costumerComplaints;
     private ArrayList<Refund> refunds;
     private ArrayList<PriceChangeRequest> priceChangeRequests;
@@ -155,7 +154,8 @@ public class DBFiller {
         screenings = new ArrayList<>();
 
         for (int i = 1; i < 29; i++) {
-            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), screenableMovies.get(0)));
+            Screening e = new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), screenableMovies.get(0));
+            screenings.add(e);
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10), halls.get(1), screenableMovies.get(1)));
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40), halls.get(2), screenableMovies.get(2)));
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25), halls.get(3), screenableMovies.get(3)));

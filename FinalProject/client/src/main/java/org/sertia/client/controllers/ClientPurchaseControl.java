@@ -1,8 +1,6 @@
 package org.sertia.client.controllers;
 
 import org.sertia.contracts.price.change.ClientPriceChangeRequest;
-import org.sertia.contracts.screening.ticket.ClientSeatChooseRequest;
-import org.sertia.contracts.screening.ticket.ClientSeatChooseResponse;
 import org.sertia.contracts.screening.ticket.ClientSeatMap;
 
 public class ClientPurchaseControl {

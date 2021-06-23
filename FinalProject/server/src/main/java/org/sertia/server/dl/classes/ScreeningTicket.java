@@ -13,14 +13,53 @@ public class ScreeningTicket {
     private double paidPrice;
     private boolean isVoucher;
     @ManyToOne
-    private CostumerInfo costumerInfo;
+    private CustomerPaymentDetails customerPaymentDetails;
     @ManyToOne
     private HallSeat seat;
-    @OneToOne
-    private PaymentInfo paymentInfo;
     @ManyToOne
+    @JoinColumn(name="screening_screening_id", nullable=false)
     private Screening screening;
 
     public ScreeningTicket() {
+    }
+
+    public double getPaidPrice() {
+        return paidPrice;
+    }
+
+    public void setPaidPrice(double paidPrice) {
+        this.paidPrice = paidPrice;
+    }
+
+    public boolean isVoucher() {
+        return isVoucher;
+    }
+
+    public void setVoucher(boolean voucher) {
+        isVoucher = voucher;
+    }
+
+    public HallSeat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(HallSeat seat) {
+        this.seat = seat;
+    }
+
+    public CustomerPaymentDetails getPaymentInfo() {
+        return customerPaymentDetails;
+    }
+
+    public void setPaymentInfo(CustomerPaymentDetails customerPaymentDetails) {
+        this.customerPaymentDetails = customerPaymentDetails;
+    }
+
+    public Screening getScreening() {
+        return screening;
+    }
+
+    public void setScreening(Screening screening) {
+        this.screening = screening;
     }
 }

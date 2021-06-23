@@ -15,9 +15,6 @@ public class TicketsVoucher {
     public TicketsVoucher() {
     }
 
-    @OneToOne
-    private PaymentInfo paymentInfo;
-
     @ManyToOne
-    private CostumerInfo costumerInfo;
+    private CustomerPaymentDetails customerPaymentDetails;
 }
