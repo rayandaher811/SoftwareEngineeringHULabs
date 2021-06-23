@@ -5,6 +5,7 @@ module org.sertia {
     requires com.google.gson;
     requires org.json;
     requires org.joda.time;
+    requires org.sertia.contracts;
 
     opens org.sertia.client.communication.messages to com.google.gson;
     opens org.sertia.client to javafx.fxml, com.google.gson;
