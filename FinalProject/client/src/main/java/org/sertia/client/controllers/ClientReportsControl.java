@@ -1,7 +1,5 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.reports.controller.ClientReport;
-
 public class ClientReportsControl {
 
 	public void getSertiaReports() {
