@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) {
         fillDb();
         MessageHandler messageHandler = new MessageHandler(1325);
+        messageHandler.handleAllMoviesRequest(null);
         try {
             messageHandler.startListening();
         } catch (IOException e) {

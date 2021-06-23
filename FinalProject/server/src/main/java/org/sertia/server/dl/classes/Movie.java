@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity(name = "movies")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -65,5 +66,18 @@ public class Movie {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id && isComingSoon == movie.isComingSoon && Objects.equals(producer, movie.producer) && Objects.equals(mainActor, movie.mainActor) && Objects.equals(hebrewName, movie.hebrewName) && Objects.equals(name, movie.name) && Objects.equals(description, movie.description) && Objects.equals(imageUrl, movie.imageUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, producer, mainActor, hebrewName, name, isComingSoon, description, imageUrl);
     }
 }

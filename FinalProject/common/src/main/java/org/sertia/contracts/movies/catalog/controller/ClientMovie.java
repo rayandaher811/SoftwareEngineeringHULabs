@@ -4,7 +4,8 @@ public class ClientMovie {
     public String hebrewName;
     public String name;
     public String description;
-    public boolean isComingSoon;
+    public String mainActorName;
+    public String producerName;
 //	public BitMap posterImage;
 
 }

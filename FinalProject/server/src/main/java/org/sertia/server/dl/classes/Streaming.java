@@ -7,14 +7,14 @@ import javax.persistence.*;
 public class Streaming {
     @Id
     @Column(name = "movie_id")
-    private int id;
+    public int id;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "movie_id")
-    private Movie movie;
+    public Movie movie;
 
-    private double pricePerStream;
+    public double pricePerStream;
 
     public Streaming() {
     }

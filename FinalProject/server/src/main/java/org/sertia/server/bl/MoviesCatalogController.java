@@ -1,38 +1,52 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.sertia.contracts.movies.catalog.controller.ClientMovie;
-import org.sertia.contracts.movies.catalog.controller.ClientScreening;
-import org.sertia.contracts.movies.catalog.controller.SertiaMovie;
+import org.sertia.contracts.movies.catalog.controller.*;
 import org.sertia.contracts.reports.controller.ClientReport;
 import org.sertia.server.bl.Services.Reportable;
-import org.sertia.server.communication.messages.CinemaScreeningMovie;
 import org.sertia.server.communication.messages.MoviesCatalog;
 import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.server.dl.HibernateSessionFactory;
-import org.sertia.server.dl.classes.Movie;
-import org.sertia.server.dl.classes.Screening;
-import org.sertia.server.dl.classes.TicketType;
+import org.sertia.server.dl.classes.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MoviesCatalogController implements Reportable {
 
-    public static MoviesCatalog getAllMoviesCatalog() {
-        Collection<Screening> screeningMovies = queryScreenings();
-        MoviesCatalog catalog = new MoviesCatalog();
-        screeningMovies.forEach(screening -> catalog.addMovie(screeningToCinemaScreeningMovie(screening)));
-        return catalog;
+    public SertiaCatalog getSertiaCatalog() {
+        Map<ScreenableMovie, List<Screening>> screeningMovies = getScreenings();
+        Map<Integer, Streaming> streamings = getStreamings();
+        List<SertiaMovie> sertiaMovieList = new ArrayList<>();
+
+        screeningMovies.keySet()
+                .forEach(screenableMovie -> {
+                    Movie movie = screenableMovie.getMovie();
+                    SertiaMovie sertiaMovie = new SertiaMovie();
+                    sertiaMovie.movieDetails = movieToClientMovie(movie);
+                    sertiaMovie.isComingSoon = movie.isComingSoon();
+                    sertiaMovie.screenings = screeningMovies.get(screenableMovie).stream().map(MoviesCatalogController::screeningToClientScreening)
+                            .collect(Collectors.toList());
+                    Optional.ofNullable(streamings.get(movie.getId()))
+                            .ifPresent(streaming -> {
+                                sertiaMovie.isStreamable = true;
+                                sertiaMovie.pricePerStream = streaming.pricePerStream;
+                            });
+                    sertiaMovieList.add(sertiaMovie);
+                });
+
+        return new SertiaCatalog(sertiaMovieList);
     }
 
-    public static void updateScreeningMovie(UpdateMovieScreeningTime updateMovieRequest) {
-        Session session = HibernateSessionFactory.getInstance().openSession();
+    public CinemaCatalog getCatalogByCinema(String cinemaId) {
+        return new CinemaCatalog();
+    }
 
-        try {
+    public void updateScreeningMovie(UpdateMovieScreeningTime updateMovieRequest) {
+
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             // Getting the real screening to avoid redundant changes
             Screening screeningToUpdate = session.get(Screening.class,
                     updateMovieRequest.getCurrentMovie().getScreeningId());
@@ -43,8 +57,6 @@ public class MoviesCatalogController implements Reportable {
             session.update(screeningToUpdate);
             session.getTransaction().commit();
         } catch (Exception e) {
-        } finally {
-            session.close();
         }
     }
 
@@ -54,7 +66,6 @@ public class MoviesCatalogController implements Reportable {
 //    }
 
     /**
-     *
      * @param cinemaId
      */
     public MoviesCatalog getScreeningsByCinemaId(String cinemaId) {
@@ -63,7 +74,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movieData
      */
     public void addMovie(SertiaMovie movieData) {
@@ -72,7 +82,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movieId
      */
     public void removeMovie(String movieId) {
@@ -81,7 +90,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param screenings
      */
     public void updateMovieScreenings(ClientScreening screenings) {
@@ -90,7 +98,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param newScreening
      */
     public void addMovieScreening(ClientScreening newScreening) {
@@ -99,7 +106,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param screeningId
      */
     public void removeMovieScreening(String screeningId) {
@@ -108,7 +114,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movieId
      * @param pricePerStream
      */
@@ -118,7 +123,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movieId
      */
     public void removeStreaming(String movieId) {
@@ -127,7 +131,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movieId
      * @param ticketType
      * @param newPrice
@@ -138,7 +141,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param movie
      */
     private boolean isMovieValid(SertiaMovie movie) {
@@ -147,7 +149,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param screening
      */
     private boolean isScreeningValid(ClientScreening screening) {
@@ -156,42 +157,58 @@ public class MoviesCatalogController implements Reportable {
     }
 
     /**
-     *
      * @param newMovie
      */
     private void notifyVoucherOwners(ClientMovie newMovie) {
         // TODO - implement MoviesCatalogController.notifyVoucherOwners
         throw new UnsupportedOperationException();
     }
-    private static Collection<Screening> queryScreenings() {
-        Session session = HibernateSessionFactory.getInstance().openSession();
 
-        try {
+    private Map<Integer, Streaming> getStreamings() {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
-            query.from(Screening.class);
-            List<Screening> screeningList = session.createQuery(query).getResultList();
-            return screeningList;
+            CriteriaQuery<Streaming> query = builder.createQuery(Streaming.class);
+            query.from(Streaming.class);
+            List<Streaming> streamings = session.createQuery(query).getResultList();
+            Map<Integer, Streaming> movieToStreaming = new HashMap<>();
+            streamings.forEach(streaming -> movieToStreaming.put(streaming.movie.getId(), streaming));
+
+            return movieToStreaming;
         } catch (Exception e) {
-            return Collections.emptyList();
-        } finally {
-            session.close();
+            return Collections.emptyMap();
         }
     }
 
-    private static CinemaScreeningMovie screeningToCinemaScreeningMovie(Screening screening) {
-        final Movie movie = screening.getScreenableMovie().getMovie();
-        return new CinemaScreeningMovie(screening.getId(),
-                movie.getProducer().getFullName(),
-                movie.getMainActor().getFullName(),
-                movie.getHebrewName(),
-                movie.getName(),
-                movie.isComingSoon(),
-                movie.getDescription(),
-                movie.getImageUrl(),
-                screening.getScreeningTimeStampAsString(),
-                screening.getHall().getCinema().getName(),
-                screening.getHall().getId());
+    private Map<ScreenableMovie, List<Screening>> getScreenings() {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
+            query.from(Screening.class);
+            List<Screening> screenings = session.createQuery(query).getResultList();
+            return screenings.stream().collect(Collectors.groupingBy(Screening::getScreenableMovie));
+        } catch (Exception e) {
+            return Collections.emptyMap();
+        }
+    }
+
+    private static ClientMovie movieToClientMovie(Movie movie) {
+        ClientMovie clientMovie = new ClientMovie();
+        clientMovie.name = movie.getName();
+        clientMovie.hebrewName = movie.getHebrewName();
+        clientMovie.mainActorName = movie.getMainActor().getFullName();
+        clientMovie.producerName = movie.getProducer().getFullName();
+
+        return clientMovie;
+    }
+
+    private static ClientScreening screeningToClientScreening(Screening screening) {
+        ClientScreening clientScreening = new ClientScreening();
+        clientScreening.screeningId = screening.getId();
+        clientScreening.screeningTime = screening.getScreeningTimeStampAsString();
+        clientScreening.cinemaName = screening.getHall().getCinema().getName();
+        clientScreening.hallId = screening.getHall().getId();
+
+        return clientScreening;
     }
 
     @Override

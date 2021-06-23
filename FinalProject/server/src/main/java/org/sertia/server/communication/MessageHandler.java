@@ -2,19 +2,18 @@ package org.sertia.server.communication;
 
 import com.google.gson.Gson;
 import org.json.JSONObject;
+import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.LoginResult;
-import org.sertia.server.bl.UserLoginController;
-import org.sertia.server.communication.messages.AllMoviesRequestMsg;
-import org.sertia.server.communication.messages.AllMoviesRequestResponse;
 import org.sertia.server.bl.MoviesCatalogController;
+import org.sertia.server.bl.UserLoginController;
 import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 
 import java.io.IOException;
 
 public class MessageHandler extends AbstractServer {
-
     private static Gson GSON = new Gson();
+    private final MoviesCatalogController moviesCatalogController;
 
 
     private UserLoginController userLoginController;
@@ -29,6 +28,7 @@ public class MessageHandler extends AbstractServer {
         a.username = "Admin";
         a.password = "123123";
         userLoginController.login(a);
+        moviesCatalogController = new MoviesCatalogController();
     }
 
     @Override
@@ -38,24 +38,22 @@ public class MessageHandler extends AbstractServer {
 
         switch (rawMessage.getString("messageName")) {
             case "ALL_MOVIES_REQ":
-                handleAllMoviesRequest(msg.toString(), client);
+                handleAllMoviesRequest(client);
                 break;
             case "UPDATE_SCREENING_REQ":
-                handleMovieScreeningUpdate(msg.toString(),client);
+                handleMovieScreeningUpdate(msg.toString(), client);
                 break;
             case "LOGIN_REQ":
-                handleLoginRequest(msg.toString(),client);
+                handleLoginRequest(msg.toString(), client);
                 break;
             default:
                 System.out.println("Got uknown message: " + msg);
         }
     }
 
-    private void handleAllMoviesRequest(String msg, ConnectionToClient client) {
-            AllMoviesRequestMsg receivedMessage = GSON.fromJson(msg, AllMoviesRequestMsg.class);
+    public void handleAllMoviesRequest(ConnectionToClient client) {
         try {
-            AllMoviesRequestResponse requestResponse = new AllMoviesRequestResponse(receivedMessage,
-                    MoviesCatalogController.getAllMoviesCatalog());
+            SertiaCatalog requestResponse = moviesCatalogController.getSertiaCatalog();
             client.sendToClient(GSON.toJson(requestResponse));
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +63,7 @@ public class MessageHandler extends AbstractServer {
     private void handleMovieScreeningUpdate(String msg, ConnectionToClient client) {
         UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
         try {
-            MoviesCatalogController.updateScreeningMovie(receivedScreening);
+            moviesCatalogController.updateScreeningMovie(receivedScreening);
             client.sendToClient(GSON.toJson(true));
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,7 +89,7 @@ public class MessageHandler extends AbstractServer {
 
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
-        userLoginController.disconnect((Integer)client.getInfo(ClientSessionIdType));
+        userLoginController.disconnect((Integer) client.getInfo(ClientSessionIdType));
 
         super.clientDisconnected(client);
     }

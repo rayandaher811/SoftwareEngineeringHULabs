@@ -5,8 +5,8 @@ import org.joda.time.DateTime;
 public class ClientScreening {
 
 	public int screeningId;
-	public String hallId;
-	public DateTime screeningTime;
+	public int hallId;
+	public String screeningTime;
 	public double ticketPrice;
 	public String cinemaName;
 
