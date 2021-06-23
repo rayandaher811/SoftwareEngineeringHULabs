@@ -1,4 +1,4 @@
-package org.sertia.client.controllers;
+package org.sertia.client.views;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

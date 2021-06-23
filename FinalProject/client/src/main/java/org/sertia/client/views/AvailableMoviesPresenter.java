@@ -1,4 +1,4 @@
-package org.sertia.client.controllers;
+package org.sertia.client.views;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +31,6 @@ public class AvailableMoviesPresenter implements Initializable {
 
     @FXML
     private void backToClientsView() throws IOException {
-        App.setRoot("customerView");
+        App.setRoot("primary");
     }
 }

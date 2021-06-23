@@ -1,4 +1,4 @@
-package org.sertia.client.controllers;
+package org.sertia.client.views;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,19 +9,27 @@ import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.global.LoggedInUser;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
-public class AvailableMoviesForEdit implements Initializable {
+public class CovidMovieTicketsPurchaseView implements Initializable {
+    @FXML
+    public void toMain() throws IOException {
+        App.setRoot("primary");
+    }
 
+    @FXML
+    private TextField amountOfTicketsTxt;
     @FXML
     private Accordion moviesAccordion;
 
     private HashMap<String, ArrayList<CinemaScreeningMovie>> mapMoviesByMovieNameToCinemaScreeningMovie(Map.Entry<String,
-            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies){
+            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies) {
         HashMap<String, ArrayList<CinemaScreeningMovie>> movieToDetailsMapping = new HashMap<>();
         for (int i = 0; i < cinemaToScreeningMovies.getValue().size(); i++) {
             final CinemaScreeningMovie screeningMovie = cinemaToScreeningMovies.getValue().get(i);
@@ -51,15 +59,15 @@ public class AvailableMoviesForEdit implements Initializable {
 
             ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
             s.getValue().stream().forEach(cinemaScreeningMovie -> {
-
-
                 Button btn = new Button();
                 btn.setText(cinemaScreeningMovie.getScreeningTimeStampStr());
                 buttonObservableList.add(btn);
                 btn.setOnMouseClicked(mouseEvent -> {
                     try {
-                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
-                        App.setRoot("editMovieScreeningTimePresenter");
+                        int numberOfTicketsPurchased = Integer.parseInt(this.amountOfTicketsTxt.getText());
+                        System.out.println("number of tickets is: " + numberOfTicketsPurchased);
+//                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
+                        App.setRoot("seatMapView");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -78,16 +86,6 @@ public class AvailableMoviesForEdit implements Initializable {
         tiledPane.setText(cinemaToScreeningMovies.getKey());
 //        tiledPane.setContent(moviesAccordion);
         return tiledPane;
-    }
-
-    @FXML
-    private void back() throws IOException {
-        LoggedInUser.onDisconnection();
-        App.setRoot("employeesForm");
-    }
-
-    @FXML
-    private void updateMovie() {
     }
 
     @Override
@@ -111,10 +109,6 @@ public class AvailableMoviesForEdit implements Initializable {
         }
 
         cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
-//
-//        list.addAll(movies);
-//
-//        lstView.setItems(list);
 
         moviesAccordion.getPanes().addAll(list);
 
