@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.LoginResult;
+import org.sertia.contracts.user.login.UserRole;
 import org.sertia.server.bl.MoviesCatalogController;
 import org.sertia.server.bl.UserLoginController;
 import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
@@ -19,10 +20,12 @@ public class MessageHandler extends AbstractServer {
     private UserLoginController userLoginController;
     private final String ClientRoleType = "Role";
     private final String ClientSessionIdType = "Session";
+    private RoleValidator roleValidator;
 
     public MessageHandler(int port) {
         super(port);
         userLoginController = new UserLoginController();
+        roleValidator = new RoleValidator();
 
         LoginCredentials a = new LoginCredentials();
         a.username = "Admin";
@@ -34,21 +37,40 @@ public class MessageHandler extends AbstractServer {
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         System.out.println("Received Message: " + msg.toString());
-        JSONObject rawMessage = new JSONObject(msg.toString());
+        String requestType = new JSONObject(msg.toString()).getString("messageName");
 
-        switch (rawMessage.getString("messageName")) {
-            case "ALL_MOVIES_REQ":
+        // Validating the user requests
+        if(!roleValidator.isClientAllowed((UserRole)client.getInfo(ClientRoleType),
+                                            requestType))
+            return;
+
+        switch (requestType) {
+            case RequestType.ALL_MOVIES_REQ:
                 handleAllMoviesRequest(client);
                 break;
-            case "UPDATE_SCREENING_REQ":
-                handleMovieScreeningUpdate(msg.toString(), client);
+            case RequestType.UPDATE_SCREENING_REQ:
+                handleMovieScreeningUpdate(msg.toString(),client);
                 break;
-            case "LOGIN_REQ":
-                handleLoginRequest(msg.toString(), client);
+            case RequestType.LOGIN_REQ:
+                handleLoginRequest(msg.toString(),client);
+                break;
+            case RequestType.ADD_MOVIE:
+                handleMovieAddition(msg.toString(),client);
+                break;
+            case RequestType.REMOVE_MOVIE:
+                handleMovieRemoval(msg.toString(),client);
                 break;
             default:
                 System.out.println("Got uknown message: " + msg);
         }
+    }
+
+    private void handleMovieRemoval(String toString, ConnectionToClient client) {
+
+    }
+
+    private void handleMovieAddition(String toString, ConnectionToClient client) {
+        
     }
 
     public void handleAllMoviesRequest(ConnectionToClient client) {
