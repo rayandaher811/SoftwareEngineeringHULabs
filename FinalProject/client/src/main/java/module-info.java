@@ -10,7 +10,11 @@ module org.sertia {
     opens org.sertia.client.communication.messages to com.google.gson;
     opens org.sertia.client to javafx.fxml, com.google.gson;
     opens org.sertia.client.controllers to javafx.fxml, com.google.gson;
+    opens org.sertia.client.views to javafx.fxml, com.google.gson;
 
     exports org.sertia.client;
     exports org.sertia.client.controllers;
+    exports org.sertia.client.views;
+    exports org.sertia.client.boxes;
+    opens org.sertia.client.boxes to com.google.gson, javafx.fxml;
 }

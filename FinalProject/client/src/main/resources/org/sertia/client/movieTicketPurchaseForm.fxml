@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.PurchaseView">
+    <children>
+        <BorderPane prefHeight="368.0" prefWidth="618.0">
+            <top>
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת כרטיס/ים לסרט" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="26.0" />
+                    </font>
+                </Label>
+            </top>
+            <center>
+                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                    <children>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <TextField fx:id="amountOfTicketsTxt"/>
+                            </children>
+                            <children>
+                                <Text text="כמות כרטיסים לרכישה" />
+                            </children>
+                        </HBox>
+                    </children>
+                    <children>
+                        <Accordion fx:id="moviesAccordion" BorderPane.alignment="CENTER">
+                        </Accordion>
+                    </children>
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#toMain" text="חזרה" />
+                    </children>
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
+
+</AnchorPane>

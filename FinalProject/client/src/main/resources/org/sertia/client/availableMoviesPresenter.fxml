@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.controllers.AvailableMoviesPresenter">
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.AvailableMoviesPresenter">
     <children>
         <BorderPane prefHeight="400.0" prefWidth="600.0">
             <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="407.0" text="סרטים אפשריים לצפיה ברשת" BorderPane.alignment="CENTER">
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="407.0" text="סרטים אפשריים לצפיה ברשת"
+                       BorderPane.alignment="CENTER">
                     <font>
-                        <Font size="26.0" />
+                        <Font size="26.0"/>
                     </font>
                 </Label>
             </top>
             <center>
-                <ListView fx:id="lstView" prefHeight="343.0" prefWidth="400.0" BorderPane.alignment="CENTER" />
+                <ListView fx:id="lstView" prefHeight="343.0" prefWidth="400.0" BorderPane.alignment="CENTER"/>
             </center>
             <bottom>
-                <Button mnemonicParsing="false" onAction="#backToClientsView" text="חזרה" BorderPane.alignment="CENTER" />
+                <Button mnemonicParsing="false" onAction="#backToClientsView" text="חזרה"
+                        BorderPane.alignment="CENTER"/>
             </bottom>
         </BorderPane>
     </children>
