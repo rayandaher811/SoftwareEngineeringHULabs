@@ -10,20 +10,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class ServerCommunicationHandler extends AbstractClient {
+public class SertiaClient extends AbstractClient {
     private static final Logger LOGGER =
-            Logger.getLogger(ServerCommunicationHandler.class.getName());
+            Logger.getLogger(SertiaClient.class.getName());
 
-    private static ServerCommunicationHandler client;
+    private static SertiaClient client;
     private final String clientId;
 
-    private ServerCommunicationHandler(String host, int port) {
+    private SertiaClient(String host, int port) {
         super(host, port);
         clientId = UUID.randomUUID().toString();
     }
 
     public static boolean initializeClientServerConnection(String host, int port) {
-        client = new ServerCommunicationHandler(host, port);
+        client = new SertiaClient(host, port);
         try {
             client.openConnection();
         } catch (IOException e) {
@@ -32,7 +32,7 @@ public class ServerCommunicationHandler extends AbstractClient {
         return client.isConnected();
     }
 
-    public static ServerCommunicationHandler getInstance() {
+    public static SertiaClient getInstance() {
         if (client == null)
             LOGGER.severe("Connection to server never established or corrupted, restart your app");
         return client;

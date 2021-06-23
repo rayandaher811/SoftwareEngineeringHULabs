@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.SertiaClient;
 
 import java.io.IOException;
 
@@ -33,9 +33,9 @@ public class App extends Application {
     }
 
     public static void run(String[] args) {
-        ServerCommunicationHandler client;
-        if (ServerCommunicationHandler.initializeClientServerConnection("127.0.0.1", 1325)) {
-            client = ServerCommunicationHandler.getInstance();
+        SertiaClient client;
+        if (SertiaClient.initializeClientServerConnection("127.0.0.1", 1325)) {
+            client = SertiaClient.getInstance();
             try {
                 client.openConnection();
                 launch();

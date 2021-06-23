@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import org.sertia.client.App;
-import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class AvailableMoviesPresenter implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         HashSet<String> availableMovies = new HashSet<>();
         ObservableList<String> list = FXCollections.observableArrayList();
-        MoviesCatalog catalog = ServerCommunicationHandler.getInstance().getMoviesCatalog();
+        MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
         catalog.getMoviesCatalog().forEach(cinemaScreeningMovie -> availableMovies.add(cinemaScreeningMovie.getName()));
         list.addAll(availableMovies);
         lstView.setItems(list);

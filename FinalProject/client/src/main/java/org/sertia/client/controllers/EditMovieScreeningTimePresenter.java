@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.sertia.client.App;
-import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.client.global.LoggedInUser;
@@ -75,7 +75,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
             LocalDateTime dateTime = LocalDateTime.fromCalendarFields(calendar);
             CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
             UpdateMovieScreeningTime updateMovieScreeningTime = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), movie, dateTime.toString());
-            ServerCommunicationHandler.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
+            SertiaClient.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
         }
         App.setRoot("availableMoviesForEdit");
     }

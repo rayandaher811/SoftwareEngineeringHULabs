@@ -4,12 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
 import org.sertia.client.App;
-import org.sertia.client.communication.ServerCommunicationHandler;
+import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.global.LoggedInUser;
@@ -97,7 +94,7 @@ public class AvailableMoviesForEdit implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         // Need to get movies by start time
-        MoviesCatalog catalog = ServerCommunicationHandler.getInstance().getMoviesCatalog();
+        MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
 
         HashMap<String, ArrayList<CinemaScreeningMovie>> cinemaNameToMovie = new HashMap<>();
 

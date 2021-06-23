@@ -5,6 +5,7 @@ module org.example {
     requires com.google.gson;
     requires org.json;
     requires org.joda.time;
+    requires common;
 
     opens org.sertia.client.communication.messages to com.google.gson;
     opens org.sertia.client to javafx.fxml, com.google.gson;

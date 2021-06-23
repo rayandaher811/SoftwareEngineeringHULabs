@@ -1,11 +1,13 @@
 package org.sertia.contracts.movies.catalog.controller;
 
+import org.joda.time.DateTime;
+
 public class ClientScreening {
 
 	public int screeningId;
 	public String hallId;
-	public datetime screeningTime;
+	public DateTime screeningTime;
 	public double ticketPrice;
-	public string cinemaName;
+	public String cinemaName;
 
 }

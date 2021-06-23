@@ -2,7 +2,7 @@ package org.sertia.contracts.screening.ticket;
 
 public class ClientSeatChooseResponse {
 
-	public string purchaseSessionId;
+	public String purchaseSessionId;
 	public boolean couldAutoChoseSeats;
 
 }
