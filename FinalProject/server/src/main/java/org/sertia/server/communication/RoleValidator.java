@@ -8,14 +8,15 @@ public class RoleValidator {
 	public boolean isClientAllowed(UserRole role, String requestType) {
 		switch (requestType){
 			case RequestType.ALL_MOVIES_REQ:
-				return true;
-			case RequestType.UPDATE_SCREENING_REQ:
-				return role == UserRole.MediaManager;
 			case RequestType.LOGIN_REQ:
 				return true;
+			case RequestType.UPDATE_SCREENING_TIME_REQ:
 			case RequestType.ADD_MOVIE:
-				return role == UserRole.MediaManager;
 			case RequestType.REMOVE_MOVIE:
+			case RequestType.ADD_SCREENINGS:
+			case RequestType.REMOVE_SCREENINGS:
+			case RequestType.ADD_STREAMING:
+			case RequestType.REMOVE_STREAMING:
 				return role == UserRole.MediaManager;
 			default:
 				return false;
