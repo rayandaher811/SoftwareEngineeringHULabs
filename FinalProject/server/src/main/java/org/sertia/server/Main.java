@@ -22,8 +22,8 @@ public class Main {
         MessageHandler messageHandler = new MessageHandler(1325, screeningTicketController);
         ScreeningTicketWithSeatsRequest request = new ScreeningTicketWithSeatsRequest();
         request.chosenSeats = new ArrayList<>();
-        request.chosenSeats.add(new HallSeat(1));
-        request.chosenSeats.add(new HallSeat(6));
+        request.chosenSeats.add(1);
+        request.chosenSeats.add(6);
         request.screeningId = 1;
         request.cardHolderId = "021";
         request.cardHolderName = "banana";

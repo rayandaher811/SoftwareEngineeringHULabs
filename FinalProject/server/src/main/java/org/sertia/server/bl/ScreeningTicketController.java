@@ -161,13 +161,13 @@ public class ScreeningTicketController implements Reportable {
         return true;
     }
 
-    private ScreeningTicket createScreeningTicket(HallSeat hallSeat, Screening screening, Session session) {
+    private ScreeningTicket createScreeningTicket(int hallSeat, Screening screening, Session session) {
         ScreeningTicket ticket = new ScreeningTicket();
         org.sertia.server.dl.classes.HallSeat requestedSeat =
-                DbUtils.getById(org.sertia.server.dl.classes.HallSeat.class, hallSeat.id)
+                DbUtils.getById(org.sertia.server.dl.classes.HallSeat.class, hallSeat)
                         .orElseThrow(() -> new IllegalArgumentException("seat doesn't exist"));
 
-        if (!isSeatFree(screening.getId(), hallSeat.id, session)) {
+        if (!isSeatFree(screening.getId(), hallSeat, session)) {
             throw new IllegalArgumentException("seat isn't free");
         }
 
