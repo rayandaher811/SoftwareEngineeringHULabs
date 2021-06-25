@@ -1,12 +1,13 @@
 package org.sertia.server;
 
-import org.joda.time.LocalDateTime;
 import org.sertia.server.dl.classes.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class DBFiller {
+public class    DBFiller {
     private ArrayList<Actor> actors;
     private ArrayList<Producer> producers;
     private ArrayList<Movie> movies;
@@ -164,11 +165,8 @@ public class DBFiller {
     }
 
 
-    private String dateToTimeStamp(int year, int month, int day, int hour, int min) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, hour, min);
-        LocalDateTime localDateTime = LocalDateTime.fromCalendarFields(calendar);
-        return localDateTime.toString();
+    private java.time.LocalDateTime dateToTimeStamp(int year, int month, int day, int hour, int min) {
+        return LocalDateTime.of(year, month, day, hour, min);
     }
 
     private void fillStreamings() {

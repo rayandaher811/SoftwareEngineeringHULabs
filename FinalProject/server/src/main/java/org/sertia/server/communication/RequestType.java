@@ -8,4 +8,6 @@ public class RequestType {
     public static final String REMOVE_MOVIE = "REMOVE_MOVIE";
     public static final String ADD_SCREENINGS = "ADD_SCREENINGS";
     public static final String REMOVE_SCREENINGS = "REMOVE_SCREENINGS";
+    public static final String ADD_STREAMING = "ADD_STREAMING";
+    public static final String REMOVE_STREAMING = "REMOVE_STREAMING";
 }

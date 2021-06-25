@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,21 +12,70 @@ public class StreamingLink {
     @Column(name ="ticket_id")
     private int id;
 
-    private Date activationStart;
+    private LocalDateTime activationStart;
 
-    private Date activationEnd;
+    private LocalDateTime activationEnd;
 
     private double paidPrice;
 
     private String link;
 
     @ManyToOne
+    @JoinColumn(name="streaming_streaming_id", nullable=false)
     private Streaming movie;
 
     @ManyToOne
     private CustomerPaymentDetails customerPaymentDetails;
 
     public StreamingLink() {
+    }
+
+    public LocalDateTime getActivationStart() {
+        return activationStart;
+    }
+
+    public void setActivationStart(LocalDateTime activationStart) {
+        this.activationStart = activationStart;
+    }
+
+    public LocalDateTime getActivationEnd() {
+        return activationEnd;
+    }
+
+    public void setActivationEnd(LocalDateTime activationEnd) {
+        this.activationEnd = activationEnd;
+    }
+
+    public double getPaidPrice() {
+        return paidPrice;
+    }
+
+    public void setPaidPrice(double paidPrice) {
+        this.paidPrice = paidPrice;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public Streaming getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Streaming movie) {
+        this.movie = movie;
+    }
+
+    public CustomerPaymentDetails getCustomerPaymentDetails() {
+        return customerPaymentDetails;
+    }
+
+    public void setCustomerPaymentDetails(CustomerPaymentDetails customerPaymentDetails) {
+        this.customerPaymentDetails = customerPaymentDetails;
     }
 }
 

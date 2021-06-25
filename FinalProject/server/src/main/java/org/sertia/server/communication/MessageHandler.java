@@ -3,6 +3,7 @@ package org.sertia.server.communication;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.sertia.contracts.movies.catalog.controller.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.controller.StreamingAdditionRequest;
 import org.sertia.contracts.movies.catalog.controller.ClientScreening;
 import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
 import org.sertia.contracts.movies.catalog.controller.SertiaMovie;
@@ -71,6 +72,12 @@ public class MessageHandler extends AbstractServer {
             case RequestType.REMOVE_SCREENINGS:
                 handleScreeningRemoval(msg.toString(),client);
                 break;
+            case RequestType.ADD_STREAMING:
+                handleStreamingAddition(msg.toString(),client);
+                break;
+            case RequestType.REMOVE_STREAMING:
+                handleStreamingRemoval(msg.toString(),client);
+                break;
             default:
                 System.out.println("Got uknown message: " + msg);
         }
@@ -111,6 +118,26 @@ public class MessageHandler extends AbstractServer {
         CinemaScreeningMovie movieScreenings = GSON.fromJson(msg, CinemaScreeningMovie.class);
         try {
             moviesCatalogController.addMovieScreenings(movieScreenings);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleStreamingAddition(String msg, ConnectionToClient client) {
+        StreamingAdditionRequest streamingAdditionRequest = GSON.fromJson(msg, StreamingAdditionRequest.class);
+        try {
+            moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleStreamingRemoval(String msg, ConnectionToClient client) {
+        try {
+            int streamingId = Integer.parseInt(msg);
+            moviesCatalogController.removeStreaming(streamingId);
             client.sendToClient(GSON.toJson(true));
         } catch (Exception e) {
             e.printStackTrace();
