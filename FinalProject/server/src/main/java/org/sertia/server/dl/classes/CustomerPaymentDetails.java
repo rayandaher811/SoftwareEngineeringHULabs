@@ -14,13 +14,16 @@ public class CustomerPaymentDetails {
     private PaymentMethod paymentMethod;
 
     private String fullName;
-    private int creditNumber;
+    private String creditNumber;
     private Date experationDate;
-    private int cvv;
+    private String cvv;
     private String email;
     private String phoneNumber;
 
-    public CustomerPaymentDetails(String payerId, String fullName, int creditNumber, Date experationDate, int cvv, String email, String phoneNumber, PaymentMethod paymentMethod) {
+    public CustomerPaymentDetails() {
+    }
+
+    public CustomerPaymentDetails(String payerId, String fullName, String creditNumber, Date experationDate, String cvv, String email, String phoneNumber, PaymentMethod paymentMethod) {
         this.payerId = payerId;
         this.fullName = fullName;
         this.creditNumber = creditNumber;
@@ -55,11 +58,11 @@ public class CustomerPaymentDetails {
         this.fullName = fullName;
     }
 
-    public int getCreditNumber() {
+    public String getCreditNumber() {
         return creditNumber;
     }
 
-    public void setCreditNumber(int creditNumber) {
+    public void setCreditNumber(String creditNumber) {
         this.creditNumber = creditNumber;
     }
 
@@ -71,11 +74,11 @@ public class CustomerPaymentDetails {
         this.experationDate = experationDate;
     }
 
-    public int getCvv() {
+    public String getCvv() {
         return cvv;
     }
 
-    public void setCvv(int cvv) {
+    public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 

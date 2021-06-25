@@ -2,9 +2,7 @@ package org.sertia.server.dl.classes;
 
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,7 +22,7 @@ public class Screening {
     private ScreenableMovie movie;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="screening_screening_id")
+    @JoinColumn(name = "screening_screening_id")
     private List<ScreeningTicket> tickets;
 
     public Screening() {

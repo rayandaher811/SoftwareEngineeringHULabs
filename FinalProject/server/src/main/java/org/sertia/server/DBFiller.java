@@ -1,8 +1,6 @@
 package org.sertia.server;
 
 import org.sertia.server.dl.classes.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -104,10 +102,10 @@ public class    DBFiller {
 
     private void fillScreenableMovies() {
         screenableMovies = new ArrayList<ScreenableMovie>();
-        screenableMovies.add(new ScreenableMovie(30 ,movies.get(0)));
-        screenableMovies.add(new ScreenableMovie(40 ,movies.get(1)));
-        screenableMovies.add(new ScreenableMovie(50 ,movies.get(2)));
-        screenableMovies.add(new ScreenableMovie(60 ,movies.get(3)));
+        screenableMovies.add(new ScreenableMovie(30, movies.get(0)));
+        screenableMovies.add(new ScreenableMovie(40, movies.get(1)));
+        screenableMovies.add(new ScreenableMovie(50, movies.get(2)));
+        screenableMovies.add(new ScreenableMovie(60, movies.get(3)));
     }
 
     private void fillUsers() {
@@ -166,6 +164,8 @@ public class    DBFiller {
 
 
     private java.time.LocalDateTime dateToTimeStamp(int year, int month, int day, int hour, int min) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, hour, min);
         return LocalDateTime.of(year, month, day, hour, min);
     }
 
