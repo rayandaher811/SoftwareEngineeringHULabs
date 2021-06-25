@@ -17,6 +17,8 @@ public class RoleValidator {
 				return role == UserRole.MediaManager;
 			case RequestType.REMOVE_MOVIE:
 				return role == UserRole.MediaManager;
+			default:
+				return false;
 		}
 	}
 
