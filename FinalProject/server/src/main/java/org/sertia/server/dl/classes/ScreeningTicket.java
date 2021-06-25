@@ -23,6 +23,10 @@ public class ScreeningTicket {
     public ScreeningTicket() {
     }
 
+    public int getId() {
+        return id;
+    }
+
     public double getPaidPrice() {
         return paidPrice;
     }

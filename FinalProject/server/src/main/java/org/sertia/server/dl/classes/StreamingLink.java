@@ -30,6 +30,10 @@ public class StreamingLink {
     public StreamingLink() {
     }
 
+    public int getId() {
+        return id;
+    }
+
     public LocalDateTime getActivationStart() {
         return activationStart;
     }
