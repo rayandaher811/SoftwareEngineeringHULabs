@@ -10,4 +10,8 @@ public class RequestType {
     public static final String REMOVE_SCREENINGS = "REMOVE_SCREENINGS";
     public static final String ADD_STREAMING = "ADD_STREAMING";
     public static final String REMOVE_STREAMING = "REMOVE_STREAMING";
+    public static final String REQUEST_PRICE_CHANGE = "REQUEST_PRICE_CHANGE";
+    public static final String APPROVE_PRICE_CHANGE = "APPROVE_PRICE_CHANGE";
+    public static final String DISAPPROVE_PRICE_CHANGE = "DISAPPROVE_PRICE_CHANGE";
+    public static final String ALL_UNAPPROVED_REQUESTS = "ALL_UNAPPROVED_REQUESTS";
 }

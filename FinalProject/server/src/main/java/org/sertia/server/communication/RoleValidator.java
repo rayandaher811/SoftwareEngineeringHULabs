@@ -17,7 +17,12 @@ public class RoleValidator {
 			case RequestType.REMOVE_SCREENINGS:
 			case RequestType.ADD_STREAMING:
 			case RequestType.REMOVE_STREAMING:
+			case RequestType.REQUEST_PRICE_CHANGE:
 				return role == UserRole.MediaManager;
+			case RequestType.ALL_UNAPPROVED_REQUESTS:
+			case RequestType.APPROVE_PRICE_CHANGE:
+			case RequestType.DISAPPROVE_PRICE_CHANGE:
+				return role == UserRole.BranchManager;
 			default:
 				return false;
 		}

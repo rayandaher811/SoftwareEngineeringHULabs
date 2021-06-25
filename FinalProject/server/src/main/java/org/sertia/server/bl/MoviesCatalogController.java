@@ -275,11 +275,6 @@ public class MoviesCatalogController implements Reportable {
         session.remove(streaming);
     }
 
-    public void requestPriceChange(String movieId, TicketType ticketType, int newPrice) {
-        // TODO - implement MoviesCatalogController.requestPriceChange
-        throw new UnsupportedOperationException();
-    }
-
     private Streaming getMovieStreaming(Session session, int movieId) {
         return session.get(Streaming.class, movieId);
     }
@@ -289,15 +284,6 @@ public class MoviesCatalogController implements Reportable {
             creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
             session.remove(ticket);
         }
-    }
-
-    private List<ScreeningTicket> getAllScreeningTickets(Session session) {
-        session.beginTransaction();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-
-        CriteriaQuery<ScreeningTicket> query = builder.createQuery(ScreeningTicket.class);
-        query.from(ScreeningTicket.class);
-        return session.createQuery(query).getResultList();
     }
 
     private List<Screening> getAllScreenings(Session session) {

@@ -1,49 +1,162 @@
 package org.sertia.server.bl;
 
+import org.hibernate.Session;
 import org.sertia.contracts.price.change.ClientPriceChangeRequest;
-import org.sertia.server.dl.classes.PriceChangeRequest;
+import org.sertia.contracts.price.change.ClientTicketType;
+import org.sertia.server.dl.HibernateSessionFactory;
+import org.sertia.server.dl.classes.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.transaction.NotSupportedException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PriceChangeController {
 
-	/**
-	 * 
-	 * @param priceChangeRequest
-	 */
-	public void requestPriceChange(PriceChangeRequest priceChangeRequest) {
-		// TODO - implement PriceChangeController.requestPriceChange
-		throw new UnsupportedOperationException();
+	public void requestPriceChange(ClientPriceChangeRequest priceChangeRequest, String username) throws Exception {
+		Session session = null;
+
+		try {
+			session = HibernateSessionFactory.getInstance().openSession();
+
+			PriceChangeRequest request = new PriceChangeRequest();
+			request.setRequester(session.get(User.class, username));
+			request.setAccepted(false);
+			request.setMovie(session.get(Movie.class, priceChangeRequest.movieId));
+			request.setTicketType(clientTicketTypeToDL(priceChangeRequest.clientTicketType));
+
+			// Saving the request
+			session.beginTransaction();
+			session.save(request);
+			session.flush();
+			session.getTransaction().commit();
+		} catch (Exception e){
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 
-	public PriceChangeRequest[] getUnapprovedRequests() {
-		// TODO - implement PriceChangeController.getUnapprovedRequests
-		throw new UnsupportedOperationException();
+	public ClientPriceChangeRequest[] getUnapprovedRequests() throws Exception {
+		try (Session session = HibernateSessionFactory.getInstance().openSession()){
+			List<ClientPriceChangeRequest> clientRequests = new LinkedList<ClientPriceChangeRequest>();
+
+			// Collecting the unapproved requests
+			for (PriceChangeRequest request : getAllPriceChangeRequests(session)) {
+				if(!request.isAccepted())
+					clientRequests.add(new ClientPriceChangeRequest(request.getId(),
+																	request.getMovie().getId(),
+																	request.getRequester().getUsername(),
+																	dlTicketTypeToClient(request.getTicketType()),
+																	request.getNewPrice(),
+																	false));
+			}
+
+			return (ClientPriceChangeRequest[]) clientRequests.toArray();
+		} finally {
+		}
 	}
 
 	/**
 	 * 
 	 * @param priceChangeRequestId
 	 */
-	public void approveRequest(String priceChangeRequestId) {
-		// TODO - implement PriceChangeController.approveRequest
-		throw new UnsupportedOperationException();
+	public void approveRequest(int priceChangeRequestId, String handlingUsername) throws Exception{
+		Session session = null;
+
+		try {
+			session = HibernateSessionFactory.getInstance().openSession();
+
+			PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
+
+			// Updating
+			request.setAccepted(true);
+			request.setHandler(session.get(User.class, handlingUsername));
+
+
+			switch (request.getTicketType()) {
+				case Streaming :
+					// Updating the streaming properly
+					Streaming streaming = session.get(Streaming.class, request.getMovie().getId());
+					streaming.setPricePerStream(request.getNewPrice());
+					session.update(streaming);
+					break;
+				case Screening:
+					// Updating the screenable movie properly
+					ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, request.getMovie().getId());
+					screenableMovie.setTicketPrice(request.getNewPrice());
+					session.update(screenableMovie);
+					break;
+				case Voucher:
+					// Updating the voucher info
+					VouchersInfo vouchersInfo = session.get(VouchersInfo.class, 0);
+					vouchersInfo.setPrice(request.getNewPrice());
+					session.update(vouchersInfo);
+					break;
+				default:
+					throw new NotSupportedException("There are such not ticket type to update it's price");
+			}
+
+			session.update(request);
+			session.flush();
+			session.clear();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 
-	/**
-	 * 
-	 * @param priceChangeRequest
-	 */
-	private boolean isPriceChangeRequestValid(ClientPriceChangeRequest priceChangeRequest) {
-		// TODO - implement PriceChangeController.isPriceChangeRequestValid
-		throw new UnsupportedOperationException();
+	public void disapprovePriceChangeRequest(int priceChangeRequestId, String handlingUsername) {
+		Session session = null;
+
+		try {
+			session = HibernateSessionFactory.getInstance().openSession();
+
+			PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
+
+			// Updating
+			request.setAccepted(false);
+			request.setHandler(session.get(User.class, handlingUsername));
+
+			session.update(request);
+			session.flush();
+			session.clear();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 
-	/**
-	 * 
-	 * @param priceChangeRequestId
-	 */
-	public void disapprovePriceChangeRequest(String priceChangeRequestId) {
-		// TODO - implement PriceChangeController.disapprovePriceChangeRequest
-		throw new UnsupportedOperationException();
+	private List<PriceChangeRequest> getAllPriceChangeRequests(Session session) {
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<PriceChangeRequest> query = builder.createQuery(PriceChangeRequest.class);
+		query.from(PriceChangeRequest.class);
+		return session.createQuery(query).getResultList();
 	}
 
+	private ClientTicketType dlTicketTypeToClient(TicketType ticketType) throws NotSupportedException{
+		switch (ticketType) {
+			case Streaming: return ClientTicketType.Streaming;
+			case Screening: return ClientTicketType.Screening;
+			case Voucher: return ClientTicketType.Voucher;
+			default: throw new NotSupportedException("There are no such DL ticket type");
+		}
+	}
+
+	private TicketType clientTicketTypeToDL(ClientTicketType ticketType) throws NotSupportedException{
+		switch (ticketType) {
+			case Streaming: return TicketType.Streaming;
+			case Screening: return TicketType.Screening;
+			case Voucher: return TicketType.Voucher;
+			default: throw new NotSupportedException("There are no such client ticket type");
+		}
+	}
 }
