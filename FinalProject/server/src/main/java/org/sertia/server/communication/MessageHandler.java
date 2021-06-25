@@ -3,6 +3,7 @@ package org.sertia.server.communication;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.sertia.contracts.movies.catalog.controller.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.controller.ClientScreening;
 import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
 import org.sertia.contracts.movies.catalog.controller.SertiaMovie;
 import org.sertia.contracts.user.login.LoginCredentials;
@@ -52,8 +53,8 @@ public class MessageHandler extends AbstractServer {
             case RequestType.ALL_MOVIES_REQ:
                 handleAllMoviesRequest(client);
                 break;
-            case RequestType.UPDATE_SCREENING_REQ:
-                handleMovieScreeningUpdate(msg.toString(),client);
+            case RequestType.UPDATE_SCREENING_TIME_REQ:
+                handleMovieScreeningTimeUpdate(msg.toString(),client);
                 break;
             case RequestType.LOGIN_REQ:
                 handleLoginRequest(msg.toString(),client);
@@ -125,14 +126,14 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleMovieScreeningUpdate(String msg, ConnectionToClient client) {
-//        UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
-//        try {
-//            moviesCatalogController.updateScreeningMovie(receivedScreening);
-//            client.sendToClient(GSON.toJson(true));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    private void handleMovieScreeningTimeUpdate(String msg, ConnectionToClient client) {
+        ClientScreening screeningToUpdate = GSON.fromJson(msg, ClientScreening.class);
+        try {
+            moviesCatalogController.updateScreeningTime(screeningToUpdate);
+            client.sendToClient(GSON.toJson(true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleLoginRequest(String msg, ConnectionToClient client) {

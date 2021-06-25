@@ -5,12 +5,15 @@ import org.joda.time.DateTime;
 import org.sertia.contracts.movies.catalog.controller.*;
 import org.sertia.contracts.reports.controller.ClientReport;
 import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.CustomerNotifier;
+import org.sertia.server.bl.Services.ICustomerNotifier;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.io.NotActiveException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,9 +22,11 @@ import java.util.stream.Collectors;
 public class MoviesCatalogController implements Reportable {
 
     private CreditCardService creditCardService;
+    private ICustomerNotifier notifier;
 
     public MoviesCatalogController(){
         creditCardService = new CreditCardService();
+        notifier = CustomerNotifier.getInstance();
     }
 
     public SertiaCatalog getSertiaCatalog() {
@@ -48,26 +53,6 @@ public class MoviesCatalogController implements Reportable {
 
         return new SertiaCatalog(sertiaMovieList);
     }
-
-//    public void updateScreeningMovie(UpdateMovieScreeningTime updateMovieRequest) {
-//        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-//            // Getting the real screening to avoid redundant changes
-//            Screening screeningToUpdate = session.get(Screening.class,
-//                    updateMovieRequest.getCurrentMovie().getScreeningId());
-//
-//            // Updating
-//            screeningToUpdate.setScreeningTimeStampAsString(updateMovieRequest.getNewDateTimeAsString());
-//            session.beginTransaction();
-//            session.update(screeningToUpdate);
-//            session.getTransaction().commit();
-//        } catch (Exception e) {
-//        }
-//    }
-
-//    public MoviesCatalog getScreeningsByCinemaId(String cinemaId) {
-//        // TODO - implement MoviesCatalogController.getScreeningsByCinemaId
-//        throw new UnsupportedOperationException();
-//    }
 
     public void addMovie(SertiaMovie movieData) {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -104,12 +89,25 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    /**
-     * @param screenings
-     */
-    public void updateMovieScreenings(ClientScreening screenings) {
-        // TODO - implement MoviesCatalogController.updateMovieScreenings
-        throw new UnsupportedOperationException();
+    public void updateScreeningTime(ClientScreening screening) {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            // Getting the real screening to avoid redundant changes
+            Screening screeningToUpdate = session.get(Screening.class, screening.screeningId);
+
+            // Updating
+            screeningToUpdate.setScreeningTime(screening.screeningTime);
+            session.beginTransaction();
+            session.update(screeningToUpdate);
+
+            // Notifing ll relevant customers for the update
+            for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
+                notifier.notify(ticket.getPaymentInfo().getPhoneNumber(),
+                                "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
+            }
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+        }
     }
 
     public void addMovieScreenings(CinemaScreeningMovie newScreenings) {

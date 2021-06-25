@@ -5,6 +5,12 @@ import org.sertia.server.dl.classes.CustomerPaymentDetails;
 
 public class CreditCardService {
 
+	ICustomerNotifier notifier;
+
+	public CreditCardService() {
+		this.notifier = CustomerNotifier.getInstance();
+	}
+
 	/**
 	 * 
 	 * @param creditDetails
@@ -21,13 +27,13 @@ public class CreditCardService {
 	 * @param amound
 	 */
 	public void refund(ClientCreditDetails creditDetails, int amound) {
+
 		// TODO - implement CreditCardService.refund
 		throw new UnsupportedOperationException();
 	}
 
 	public void refund(CustomerPaymentDetails customerPaymentDetails, double amound) {
-		// TODO - implement CreditCardService.refund
-		throw new UnsupportedOperationException();
+		notifier.notify(customerPaymentDetails.getPhoneNumber(), "You have been refunded by sertia cinema in " + amound + " shekels.");
 	}
 
 }
