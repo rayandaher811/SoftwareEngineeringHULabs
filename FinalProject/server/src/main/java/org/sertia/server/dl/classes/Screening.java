@@ -1,6 +1,10 @@
 package org.sertia.server.dl.classes;
 
+
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -11,7 +15,7 @@ public class Screening {
     @Column(name = "screening_id")
     private int id;
 
-    private String screeningTimeStampAsString;
+    private LocalDateTime screeningTime;
 
     @ManyToOne
     private Hall hall;
@@ -26,14 +30,10 @@ public class Screening {
     public Screening() {
     }
 
-    public Screening(String screeningTimeAsString, Hall hall, ScreenableMovie movie) {
-        this.screeningTimeStampAsString = screeningTimeAsString;
+    public Screening(LocalDateTime screeningTime, Hall hall, ScreenableMovie movie) {
         this.hall = hall;
         this.movie = movie;
-    }
-
-    public String getScreeningTimeStampAsString() {
-        return screeningTimeStampAsString;
+        this.screeningTime = screeningTime;
     }
 
     public Hall getHall() {
@@ -48,8 +48,12 @@ public class Screening {
         return id;
     }
 
-    public void setScreeningTimeStampAsString(String screeningTimeStampAsString) {
-        this.screeningTimeStampAsString = screeningTimeStampAsString;
+    public LocalDateTime getScreeningTime() {
+        return screeningTime;
+    }
+
+    public void setScreeningTime(LocalDateTime screeningTime) {
+        this.screeningTime = screeningTime;
     }
 
     public List<ScreeningTicket> getTickets() {

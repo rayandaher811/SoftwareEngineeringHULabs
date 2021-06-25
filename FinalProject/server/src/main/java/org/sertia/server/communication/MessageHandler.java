@@ -2,14 +2,15 @@ package org.sertia.server.communication;
 
 import com.google.gson.Gson;
 import org.json.JSONObject;
+import org.sertia.contracts.movies.catalog.controller.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.controller.SertiaMovie;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.server.bl.MoviesCatalogController;
 import org.sertia.server.bl.ScreeningTicketController;
 import org.sertia.server.bl.UserLoginController;
-import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
 
 import java.io.IOException;
 
@@ -63,17 +64,56 @@ public class MessageHandler extends AbstractServer {
             case RequestType.REMOVE_MOVIE:
                 handleMovieRemoval(msg.toString(),client);
                 break;
+            case RequestType.ADD_SCREENINGS:
+                handleScreeningAddition(msg.toString(),client);
+                break;
+            case RequestType.REMOVE_SCREENINGS:
+                handleScreeningRemoval(msg.toString(),client);
+                break;
             default:
                 System.out.println("Got uknown message: " + msg);
         }
     }
 
-    private void handleMovieRemoval(String toString, ConnectionToClient client) {
 
+    private void handleMovieRemoval(String msg, ConnectionToClient client) {
+        try {
+            int movieId = Integer.parseInt(msg);
+            moviesCatalogController.removeMovie(movieId);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void handleMovieAddition(String toString, ConnectionToClient client) {
-        
+    private void handleScreeningRemoval(String msg, ConnectionToClient client) {
+        try {
+            int screeningId = Integer.parseInt(msg);
+            moviesCatalogController.removeMovieScreening(screeningId);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleMovieAddition(String msg, ConnectionToClient client) {
+        SertiaMovie newMovie = GSON.fromJson(msg, SertiaMovie.class);
+        try {
+            moviesCatalogController.addMovie(newMovie);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleScreeningAddition(String msg, ConnectionToClient client) {
+        CinemaScreeningMovie movieScreenings = GSON.fromJson(msg, CinemaScreeningMovie.class);
+        try {
+            moviesCatalogController.addMovieScreenings(movieScreenings);
+            client.sendToClient(GSON.toJson(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleAllMoviesRequest(ConnectionToClient client) {
@@ -86,13 +126,13 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleMovieScreeningUpdate(String msg, ConnectionToClient client) {
-        UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
-        try {
-            moviesCatalogController.updateScreeningMovie(receivedScreening);
-            client.sendToClient(GSON.toJson(true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
+//        try {
+//            moviesCatalogController.updateScreeningMovie(receivedScreening);
+//            client.sendToClient(GSON.toJson(true));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void handleLoginRequest(String msg, ConnectionToClient client) {
