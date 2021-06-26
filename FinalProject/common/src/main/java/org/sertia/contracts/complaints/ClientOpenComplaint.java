@@ -26,4 +26,13 @@ public class ClientOpenComplaint implements Serializable {
 		this.ticketId = ticketId;
 		this.ticketType = ticketType;
 	}
+
+	public ClientOpenComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
+		this.customerName = customerName;
+		this.customerPhoneNumber = customerPhoneNumber;
+		this.customerEmail = customerEmail;
+		this.description = description;
+		this.ticketId = ticketId;
+		this.ticketType = ticketType;
+	}
 }
