@@ -5,10 +5,11 @@ import org.sertia.contracts.screening.ticket.HallSeat;
 
 import java.util.List;
 
-public class ClientSeatMap extends SertiaBasicResponse {
+public class ClientSeatMapResponse extends SertiaBasicResponse {
     public List<HallSeat> hallSeats;
 
-    public ClientSeatMap(List<HallSeat> hallSeats) {
+    public ClientSeatMapResponse(boolean isSuccessful, List<HallSeat> hallSeats) {
+        super(isSuccessful);
         this.hallSeats = hallSeats;
     }
 }

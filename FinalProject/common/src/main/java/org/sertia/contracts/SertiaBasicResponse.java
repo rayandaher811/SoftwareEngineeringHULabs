@@ -6,9 +6,8 @@ public class SertiaBasicResponse implements Serializable {
     public boolean isSuccessful;
     public String failReason;
 
-    public SertiaBasicResponse setSuccessful(boolean successful) {
-        isSuccessful = successful;
-        return this;
+    public SertiaBasicResponse(boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
     }
 
     public SertiaBasicResponse setFailReason(String failReason) {

@@ -3,7 +3,7 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
-import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
@@ -50,7 +50,7 @@ public class MoviesCatalogController implements Reportable {
                     sertiaMovieList.add(sertiaMovie);
                 });
 
-        return new SertiaCatalog(sertiaMovieList);
+        return new SertiaCatalogResponse(true, sertiaMovieList);
     }
 
     public void addMovie(SertiaMovie movieData) {

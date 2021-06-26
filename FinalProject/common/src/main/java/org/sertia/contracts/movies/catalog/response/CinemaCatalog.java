@@ -7,4 +7,8 @@ import java.util.List;
 
 public class CinemaCatalog extends SertiaBasicResponse {
     public List<CinemaScreeningMovie> movies;
+
+    public CinemaCatalog(boolean isSuccessful) {
+        super(isSuccessful);
+    }
 }

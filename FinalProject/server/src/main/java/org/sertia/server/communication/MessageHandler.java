@@ -78,6 +78,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(GetScreeningSeatMap.class, this::handleGetScreeningSeatMap);
         messageTypeToHandler.put(ScreeningTicketWithSeatsRequest.class, this::handleScreeningTicketWithSeats);
         messageTypeToHandler.put(ScreeningTicketWithCovidRequest.class, this::handleScreeningTicketWithCovid);
+        messageTypeToHandler.put(CancelScreeningTicketRequest.class, this::handleTicketCancel);
         messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
         messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
     }
@@ -121,6 +122,15 @@ public class MessageHandler extends AbstractServer {
         try {
             ScreeningTicketWithCovidRequest ticketRequest = (ScreeningTicketWithCovidRequest) request;
             client.sendToClient(screeningTicketController.buyTicketWithRegulations(ticketRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            CancelScreeningTicketRequest cancelRequest = (CancelScreeningTicketRequest) request;
+            client.sendToClient(screeningTicketController.cancelTicket(cancelRequest));
         } catch (IOException e) {
             e.printStackTrace();
         }

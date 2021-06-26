@@ -4,7 +4,7 @@ package org.sertia.client.controllers;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
-import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 public class ClientCatalogControl {
 
@@ -89,7 +89,7 @@ public class ClientCatalogControl {
 	 * 
 	 * @param catalog
 	 */
-	public void onAllMoviesCatalogReceive(SertiaCatalog catalog) {
+	public void onAllMoviesCatalogReceive(SertiaCatalogResponse catalog) {
 		// TODO - implement ClientCatalogControl.onAllMoviesCatalogReceive
 		throw new UnsupportedOperationException();
 	}

@@ -1,7 +1,7 @@
 package org.sertia.client.controllers;
 
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
-import org.sertia.contracts.screening.ticket.response.ClientSeatMap;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 public class ClientPurchaseControl {
 
@@ -20,7 +20,7 @@ public class ClientPurchaseControl {
 	 * 
 	 * @param seatMap
 	 */
-	public void onSeatMapResponse(ClientSeatMap seatMap) {
+	public void onSeatMapResponse(ClientSeatMapResponse seatMap) {
 		// TODO - implement ClientPurchaseControl.onSeatMapResponse
 		throw new UnsupportedOperationException();
 	}

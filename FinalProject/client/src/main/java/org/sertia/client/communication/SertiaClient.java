@@ -2,7 +2,7 @@ package org.sertia.client.communication;
 
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
-import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
 
 import java.io.IOException;
@@ -58,8 +58,8 @@ public class SertiaClient extends AbstractClient {
 
     public MoviesCatalog getMoviesCatalog() {
         SertiaCatalogRequest sertiaCatalogRequest = new SertiaCatalogRequest();
-        Optional<SertiaCatalog> res =
-                client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalog.class);
+        Optional<SertiaCatalogResponse> res =
+                client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalogResponse.class);
 
         if (res.isPresent())
             return new MoviesCatalog();
