@@ -18,4 +18,6 @@ module org.sertia.contracts {
     exports org.sertia.contracts.price.change.responses;
     exports org.sertia.contracts.complaints.requests;
     exports org.sertia.contracts.complaints.responses;
+    exports org.sertia.contracts.user.login.request;
+    exports org.sertia.contracts.user.login.response;
 }
