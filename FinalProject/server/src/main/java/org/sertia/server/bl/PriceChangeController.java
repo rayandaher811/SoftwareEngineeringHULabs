@@ -39,7 +39,7 @@ public class PriceChangeController {
 		}
 	}
 
-	public BasicPriceChangeRequest[] getUnapprovedRequests() throws Exception {
+	public List<BasicPriceChangeRequest> getUnapprovedRequests() throws Exception {
 		try (Session session = HibernateSessionFactory.getInstance().openSession()){
 			List<BasicPriceChangeRequest> clientRequests = new LinkedList<BasicPriceChangeRequest>();
 
@@ -54,7 +54,7 @@ public class PriceChangeController {
 																	false));
 			}
 
-			return (BasicPriceChangeRequest[]) clientRequests.toArray();
+			return clientRequests;
 		} finally {
 		}
 	}
