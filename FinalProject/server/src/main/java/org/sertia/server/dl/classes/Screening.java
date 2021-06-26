@@ -20,6 +20,7 @@ public class Screening {
     private Hall hall;
 
     @ManyToOne
+    @JoinColumn(nullable=false)
     private ScreenableMovie movie;
 
     @OneToMany(fetch = FetchType.EAGER)

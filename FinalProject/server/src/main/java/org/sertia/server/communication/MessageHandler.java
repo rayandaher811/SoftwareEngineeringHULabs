@@ -95,11 +95,13 @@ public class MessageHandler extends AbstractServer {
         Class<?> requestType = msg.getClass();
         if (!messageTypeToHandler.containsKey(requestType)) {
             System.out.println("user " + client.getName() + " requested non-existing action " + msg.getClass());
+            sendResponseToClient(client, new SertiaBasicResponse(false, "There are no such action"));
             return;
         }
 
         if (!roleValidator.isClientAllowed((UserRole) client.getInfo(ClientRoleType), msg.getClass())) {
             System.out.println("user " + client.getName() + " denied request of type " + msg.getClass());
+            sendResponseToClient(client, new SertiaBasicResponse(false, "Access denied you are not allowed to do such actions."));
             return;
         }
 

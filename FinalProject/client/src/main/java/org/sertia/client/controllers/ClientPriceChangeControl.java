@@ -20,8 +20,8 @@ public class ClientPriceChangeControl {
 		client = SertiaClient.getInstance();
 	}
 
-	public void requestPriceChange(int movieId, String userName, ClientTicketType clientTicketType, double newPrice) {
-		client.request(new BasicPriceChangeRequest(movieId, userName, clientTicketType, newPrice), SertiaBasicResponse.class);
+	public void requestPriceChange(int movieId, ClientTicketType clientTicketType, double newPrice) {
+		client.request(new BasicPriceChangeRequest(movieId, clientTicketType, newPrice), SertiaBasicResponse.class);
 	}
 
 	public boolean tryApprovePriceChange(int requestId) {

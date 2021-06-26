@@ -8,6 +8,7 @@ import org.sertia.server.dl.classes.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.sound.sampled.Control;
 import javax.transaction.NotSupportedException;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,10 +22,11 @@ public class PriceChangeController {
 			session = HibernateSessionFactory.getInstance().openSession();
 
 			PriceChangeRequest request = new PriceChangeRequest();
-			request.setRequester(session.get(User.class, username));
+			request.setRequester(ControllerUtils.getUser(username, session));
 			request.setAccepted(false);
 			request.setMovie(session.get(Movie.class, priceChangeRequest.movieId));
 			request.setTicketType(ControllerUtils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
+			request.setNewPrice(priceChangeRequest.newPrice);
 
 			// Saving the request
 			session.beginTransaction();
@@ -45,7 +47,7 @@ public class PriceChangeController {
 
 			// Collecting the unapproved requests
 			for (PriceChangeRequest request : getAllPriceChangeRequests(session)) {
-				if(!request.isAccepted())
+				if(!request.isAccepted() && request.getHandler() == null)
 					clientRequests.add(new BasicPriceChangeRequest(request.getId(),
 																	request.getMovie().getId(),
 																	request.getRequester().getUsername(),
@@ -75,6 +77,7 @@ public class PriceChangeController {
 			request.setAccepted(true);
 			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
 
+			session.beginTransaction();
 
 			switch (request.getTicketType()) {
 				case Streaming :
@@ -123,6 +126,7 @@ public class PriceChangeController {
 			request.setAccepted(false);
 			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
 
+			session.beginTransaction();
 			session.update(request);
 			session.flush();
 			session.clear();

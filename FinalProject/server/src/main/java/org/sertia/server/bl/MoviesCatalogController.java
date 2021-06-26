@@ -217,7 +217,6 @@ public class MoviesCatalogController implements Reportable {
         try {
             session = HibernateSessionFactory.getInstance().openSession();
             List<Screening> screenings = getAllScreenings(session);
-            Streaming streaming = getMovieStreaming(session, movieId);
             LocalDateTime currentTime = LocalDateTime.now();
 
             session.beginTransaction();
@@ -226,10 +225,11 @@ public class MoviesCatalogController implements Reportable {
             for (Screening screening:screenings) {
                 if(screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)){
                     RefundAndRemoveAllScreeningTickets(session, screening);
+
+                    // Deleting the canceled screening
+                    session.remove(session.get(Screening.class, screening.getId()));
                 }
 
-                // Deleting the canceled screening
-                session.remove(session.get(Screening.class, screening.getId()));
             }
 
             removeStreamingViaFoundSession(movieId, session);
@@ -288,6 +288,11 @@ public class MoviesCatalogController implements Reportable {
 
     private void removeStreamingViaFoundSession(int movieId, Session session) {
         Streaming streaming = session.get(Streaming.class, movieId);
+
+        // The movie have no streaming
+        if(streaming == null)
+            return;
+
         LocalDateTime currentTime = LocalDateTime.now();
 
         // Refunding all relevant canceled link + deleting them
@@ -315,7 +320,6 @@ public class MoviesCatalogController implements Reportable {
     }
 
     private List<Screening> getAllScreenings(Session session) {
-        session.beginTransaction();
         CriteriaBuilder builder = session.getCriteriaBuilder();
 
         CriteriaQuery<Screening> query = builder.createQuery(Screening.class);

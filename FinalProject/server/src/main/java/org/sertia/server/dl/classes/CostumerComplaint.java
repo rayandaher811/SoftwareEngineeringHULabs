@@ -19,12 +19,15 @@ public class CostumerComplaint {
     private TicketType ticketType;
 
     @OneToOne
+    @JoinColumn(nullable=true)
     private ScreeningTicket screeningTicket;
 
     @OneToOne
+    @JoinColumn(nullable=true)
     private StreamingLink streamingLink;
 
     @OneToOne
+    @JoinColumn(nullable=true)
     private TicketsVoucher ticketsVoucher;
 
     @ManyToOne

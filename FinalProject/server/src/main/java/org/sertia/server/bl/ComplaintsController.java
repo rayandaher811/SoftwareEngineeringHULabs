@@ -104,7 +104,7 @@ public class ComplaintsController implements Reportable {
 			else {
 				throw new OperationNotSupportedException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
 			}
-
+			session.beginTransaction();
 			session.update(complaint);
 			session.flush();
 			session.clear();
@@ -135,6 +135,7 @@ public class ComplaintsController implements Reportable {
 				throw new OperationNotSupportedException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
 			}
 
+			session.beginTransaction();
 			session.update(complaint);
 			session.flush();
 			session.clear();
