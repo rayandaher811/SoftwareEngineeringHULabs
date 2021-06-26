@@ -4,4 +4,8 @@ import org.sertia.contracts.SertiaBasicRequest;
 
 public class StreamingRemovalRequest extends SertiaBasicRequest {
     public int streamingId;
+
+    public StreamingRemovalRequest(int streamingId) {
+        this.streamingId = streamingId;
+    }
 }

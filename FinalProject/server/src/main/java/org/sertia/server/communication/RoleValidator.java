@@ -40,7 +40,7 @@ public class RoleValidator {
                 requestType == RemoveScreeningRequest.class ||
                 requestType == AddMovieRequest.class ||
                 requestType == RemoveMovieRequest.class ||
-                requestType == ScreeningUpdateRequest.class;
+                requestType == ScreeningTimeUpdateRequest.class;
     }
 
     public boolean isCustomerSupportOperation(Class<?> requestType) {

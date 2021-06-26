@@ -1,12 +1,21 @@
 package org.sertia.client.controllers;
 
 
+import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.contracts.movies.catalog.ClientMovie;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 public class ClientCatalogControl {
+
+	private SertiaClient client;
+
+	public ClientCatalogControl() {
+		client = SertiaClient.getInstance();
+	}
 
 	/**
 	 * 
@@ -22,85 +31,31 @@ public class ClientCatalogControl {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param movie
-	 */
-	public void createMovie(ClientMovie movie) {
-		// TODO - implement ClientCatalogControl.createMovie
-		throw new UnsupportedOperationException();
+	public boolean tryCreateMovie(SertiaMovie movie) {
+		return client.request(new AddMovieRequest(movie)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param parameter
-	 */
-	public void editScreening(ClientScreening parameter) {
-		// TODO - implement ClientCatalogControl.editScreening
-		throw new UnsupportedOperationException();
+	public boolean tryRemoveMovie(int movieId) {
+		return client.request(new RemoveMovieRequest(movieId)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param parameter
-	 */
-	public void addScreening(ClientScreening parameter) {
-		// TODO - implement ClientCatalogControl.addScreening
-		throw new UnsupportedOperationException();
+	public boolean tryUpdateScreeningTime(ClientScreening screening) {
+		return client.request(new ScreeningTimeUpdateRequest(screening)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param screeningId
-	 */
-	public void removeScreening(String screeningId) {
-		// TODO - implement ClientCatalogControl.removeScreening
-		throw new UnsupportedOperationException();
+	public boolean tryAddScreening(CinemaScreeningMovie parameter) {
+		return client.request(new AddScreeningRequest(parameter)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param streaming
-	 */
-//	public void addStreaming(ClientStreaming streaming) {
-//		// TODO - implement ClientCatalogControl.addStreaming
-//		throw new UnsupportedOperationException();
-//	}
-
-	/**
-	 * 
-	 * @param streaming
-	 */
-	public void removeStreaming(String streaming) {
-		// TODO - implement ClientCatalogControl.removeStreaming
-		throw new UnsupportedOperationException();
+	public boolean tryRemoveScreening(int screeningId) {
+		return client.request(new RemoveScreeningRequest(screeningId)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param catalog
-	 */
-	public void onSpecificCatalogReceive(MoviesCatalog catalog) {
-		// TODO - implement ClientCatalogControl.onSpecificCatalogReceive
-		throw new UnsupportedOperationException();
+	public boolean tryAddStreaming(int movieId, double pricePerStream) {
+		return client.request(new StreamingAdditionRequest(movieId, pricePerStream)).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param catalog
-	 */
-	public void onAllMoviesCatalogReceive(SertiaCatalogResponse catalog) {
-		// TODO - implement ClientCatalogControl.onAllMoviesCatalogReceive
-		throw new UnsupportedOperationException();
+	public boolean tryRemoveStreaming(int movieId) {
+		return client.request(new StreamingRemovalRequest(movieId)).isSuccessful;
 	}
-
-	/**
-	 * 
-	 * @param movieId
-	 */
-	public void removeMovie(String movieId) {
-		// TODO - implement ClientCatalogControl.removeMovie
-		throw new UnsupportedOperationException();
-	}
-
 }

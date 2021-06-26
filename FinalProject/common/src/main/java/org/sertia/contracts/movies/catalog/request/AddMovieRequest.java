@@ -5,4 +5,8 @@ import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 public class AddMovieRequest extends SertiaBasicRequest {
     public SertiaMovie sertiaMovie;
+
+    public AddMovieRequest(SertiaMovie sertiaMovie) {
+        this.sertiaMovie = sertiaMovie;
+    }
 }
