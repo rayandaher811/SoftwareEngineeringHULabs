@@ -24,12 +24,11 @@ public class HibernateSessionFactory {
                 configuration.addAnnotatedClass(Actor.class);
                 configuration.addAnnotatedClass(Cinema.class);
                 configuration.addAnnotatedClass(CostumerComplaint.class);
-                configuration.addAnnotatedClass(CostumerInfo.class);
+                configuration.addAnnotatedClass(CustomerPaymentDetails.class);
                 configuration.addAnnotatedClass(Hall.class);
                 configuration.addAnnotatedClass(HallSeat.class);
                 configuration.addAnnotatedClass(Movie.class);
                 configuration.addAnnotatedClass(ScreenableMovie.class);
-                configuration.addAnnotatedClass(PaymentInfo.class);
                 configuration.addAnnotatedClass(PriceChangeRequest.class);
                 configuration.addAnnotatedClass(Producer.class);
                 configuration.addAnnotatedClass(Refund.class);

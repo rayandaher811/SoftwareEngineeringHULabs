@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="cinemas")
@@ -14,6 +15,14 @@ public class Cinema {
 
     @ManyToOne
     private User Manager;
+
+    public Set<Hall> getHalls() {
+        return halls;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="cinema_cinema_id")
+    Set<Hall> halls;
 
     public Cinema() {
     }

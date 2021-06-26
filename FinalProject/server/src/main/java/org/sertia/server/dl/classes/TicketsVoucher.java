@@ -12,12 +12,29 @@ public class TicketsVoucher {
 
     private int ticketsBalance;
 
+    @ManyToOne
+    private CustomerPaymentDetails customerPaymentDetails;
+
     public TicketsVoucher() {
     }
 
-    @OneToOne
-    private PaymentInfo paymentInfo;
+    public int getId() {
+        return id;
+    }
 
-    @ManyToOne
-    private CostumerInfo costumerInfo;
+    public int getTicketsBalance() {
+        return ticketsBalance;
+    }
+
+    public void setTicketsBalance(int ticketsBalance) {
+        this.ticketsBalance = ticketsBalance;
+    }
+
+    public CustomerPaymentDetails getCustomerPaymentDetails() {
+        return customerPaymentDetails;
+    }
+
+    public void setCustomerPaymentDetails(CustomerPaymentDetails customerPaymentDetails) {
+        this.customerPaymentDetails = customerPaymentDetails;
+    }
 }

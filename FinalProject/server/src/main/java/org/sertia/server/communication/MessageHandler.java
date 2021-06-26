@@ -1,113 +1,496 @@
 package org.sertia.server.communication;
 
-import com.google.gson.Gson;
-import org.json.JSONObject;
-import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
+import org.sertia.contracts.SertiaBasicRequest;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
+import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
+import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
+import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
+import org.sertia.contracts.complaints.responses.AllUnhandledComplaintsResponse;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.request.*;
+import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
+import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
+import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
+import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.user.login.LoginCredentials;
-import org.sertia.contracts.user.login.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
-import org.sertia.server.bl.MoviesCatalogController;
-import org.sertia.server.bl.UserLoginController;
-import org.sertia.server.communication.messages.UpdateMovieScreeningTime;
+import org.sertia.contracts.user.login.request.LoginRequest;
+import org.sertia.contracts.user.login.response.LoginResult;
+import org.sertia.server.bl.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class MessageHandler extends AbstractServer {
-    private static Gson GSON = new Gson();
-    private final MoviesCatalogController moviesCatalogController;
-
-
-    private UserLoginController userLoginController;
     private final String ClientRoleType = "Role";
     private final String ClientSessionIdType = "Session";
-    private RoleValidator roleValidator;
+    private final String ClientUsernameType = "Username";
 
-    public MessageHandler(int port) {
+    private final MoviesCatalogController moviesCatalogController;
+    private final ScreeningTicketController screeningTicketController;
+    private final PriceChangeController priceChangeController;
+    private final UserLoginController userLoginController;
+    private final ComplaintsController complaintsController;
+
+    private final Map<Class<? extends SertiaBasicRequest>, BiConsumer<SertiaBasicRequest, ConnectionToClient>> messageTypeToHandler;
+
+    private final RoleValidator roleValidator;
+
+    public MessageHandler(int port, ScreeningTicketController screeningTicketController) {
         super(port);
-        userLoginController = new UserLoginController();
-        roleValidator = new RoleValidator();
+        this.roleValidator = new RoleValidator();
+        this.messageTypeToHandler = new HashMap<>();
+        initializeHandlerMapping();
 
-        LoginCredentials a = new LoginCredentials();
-        a.username = "Admin";
-        a.password = "123123";
-        userLoginController.login(a);
-        moviesCatalogController = new MoviesCatalogController();
+        this.screeningTicketController = screeningTicketController;
+        this.userLoginController = new UserLoginController();
+        this.priceChangeController = new PriceChangeController();
+        this.complaintsController = new ComplaintsController();
+        this.moviesCatalogController = new MoviesCatalogController();
+    }
+
+    private void initializeHandlerMapping() {
+        messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
+
+        messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
+        messageTypeToHandler.put(CinemaCatalogRequest.class, this::handleCinemaCatalog);
+        messageTypeToHandler.put(ScreeningTimeUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
+        messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
+        messageTypeToHandler.put(RemoveMovieRequest.class, this::handleMovieRemoval);
+        messageTypeToHandler.put(AddScreeningRequest.class, this::handleScreeningAddition);
+        messageTypeToHandler.put(RemoveScreeningRequest.class, this::handleScreeningRemoval);
+        messageTypeToHandler.put(StreamingAdditionRequest.class, this::handleStreamingAddition);
+        messageTypeToHandler.put(StreamingRemovalRequest.class, this::handleStreamingRemoval);
+
+        messageTypeToHandler.put(BasicPriceChangeRequest.class, this::handlePriceChangeRequest);
+        messageTypeToHandler.put(GetUnapprovedPriceChangeRequest.class, this::handleAllUnapprovedPriceChangeRequests);
+        messageTypeToHandler.put(ApprovePriceChangeRequest.class, this::handleApprovePriceChangeRequest);
+        messageTypeToHandler.put(DissapprovePriceChangeRequest.class, this::handleDisapprovePriceChangeRequest);
+
+        messageTypeToHandler.put(GetAllUnhandledComplaintsRequest.class, this::handleAllUnhandledComplaintsRequest);
+        messageTypeToHandler.put(CreateNewComplaintRequest.class, this::handleNewComplaintCreationRequest);
+        messageTypeToHandler.put(CloseComplaintRequest.class, this::handleCloseComplaintRequest);
+        messageTypeToHandler.put(PurchaseCancellationFromComplaintRequest.class, this::handlePurchaseCancellationFromComplaintRequest);
+
+        messageTypeToHandler.put(GetScreeningSeatMap.class, this::handleGetScreeningSeatMap);
+        messageTypeToHandler.put(ScreeningTicketWithSeatsRequest.class, this::handleScreeningTicketWithSeats);
+        messageTypeToHandler.put(ScreeningTicketWithCovidRequest.class, this::handleScreeningTicketWithCovid);
+        messageTypeToHandler.put(CancelScreeningTicketRequest.class, this::handleTicketCancel);
+        messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
+        messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
+        messageTypeToHandler.put(UseVoucherRequest.class, this::handleUseVoucherRequest);
     }
 
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         System.out.println("Received Message: " + msg.toString());
-        String requestType = new JSONObject(msg.toString()).getString("messageName");
 
-        // Validating the user requests
-        if(!roleValidator.isClientAllowed((UserRole)client.getInfo(ClientRoleType),
-                                            requestType))
+        Class<?> requestType = msg.getClass();
+        if (!messageTypeToHandler.containsKey(requestType)) {
+            System.out.println("user " + client.getName() + " requested non-existing action " + msg.getClass());
             return;
-
-        switch (requestType) {
-            case RequestType.ALL_MOVIES_REQ:
-                handleAllMoviesRequest(client);
-                break;
-            case RequestType.UPDATE_SCREENING_REQ:
-                handleMovieScreeningUpdate(msg.toString(),client);
-                break;
-            case RequestType.LOGIN_REQ:
-                handleLoginRequest(msg.toString(),client);
-                break;
-            case RequestType.ADD_MOVIE:
-                handleMovieAddition(msg.toString(),client);
-                break;
-            case RequestType.REMOVE_MOVIE:
-                handleMovieRemoval(msg.toString(),client);
-                break;
-            default:
-                System.out.println("Got uknown message: " + msg);
         }
+
+        if (!roleValidator.isClientAllowed((UserRole) client.getInfo(ClientRoleType), msg.getClass())) {
+            System.out.println("user " + client.getName() + " denied request of type " + msg.getClass());
+            return;
+        }
+
+        messageTypeToHandler.get(requestType).accept((SertiaBasicRequest) msg, client);
     }
 
-    private void handleMovieRemoval(String toString, ConnectionToClient client) {
-
-    }
-
-    private void handleMovieAddition(String toString, ConnectionToClient client) {
-        
-    }
-
-    public void handleAllMoviesRequest(ConnectionToClient client) {
+    private void handleSertiaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
-            SertiaCatalog requestResponse = moviesCatalogController.getSertiaCatalog();
-            client.sendToClient(GSON.toJson(requestResponse));
-        } catch (IOException e) {
+            response = moviesCatalogController.getSertiaCatalog();
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't handle get Sertia catalog.");
         }
+
+        sendResponseToClient(client, response);
     }
 
-    private void handleMovieScreeningUpdate(String msg, ConnectionToClient client) {
-        UpdateMovieScreeningTime receivedScreening = GSON.fromJson(msg, UpdateMovieScreeningTime.class);
+    private void handleCinemaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
-            moviesCatalogController.updateScreeningMovie(receivedScreening);
-            client.sendToClient(GSON.toJson(true));
-        } catch (IOException e) {
+            response = moviesCatalogController.getCinemaCatalog((CinemaCatalogRequest) request);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't get cinema catalog.");
         }
+
+        sendResponseToClient(client, response);
     }
 
-    private void handleLoginRequest(String msg, ConnectionToClient client) {
-        LoginCredentials loginCredentials = GSON.fromJson(msg, LoginCredentials.class);
+    private void handleScreeningTicketWithSeats(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            ScreeningTicketWithSeatsRequest ticketRequest = (ScreeningTicketWithSeatsRequest) request;
+            response = screeningTicketController.buyTicketWithSeatChose(ticketRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't couldn't handle purchase request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleScreeningTicketWithCovid(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            ScreeningTicketWithCovidRequest ticketRequest = (ScreeningTicketWithCovidRequest) request;
+            response = screeningTicketController.buyTicketWithRegulations(ticketRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't couldn't handle purchase request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            CancelScreeningTicketRequest cancelRequest = (CancelScreeningTicketRequest) request;
+            response = screeningTicketController.cancelTicket(cancelRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle ticket cancel.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleGetScreeningSeatMap(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            GetScreeningSeatMap seatMapRequest = (GetScreeningSeatMap) request;
+            response = screeningTicketController.getSeatMapForScreening(seatMapRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't get the seat map for the screening.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleVoucherPurchase(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            VoucherPurchaseRequest voucherPurchaseRequest = (VoucherPurchaseRequest) request;
+            response = screeningTicketController.buyVoucher(voucherPurchaseRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle the voucher purchase request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleVoucherBalanceRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            VoucherBalanceRequest voucherBalanceRequest = (VoucherBalanceRequest) request;
+            response = screeningTicketController.getVoucherBalance(voucherBalanceRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle the voucher balance request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleUseVoucherRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            UseVoucherRequest useVoucherRequest = (UseVoucherRequest) request;
+            response = screeningTicketController.useVoucher(useVoucherRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't the voucher use request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // region Price change requests handlers
+
+    private void handleAllUnapprovedPriceChangeRequests(SertiaBasicRequest request, ConnectionToClient client) {
+        GetUnapprovedPriceChangeResponse response = new GetUnapprovedPriceChangeResponse(false);
 
         try {
-            LoginResult result = userLoginController.login(loginCredentials);
+            response.unapprovedRequests = priceChangeController.getUnapprovedRequests();
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleAllUnapprovedPriceChangeRequests.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleDisapprovePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            int priceChangeRequestId = ((DissapprovePriceChangeRequest) request).priceChangeRequestId;
+            priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleDisapprovePriceChangeRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleApprovePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            int priceChangeRequestId = ((ApprovePriceChangeRequest) request).priceChangeRequestId;
+            priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleApprovePriceChangeRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handlePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            BasicPriceChangeRequest priceChangeRequest = (BasicPriceChangeRequest) request;
+            priceChangeController.requestPriceChange(priceChangeRequest, (String) client.getInfo(ClientUsernameType));
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handlePriceChangeRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
+    // region Movies Addition/Removal handlers
+
+    private void handleMovieRemoval(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            int movieId = ((RemoveMovieRequest) request).movieId;
+            moviesCatalogController.removeMovie(movieId);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleMovieRemoval.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleMovieAddition(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            SertiaMovie newMovie = ((AddMovieRequest) request).sertiaMovie;
+            moviesCatalogController.addMovie(newMovie);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleMovieAddition.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
+    // region Screening Addition/Removal/Update handlers
+
+    private void handleScreeningAddition(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
+            moviesCatalogController.addMovieScreenings(movieScreenings);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleScreeningAddition.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleScreeningRemoval(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            int screeningId = ((RemoveScreeningRequest) request).screeningId;
+            moviesCatalogController.removeMovieScreening(screeningId);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleScreeningRemoval.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleMovieScreeningTimeUpdate(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            ClientScreening screeningToUpdate = ((ScreeningTimeUpdateRequest) request).screening;
+            moviesCatalogController.updateScreeningTime(screeningToUpdate);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleMovieScreeningTimeUpdate.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
+    // region Streaming Addition/Removal handlers
+
+    private void handleStreamingAddition(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
+            moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleStreamingAddition.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleStreamingRemoval(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            int streamingId = ((StreamingRemovalRequest) request).streamingId;
+            moviesCatalogController.removeStreaming(streamingId);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleStreamingRemoval.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
+    private void handleLoginRequest(SertiaBasicRequest request, ConnectionToClient client) {
+
+        LoginResult result = new LoginResult();
+
+        try {
+            LoginCredentials loginCredentials = ((LoginRequest) request).loginCredentials;
+            result = userLoginController.login(loginCredentials);
 
             // Saving the user's role and session ID
             client.setInfo(ClientRoleType, result.userRole);
             client.setInfo(ClientSessionIdType, result.sessionId);
 
-            client.sendToClient(GSON.toJson(result));
+            result.setSuccessful(result.userRole != UserRole.None);
 
-        } catch (IOException e) {
+            // Saving the username if the client has special role
+            if (result.userRole != UserRole.None){
+                client.setInfo(ClientUsernameType, loginCredentials.username);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
+            result.setSuccessful(false);
+            result.setFailReason("We couldn't handleLoginRequest.");
         }
+
+        sendResponseToClient(client, result);
     }
+
+    // region Complaints handlers
+
+    private void handlePurchaseCancellationFromComplaintRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            PurchaseCancellationFromComplaintRequest cancellationFromComplaintRequest = (PurchaseCancellationFromComplaintRequest) request;
+            complaintsController.cancelPurchaseFromComplaint(cancellationFromComplaintRequest.complaintId,
+                    (String) client.getInfo(ClientUsernameType),
+                    cancellationFromComplaintRequest.refundAmount);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handlePurchaseCancellationFromComplaintRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleCloseComplaintRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            CloseComplaintRequest closeComplaintRequest = (CloseComplaintRequest) request;
+            complaintsController.closeComplaint(closeComplaintRequest.complaintId, (String) client.getInfo(ClientUsernameType));
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleCloseComplaintRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleNewComplaintCreationRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            complaintsController.createNewComplaint(((CreateNewComplaintRequest) request).complaint);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleNewComplaintCreationRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleAllUnhandledComplaintsRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        AllUnhandledComplaintsResponse response = new AllUnhandledComplaintsResponse(false);
+
+        try {
+            response.openComplaints = complaintsController.getAllUnhandledComplaints();
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleAllUnhandledComplaintsRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
 
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
@@ -125,5 +508,13 @@ public class MessageHandler extends AbstractServer {
     public void startListening() throws IOException {
         System.out.println("Starting to listen on port: " + getPort());
         listen();
+    }
+
+    private void sendResponseToClient(ConnectionToClient client, SertiaBasicResponse response){
+        try{
+            client.sendToClient(response);
+        } catch (Exception e){
+            System.out.println("We couldn't send a response to " + client.getInfo(ClientSessionIdType));
+        }
     }
 }

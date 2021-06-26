@@ -1,6 +1,6 @@
 package org.sertia.server.bl.Services;
 
-import org.sertia.contracts.reports.controller.ClientReport;
+import org.sertia.contracts.reports.ClientReport;
 
 public interface Reportable {
 

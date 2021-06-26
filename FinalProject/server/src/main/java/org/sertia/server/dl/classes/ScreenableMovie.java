@@ -28,6 +28,10 @@ public class ScreenableMovie {
         return ticketPrice;
     }
 
+    public void setTicketPrice(double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
     public Movie getMovie() {
         return movie;
     }

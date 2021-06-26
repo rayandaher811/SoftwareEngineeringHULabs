@@ -1,5 +1,7 @@
 package org.sertia.server.dl.classes;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,8 +9,9 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="user_id")
-    private int id;
+    private int userId;
+    
+	@NaturalId
     private String username;
     private String password;
 

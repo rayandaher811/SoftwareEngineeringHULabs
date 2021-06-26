@@ -5,7 +5,8 @@
 package org.sertia.client.communication;
 
 import com.google.gson.Gson;
-import org.json.JSONObject;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.SertiaBasicRequest;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,8 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * The <code> AbstractClient </code> contains all the
@@ -110,7 +110,7 @@ public abstract class AbstractClient implements Runnable {
      */
     private int port;
 
-    private HashMap<String, String> clientIdsToResponses;
+    private Object serverResponse;
     private static Gson GSON = new Gson();
 
 // CONSTRUCTORS *****************************************************
@@ -125,7 +125,6 @@ public abstract class AbstractClient implements Runnable {
         // Initialize variables
         this.host = host;
         this.port = port;
-        this.clientIdsToResponses = new HashMap<>();
     }
 
 // INSTANCE METHODS *************************************************
@@ -275,19 +274,15 @@ public abstract class AbstractClient implements Runnable {
                     // Concrete subclasses do what they want with the
                     // msg by implementing the following method
                     if (!readyToStop) {  // Added in version 2.2
-                        JSONObject rawMessage = new JSONObject(msg.toString());
-                        String originRequestId = rawMessage.getString("originRequestId");
-                        clientIdsToResponses.put(originRequestId, msg.toString());
+                        serverResponse = msg;
                     }
 
-                } catch (ClassNotFoundException ex) { // when an unknown class is received
+                } catch (ClassNotFoundException | RuntimeException ex) { // when an unknown class is received
 
                     connectionException(ex);
 
-                } catch (RuntimeException ex) { // thrown by handleMessageFromServer
+                } // thrown by handleMessageFromServer
 
-                    connectionException(ex);
-                }
             }
         } catch (Exception exception) {
             if (!readyToStop) {
@@ -383,28 +378,35 @@ public abstract class AbstractClient implements Runnable {
         }
     }
 
-    protected String getResponse(String messageId) {
-        if (clientIdsToResponses.containsKey(messageId))
-            return clientIdsToResponses.remove(messageId);
+    protected Object getResponse(String messageId) {
+        if (serverResponse != null) {
+            return serverResponse;
+        }
+
         return null;
     }
 
-    protected <Req, Res> Optional<Res> requestAndWaitForResponse(Req requestType, String requestId, Class<Res> destClass) {
+    protected <Req extends SertiaBasicRequest, Res extends SertiaBasicResponse> Optional<Res> requestAndWaitForResponse(Req request, Class<Res> destClass) {
         try {
-            this.sendToServer(GSON.toJson(requestType));
-            String response = getResponse(requestId);
+            String requestId = UUID.randomUUID().toString();
+            this.sendToServer(request);
+            Object response = getResponse(requestId);
             while (response == null) {
                 Thread.sleep(1);
                 response = getResponse(requestId);
             }
-            return Optional.of(GSON.fromJson(response, destClass));
+            serverResponse = null;
+            if(response.getClass() == destClass) {
+                return Optional.of((Res) response);
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
         return Optional.empty();
     }
 
-    protected <Req> void publishToServer(Req requestType, String requestId) {
+    protected <Req> void publishToServer(Req requestType) {
         try {
             this.sendToServer(GSON.toJson(requestType));
         } catch (IOException e) {

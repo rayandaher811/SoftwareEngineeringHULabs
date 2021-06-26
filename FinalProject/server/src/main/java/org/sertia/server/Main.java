@@ -1,6 +1,10 @@
 package org.sertia.server;
 
 import org.hibernate.Session;
+import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
+import org.sertia.server.bl.CovidRegulationsController;
+import org.sertia.server.bl.MoviesCatalogController;
+import org.sertia.server.bl.ScreeningTicketController;
 import org.sertia.server.communication.MessageHandler;
 import org.sertia.server.dl.HibernateSessionFactory;
 
@@ -9,14 +13,14 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         fillDb();
-        MessageHandler messageHandler = new MessageHandler(1325);
-        messageHandler.handleAllMoviesRequest(null);
+        CovidRegulationsController covidRegulationsController = new CovidRegulationsController();
+        ScreeningTicketController screeningTicketController = new ScreeningTicketController(covidRegulationsController);
+        MessageHandler messageHandler = new MessageHandler(1325, screeningTicketController);
         try {
             messageHandler.startListening();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static void fillDb() {

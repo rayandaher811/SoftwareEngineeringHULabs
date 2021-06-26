@@ -1,13 +1,18 @@
 module org.sertia.contracts {
     requires org.joda.time;
 
-    opens org.sertia.contracts.movies.catalog.controller to org.joda.time;
+    opens org.sertia.contracts.movies.catalog to org.joda.time;
     opens org.sertia.contracts.screening.ticket to org.joda.time;
 
     exports org.sertia.contracts.user.login;
-    exports org.sertia.contracts.complaints.controller;
-    exports org.sertia.contracts.movies.catalog.controller;
+    exports org.sertia.contracts.complaints;
+    exports org.sertia.contracts.movies.catalog;
     exports org.sertia.contracts.price.change;
-    exports org.sertia.contracts.reports.controller;
+    exports org.sertia.contracts.reports;
     exports org.sertia.contracts.screening.ticket;
+    exports org.sertia.contracts.price.change.request;
+    exports org.sertia.contracts.movies.catalog.request;
+    exports org.sertia.contracts.movies.catalog.response;
+    exports org.sertia.contracts.screening.ticket.response;
+    exports org.sertia.contracts;
 }

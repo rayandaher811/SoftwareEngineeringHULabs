@@ -1,6 +1,8 @@
 package org.sertia.contracts.user.login;
 
-public enum UserRole {
+import java.io.Serializable;
+
+public enum UserRole implements Serializable {
     None,
     CostumerSupport,
     CinemaManager,

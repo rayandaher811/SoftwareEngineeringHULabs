@@ -1,12 +1,11 @@
 package org.sertia.server;
 
-import org.joda.time.LocalDateTime;
 import org.sertia.server.dl.classes.*;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class DBFiller {
+public class    DBFiller {
     private ArrayList<Actor> actors;
     private ArrayList<Producer> producers;
     private ArrayList<Movie> movies;
@@ -17,9 +16,8 @@ public class DBFiller {
     private ArrayList<Screening> screenings;
     private ArrayList<Streaming> streamings;
     private ArrayList<StreamingLink> streamingLinks;
-    private ArrayList<CostumerInfo> costumerInfos;
     private ArrayList<TicketsVoucher> ticketsVouchers;
-    private ArrayList<PaymentInfo> paymentInfos;
+    private ArrayList<CustomerPaymentDetails> customerPaymentDetails;
     private ArrayList<CostumerComplaint> costumerComplaints;
     private ArrayList<Refund> refunds;
     private ArrayList<PriceChangeRequest> priceChangeRequests;
@@ -104,10 +102,10 @@ public class DBFiller {
 
     private void fillScreenableMovies() {
         screenableMovies = new ArrayList<ScreenableMovie>();
-        screenableMovies.add(new ScreenableMovie(30 ,movies.get(0)));
-        screenableMovies.add(new ScreenableMovie(40 ,movies.get(1)));
-        screenableMovies.add(new ScreenableMovie(50 ,movies.get(2)));
-        screenableMovies.add(new ScreenableMovie(60 ,movies.get(3)));
+        screenableMovies.add(new ScreenableMovie(30, movies.get(0)));
+        screenableMovies.add(new ScreenableMovie(40, movies.get(1)));
+        screenableMovies.add(new ScreenableMovie(50, movies.get(2)));
+        screenableMovies.add(new ScreenableMovie(60, movies.get(3)));
     }
 
     private void fillUsers() {
@@ -155,7 +153,8 @@ public class DBFiller {
         screenings = new ArrayList<>();
 
         for (int i = 1; i < 29; i++) {
-            screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), screenableMovies.get(0)));
+            Screening e = new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 30), halls.get(0), screenableMovies.get(0));
+            screenings.add(e);
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 2, 10), halls.get(1), screenableMovies.get(1)));
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 4, 40), halls.get(2), screenableMovies.get(2)));
             screenings.add(new Screening(dateToTimeStamp(2021, Calendar.NOVEMBER, i, 1, 25), halls.get(3), screenableMovies.get(3)));
@@ -164,11 +163,10 @@ public class DBFiller {
     }
 
 
-    private String dateToTimeStamp(int year, int month, int day, int hour, int min) {
+    private java.time.LocalDateTime dateToTimeStamp(int year, int month, int day, int hour, int min) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, hour, min);
-        LocalDateTime localDateTime = LocalDateTime.fromCalendarFields(calendar);
-        return localDateTime.toString();
+        return LocalDateTime.of(year, month, day, hour, min);
     }
 
     private void fillStreamings() {

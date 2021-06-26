@@ -1,9 +1,7 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.price.change.ClientPriceChangeRequest;
-import org.sertia.contracts.screening.ticket.ClientSeatChooseRequest;
-import org.sertia.contracts.screening.ticket.ClientSeatChooseResponse;
-import org.sertia.contracts.screening.ticket.ClientSeatMap;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 public class ClientPurchaseControl {
 
@@ -22,38 +20,10 @@ public class ClientPurchaseControl {
 	 * 
 	 * @param seatMap
 	 */
-	public void onSeatMapResponse(ClientSeatMap seatMap) {
+	public void onSeatMapResponse(ClientSeatMapResponse seatMap) {
 		// TODO - implement ClientPurchaseControl.onSeatMapResponse
 		throw new UnsupportedOperationException();
 	}
-
-	/**
-	 * 
-	 * @param request
-	 */
-	public void chooseSeats(ClientSeatChooseRequest request) {
-		// TODO - implement ClientPurchaseControl.chooseSeats
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param res
-	 */
-	public void onChooseSeatResponse(ClientSeatChooseResponse res) {
-		// TODO - implement ClientPurchaseControl.onChooseSeatResponse
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param ClientPaymentRequest
-	 */
-	public void sendPaymentForScreening(int ClientPaymentRequest) {
-		// TODO - implement ClientPurchaseControl.sendPaymentForScreening
-		throw new UnsupportedOperationException();
-	}
-
 	/**
 	 * 
 	 * @param ClientPaymentResponse
@@ -94,7 +64,7 @@ public class ClientPurchaseControl {
 	 * 
 	 * @param payment
 	 */
-	public void purchaseVoucher(ClientPriceChangeRequest payment) {
+	public void purchaseVoucher(BasicPriceChangeRequest payment) {
 		// TODO - implement ClientPurchaseControl.purchaseVoucher
 		throw new UnsupportedOperationException();
 	}
