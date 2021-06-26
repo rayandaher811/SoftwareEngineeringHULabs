@@ -15,4 +15,7 @@ module org.sertia.contracts {
     exports org.sertia.contracts.movies.catalog.response;
     exports org.sertia.contracts.screening.ticket.response;
     exports org.sertia.contracts;
+    exports org.sertia.contracts.price.change.responses;
+    exports org.sertia.contracts.complaints.requests;
+    exports org.sertia.contracts.complaints.responses;
 }

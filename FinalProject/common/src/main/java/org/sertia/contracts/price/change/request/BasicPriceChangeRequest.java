@@ -20,4 +20,11 @@ public class BasicPriceChangeRequest extends SertiaBasicRequest {
 		this.newPrice = newPrice;
 		this.isApproved = isApproved;
 	}
+
+	public BasicPriceChangeRequest(int movieId, String userName, ClientTicketType clientTicketType, double newPrice) {
+		this.movieId = movieId;
+		this.userName = userName;
+		this.clientTicketType = clientTicketType;
+		this.newPrice = newPrice;
+	}
 }
