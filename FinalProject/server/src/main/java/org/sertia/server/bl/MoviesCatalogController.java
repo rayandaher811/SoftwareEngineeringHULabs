@@ -3,6 +3,8 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
+import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
+import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.bl.Services.CreditCardService;
@@ -17,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MoviesCatalogController implements Reportable {
 
@@ -26,6 +29,32 @@ public class MoviesCatalogController implements Reportable {
     public MoviesCatalogController(){
         creditCardService = new CreditCardService();
         notifier = CustomerNotifier.getInstance();
+    }
+
+    public CinemaCatalogResponse getCinemaCatalog(CinemaCatalogRequest request) {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            Cinema cinema = session.get(Cinema.class, request.cinemaId);
+            List<Screening> screenings = cinema.getHalls().stream()
+                    .flatMap(hall -> hall.getScreenings().stream())
+                    .collect(Collectors.toList());
+            Map<ScreenableMovie, List<Screening>> screenableMoviesMap = getScreenableMovieMap(screenings);
+            CinemaCatalogResponse cinemaCatalogResponse = new CinemaCatalogResponse(true);
+            cinemaCatalogResponse.movies = new ArrayList<>();
+                    screenableMoviesMap.keySet()
+                    .forEach(screenableMovie -> {
+                        Movie movie = screenableMovie.getMovie();
+                        CinemaScreeningMovie cinemaScreeningMovie = new SertiaMovie();
+                        cinemaScreeningMovie.movieDetails = movieToClientMovie(movie);
+                        cinemaScreeningMovie.ticketPrice = screenableMovie.getTicketPrice();
+                        cinemaScreeningMovie.screenings = screenableMoviesMap.get(screenableMovie).stream().map(MoviesCatalogController::screeningToClientScreening)
+                                .collect(Collectors.toList());
+                        cinemaCatalogResponse.movies.add(cinemaScreeningMovie);
+                    });
+
+            return cinemaCatalogResponse;
+        } catch (RuntimeException exception) {
+            return new CinemaCatalogResponse(false);
+        }
     }
 
     public SertiaBasicResponse getSertiaCatalog() {
@@ -319,6 +348,10 @@ public class MoviesCatalogController implements Reportable {
 
     private Map<ScreenableMovie, List<Screening>> getScreenings() {
         List<Screening> screenings = DbUtils.getAll(Screening.class);
+        return getScreenableMovieMap(screenings);
+    }
+
+    private Map<ScreenableMovie, List<Screening>> getScreenableMovieMap(List<Screening> screenings) {
         return screenings.stream().collect(Collectors.groupingBy(Screening::getScreenableMovie));
     }
 

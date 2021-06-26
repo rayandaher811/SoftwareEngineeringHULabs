@@ -16,10 +16,19 @@ public class Hall {
     @JoinColumn(name="hall_hall_id")
     private Set<HallSeat> seats;
 
+    public Set<Screening> getScreenings() {
+        return screenings;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="hall_hall_id")
+    private Set<Screening> screenings;
+
     private int maximumCapacity;
     private int numberOfSeats;
 
     @ManyToOne
+    @JoinColumn(name="cinema_cinema_id", nullable=false)
     private Cinema cinema;
 
     public Hall() {

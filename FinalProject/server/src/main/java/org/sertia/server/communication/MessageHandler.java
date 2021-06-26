@@ -60,6 +60,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
 
         messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
+        messageTypeToHandler.put(CinemaCatalogRequest.class, this::handleCinemaCatalog);
         messageTypeToHandler.put(ScreeningUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
         messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
         messageTypeToHandler.put(RemoveMovieRequest.class, this::handleMovieRemoval);
@@ -107,6 +108,14 @@ public class MessageHandler extends AbstractServer {
     private void handleSertiaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             client.sendToClient(moviesCatalogController.getSertiaCatalog());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleCinemaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            client.sendToClient(moviesCatalogController.getCinemaCatalog((CinemaCatalogRequest) request));
         } catch (IOException e) {
             e.printStackTrace();
         }

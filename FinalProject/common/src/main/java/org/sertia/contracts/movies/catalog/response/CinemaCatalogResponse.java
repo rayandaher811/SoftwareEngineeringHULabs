@@ -5,10 +5,10 @@ import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 
 import java.util.List;
 
-public class CinemaCatalog extends SertiaBasicResponse {
+public class CinemaCatalogResponse extends SertiaBasicResponse {
     public List<CinemaScreeningMovie> movies;
 
-    public CinemaCatalog(boolean isSuccessful) {
+    public CinemaCatalogResponse(boolean isSuccessful) {
         super(isSuccessful);
     }
 }

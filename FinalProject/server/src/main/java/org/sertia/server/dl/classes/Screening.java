@@ -16,6 +16,7 @@ public class Screening {
     private LocalDateTime screeningTime;
 
     @ManyToOne
+    @JoinColumn(name="hall_hall_id", nullable=false)
     private Hall hall;
 
     @ManyToOne
