@@ -36,6 +36,16 @@ public class Screening {
         this.screeningTime = screeningTime;
     }
 
+    public Screening setHall(Hall hall) {
+        this.hall = hall;
+        return this;
+    }
+
+    public Screening setMovie(ScreenableMovie movie) {
+        this.movie = movie;
+        return this;
+    }
+
     public Hall getHall() {
         return hall;
     }

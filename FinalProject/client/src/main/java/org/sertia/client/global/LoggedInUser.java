@@ -12,17 +12,17 @@ public class LoggedInUser {
 
     private static LoggedInUser loggedInUser = null;
 
-    private LoggedInUser(String userName){
+    private LoggedInUser(String userName) {
         this.userName = userName;
         this.uuid = UUID.randomUUID().toString();
         this.chosenMovieForUpdateTimeOperation = null;
     }
 
-    public void setChosenMovieForUpdateTimeOperation(CinemaScreeningMovie chosenMovieForUpdateTimeOperation){
+    public void setChosenMovieForUpdateTimeOperation(CinemaScreeningMovie chosenMovieForUpdateTimeOperation) {
         this.chosenMovieForUpdateTimeOperation = chosenMovieForUpdateTimeOperation;
     }
 
-    public static LoggedInUser getInstance(){
+    public static LoggedInUser getInstance() {
         if (loggedInUser == null) {
             System.out.println("Error.. user wasn't created yet");
         }
@@ -39,11 +39,11 @@ public class LoggedInUser {
             loggedInUser = new LoggedInUser(userName);
     }
 
-    public static void onDisconnection(){
+    public static void onDisconnection() {
         loggedInUser = null;
     }
 
-    public CinemaScreeningMovie getChosenMovieForUpdateTimeOperation(){
+    public CinemaScreeningMovie getChosenMovieForUpdateTimeOperation() {
         return this.chosenMovieForUpdateTimeOperation;
     }
 }

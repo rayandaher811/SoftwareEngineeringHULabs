@@ -17,7 +17,7 @@ public class ClientComplaintsControl {
     }
 
     @FXML
-    public void publishComplaint(){
+    public void publishComplaint() {
         System.out.println("Complaint is: " + complaintData.getText());
     }
 

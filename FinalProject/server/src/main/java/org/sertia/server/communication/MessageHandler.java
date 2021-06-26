@@ -152,7 +152,7 @@ public class MessageHandler extends AbstractServer {
             response = screeningTicketController.buyTicketWithRegulations(ticketRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't couldn't handle purchase request.");
+            response.setFailReason("We couldn't handle purchase request.");
         }
 
         sendResponseToClient(client, response);
@@ -326,8 +326,8 @@ public class MessageHandler extends AbstractServer {
         SertiaBasicResponse response = new SertiaBasicResponse(false);
 
         try {
-            CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
-            moviesCatalogController.addMovieScreenings(movieScreenings);
+            AddScreeningRequest addScreeningRequest = (AddScreeningRequest) request;
+            moviesCatalogController.addMovieScreenings(addScreeningRequest);
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();

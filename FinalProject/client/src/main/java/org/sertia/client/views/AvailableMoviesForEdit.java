@@ -4,7 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TitledPane;
 import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
@@ -13,7 +16,10 @@ import org.sertia.client.global.LoggedInUser;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class AvailableMoviesForEdit implements Initializable {
 
@@ -21,7 +27,7 @@ public class AvailableMoviesForEdit implements Initializable {
     private Accordion moviesAccordion;
 
     private HashMap<String, ArrayList<CinemaScreeningMovie>> mapMoviesByMovieNameToCinemaScreeningMovie(Map.Entry<String,
-            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies){
+            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies) {
         HashMap<String, ArrayList<CinemaScreeningMovie>> movieToDetailsMapping = new HashMap<>();
         for (int i = 0; i < cinemaToScreeningMovies.getValue().size(); i++) {
             final CinemaScreeningMovie screeningMovie = cinemaToScreeningMovies.getValue().get(i);

@@ -1,8 +1,10 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
+import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
 import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
@@ -14,6 +16,7 @@ import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDateTime;
@@ -23,10 +26,10 @@ import java.util.stream.Stream;
 
 public class MoviesCatalogController implements Reportable {
 
-    private CreditCardService creditCardService;
-    private ICustomerNotifier notifier;
+    private final CreditCardService creditCardService;
+    private final ICustomerNotifier notifier;
 
-    public MoviesCatalogController(){
+    public MoviesCatalogController() {
         creditCardService = new CreditCardService();
         notifier = CustomerNotifier.getInstance();
     }
@@ -39,11 +42,11 @@ public class MoviesCatalogController implements Reportable {
                     .collect(Collectors.toList());
             Map<ScreenableMovie, List<Screening>> screenableMoviesMap = getScreenableMovieMap(screenings);
             CinemaCatalogResponse cinemaCatalogResponse = new CinemaCatalogResponse(true);
-            cinemaCatalogResponse.movies = new ArrayList<>();
-                    screenableMoviesMap.keySet()
+            screenableMoviesMap.keySet()
                     .forEach(screenableMovie -> {
                         Movie movie = screenableMovie.getMovie();
                         CinemaScreeningMovie cinemaScreeningMovie = new SertiaMovie();
+                        cinemaScreeningMovie.movieId = movie.getId();
                         cinemaScreeningMovie.movieDetails = movieToClientMovie(movie);
                         cinemaScreeningMovie.ticketPrice = screenableMovie.getTicketPrice();
                         cinemaScreeningMovie.screenings = screenableMoviesMap.get(screenableMovie).stream().map(MoviesCatalogController::screeningToClientScreening)
@@ -66,6 +69,7 @@ public class MoviesCatalogController implements Reportable {
                 .forEach(screenableMovie -> {
                     Movie movie = screenableMovie.getMovie();
                     SertiaMovie sertiaMovie = new SertiaMovie();
+                    sertiaMovie.movieId = movie.getId();
                     sertiaMovie.movieDetails = movieToClientMovie(movie);
                     sertiaMovie.isComingSoon = movie.isComingSoon();
                     sertiaMovie.ticketPrice = screenableMovie.getTicketPrice();
@@ -91,10 +95,10 @@ public class MoviesCatalogController implements Reportable {
 
             Producer producer = new Producer(movieData.movieDetails.producerName);
             session.save(producer);
-            
+
             Actor actor = new Actor(movieData.movieDetails.mainActorName);
             session.save(actor);
-            
+
             Movie newMovie = new Movie(producer,
                     actor,
                     movieData.movieDetails.hebrewName,
@@ -106,22 +110,21 @@ public class MoviesCatalogController implements Reportable {
 
             // Every added movie could be screenable
             ScreenableMovie screenableMovie = new ScreenableMovie(movieData.ticketPrice,
-                                                                    newMovie);
+                    newMovie);
             session.save(screenableMovie);
 
             // In case the movie is streamable
-            if(movieData.isStreamable){
+            if (movieData.isStreamable) {
                 Streaming streaming = new Streaming(newMovie, movieData.pricePerStream);
                 session.save(streaming);
             }
             session.flush();
             session.clear();
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
-        }
-        finally {
+        } finally {
             session.close();
         }
     }
@@ -142,7 +145,7 @@ public class MoviesCatalogController implements Reportable {
             // Notifing ll relevant customers for the update
             for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
                 notifier.notify(ticket.getPaymentInfo().getPhoneNumber(),
-                                "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
+                        "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
             }
 
             session.flush();
@@ -156,29 +159,24 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    public void addMovieScreenings(CinemaScreeningMovie newScreenings) {
-        Session session = null;
+    public void addMovieScreenings(AddScreeningRequest addScreeningRequest) {
+        Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
 
-        try {
-            session = HibernateSessionFactory.getInstance().openSession();
-            ScreenableMovie movie = session.get(ScreenableMovie.class, newScreenings.movieDetails.id);
-
-            session.beginTransaction();
-
-            // Adding all requested movies
-            for (ClientScreening screening : newScreenings.screenings) {
-                Hall screeningHall = session.get(Hall.class, screening.hallId);
-                session.save(new Screening(screening.screeningTime,
-                                            screeningHall,
-                                            movie));
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            if(!screenableMovieOptional.isPresent()) {
+                ScreenableMovie screenableMovie = new ScreenableMovie();
+                screenableMovie.setTicketPrice(addScreeningRequest.price);
+                screenableMovie.setId(addScreeningRequest.movieId);
+                session.save(screenableMovie);
             }
-            session.flush();
-            session.getTransaction().commit();
-        } catch (Exception e){
-            session.getTransaction().rollback();
-            throw e;
-        }finally {
-            session.close();
+
+            ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, addScreeningRequest.movieId);
+            Screening screening = new Screening();
+            screening.setMovie(screenableMovie);
+            screening.setScreeningTime(addScreeningRequest.screeningTime);
+            Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
+            screening.setHall(hall);
+            session.save(screening);
         }
     }
 
@@ -193,7 +191,7 @@ public class MoviesCatalogController implements Reportable {
             session.beginTransaction();
 
             // Refunding all relevant costumers and deleting the tickets
-            for (ScreeningTicket ticket:screeningTickets) {
+            for (ScreeningTicket ticket : screeningTickets) {
                 creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
                 session.remove(ticket);
             }
@@ -203,10 +201,10 @@ public class MoviesCatalogController implements Reportable {
             session.flush();
             session.clear();
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
-        }finally {
+        } finally {
             session.close();
         }
     }
@@ -216,14 +214,14 @@ public class MoviesCatalogController implements Reportable {
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
-            List<Screening> screenings = getAllScreenings(session);
+            List<Screening> screenings = DbUtils.getAll(Screening.class);
             LocalDateTime currentTime = LocalDateTime.now();
 
             session.beginTransaction();
 
             // Refunding all canceled screenings customers
-            for (Screening screening:screenings) {
-                if(screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)){
+            for (Screening screening : screenings) {
+                if (screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)) {
                     RefundAndRemoveAllScreeningTickets(session, screening);
 
                     // Deleting the canceled screening
@@ -239,10 +237,10 @@ public class MoviesCatalogController implements Reportable {
             session.flush();
             session.clear();
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
-        }finally {
+        } finally {
             session.close();
         }
     }
@@ -260,7 +258,7 @@ public class MoviesCatalogController implements Reportable {
             session.save(newStreaming);
             session.flush();
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
         } finally {
@@ -278,7 +276,7 @@ public class MoviesCatalogController implements Reportable {
             session.flush();
             session.clear();
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
         } finally {
@@ -290,14 +288,14 @@ public class MoviesCatalogController implements Reportable {
         Streaming streaming = session.get(Streaming.class, movieId);
 
         // The movie have no streaming
-        if(streaming == null)
+        if (streaming == null)
             return;
 
         LocalDateTime currentTime = LocalDateTime.now();
 
         // Refunding all relevant canceled link + deleting them
-        for (StreamingLink link:streaming.getLinks()) {
-            if(link.getActivationEnd().isAfter(currentTime)){
+        for (StreamingLink link : streaming.getLinks()) {
+            if (link.getActivationEnd().isAfter(currentTime)) {
                 creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice());
             }
 
@@ -313,7 +311,7 @@ public class MoviesCatalogController implements Reportable {
     }
 
     private void RefundAndRemoveAllScreeningTickets(Session session, Screening screening) {
-        for (ScreeningTicket ticket:screening.getTickets()) {
+        for (ScreeningTicket ticket : screening.getTickets()) {
             creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
             session.remove(ticket);
         }
@@ -324,6 +322,7 @@ public class MoviesCatalogController implements Reportable {
 
         CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
         query.from(Screening.class);
+
         return session.createQuery(query).getResultList();
     }
 
@@ -375,7 +374,6 @@ public class MoviesCatalogController implements Reportable {
         clientScreening.screeningTime = screening.getScreeningTime();
         clientScreening.cinemaName = screening.getHall().getCinema().getName();
         clientScreening.hallId = screening.getHall().getId();
-        List<ScreeningTicket> tickets = screening.getTickets();
 
         return clientScreening;
     }

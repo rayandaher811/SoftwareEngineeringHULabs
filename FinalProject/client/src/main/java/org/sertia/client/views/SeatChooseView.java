@@ -2,12 +2,7 @@ package org.sertia.client.views;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.sertia.client.App;
 import org.sertia.client.boxes.SeatBox;
 

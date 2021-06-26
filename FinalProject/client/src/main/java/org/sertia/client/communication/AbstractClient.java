@@ -5,8 +5,8 @@
 package org.sertia.client.communication;
 
 import com.google.gson.Gson;
-import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.SertiaBasicRequest;
+import org.sertia.contracts.SertiaBasicResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,7 +14,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The <code> AbstractClient </code> contains all the
@@ -396,7 +397,7 @@ public abstract class AbstractClient implements Runnable {
                 response = getResponse(requestId);
             }
             serverResponse = null;
-            if(response.getClass() == destClass) {
+            if (response.getClass() == destClass) {
                 return Optional.of((Res) response);
             }
         } catch (IOException | InterruptedException e) {
