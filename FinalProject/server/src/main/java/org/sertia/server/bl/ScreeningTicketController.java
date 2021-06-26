@@ -1,5 +1,6 @@
 package org.sertia.server.bl;
 
+import com.mysql.cj.xdevapi.Client;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
@@ -169,7 +170,7 @@ public class ScreeningTicketController implements Reportable {
     private ClientSeatMapResponse getSeatMapForScreening(int screeningId) {
         final List<HallSeat> hallSeatList = new ArrayList<>();
 
-        DbUtils.getById(Screening.class, screeningId).ifPresent(screening ->
+        return DbUtils.getById(Screening.class, screeningId).map(screening ->
         {
             Set<Integer> takenSeats =
                     screening.getTickets().stream()
@@ -184,9 +185,12 @@ public class ScreeningTicketController implements Reportable {
                 clientHallSeat.isTaken = takenSeats.contains(hallSeat.getId());
                 return clientHallSeat;
             }).forEach(hallSeatList::add);
+            return new ClientSeatMapResponse(true, hallSeatList);
+        }).orElseGet(() -> {
+            ClientSeatMapResponse response = new ClientSeatMapResponse(false, Collections.emptyList());
+            response.setFailReason("screening doesn't exist");
+            return response;
         });
-
-        return new ClientSeatMapResponse(true, hallSeatList);
     }
 
     private ScreeningTicket createScreeningTicket(int hallSeat, Screening screening, Session session) {
