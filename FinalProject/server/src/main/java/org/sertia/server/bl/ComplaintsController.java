@@ -95,7 +95,7 @@ public class ComplaintsController implements Reportable {
 			// Closing the complaint
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
 				complaint.setClosedDate(LocalDateTime.now());
-				complaint.setHandler(session.get(User.class, handlerUsername));
+				complaint.setHandler(ControllerUtils.getUser(handlerUsername, session));
 
 				// Notifying our client
 				notifier.notify(extractCustomerPaymentDetails(complaint).getPhoneNumber(),
@@ -128,7 +128,7 @@ public class ComplaintsController implements Reportable {
 			// Closing the complaint with a refund
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
 				complaint.setClosedDate(LocalDateTime.now());
-				complaint.setHandler(session.get(User.class, handlerUsername));
+				complaint.setHandler(ControllerUtils.getUser(handlerUsername, session));
 				creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund);
 			}
 			else {

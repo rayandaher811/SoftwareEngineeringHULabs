@@ -73,7 +73,7 @@ public class PriceChangeController {
 
 			// Updating
 			request.setAccepted(true);
-			request.setHandler(session.get(User.class, handlingUsername));
+			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
 
 
 			switch (request.getTicketType()) {
@@ -121,7 +121,7 @@ public class PriceChangeController {
 
 			// Updating
 			request.setAccepted(false);
-			request.setHandler(session.get(User.class, handlingUsername));
+			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
 
 			session.update(request);
 			session.flush();

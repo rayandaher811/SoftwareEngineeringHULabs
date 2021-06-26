@@ -1,7 +1,9 @@
 package org.sertia.server.bl.Services;
 
+import org.hibernate.Session;
 import org.sertia.contracts.price.change.ClientTicketType;
 import org.sertia.server.dl.classes.TicketType;
+import org.sertia.server.dl.classes.User;
 
 import javax.transaction.NotSupportedException;
 
@@ -23,5 +25,9 @@ public class ControllerUtils {
             case Voucher: return TicketType.Voucher;
             default: throw new NotSupportedException("There are no such client ticket type");
         }
+    }
+
+    public static User getUser(String handlingUsername, Session session) {
+        return session.byNaturalId(User.class).using("username", handlingUsername).load();
     }
 }
