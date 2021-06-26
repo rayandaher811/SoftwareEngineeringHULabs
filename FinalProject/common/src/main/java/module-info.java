@@ -12,4 +12,7 @@ module org.sertia.contracts {
     exports org.sertia.contracts.screening.ticket;
     exports org.sertia.contracts.price.change.request;
     exports org.sertia.contracts.movies.catalog.request;
+    exports org.sertia.contracts.movies.catalog.response;
+    exports org.sertia.contracts.screening.ticket.response;
+    exports org.sertia.contracts;
 }

@@ -1,6 +1,6 @@
 package org.sertia.contracts.complaints.requests;
 
-import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.SertiaBasicRequest;
 
-public class GetAllUnhandledComplaintsRequest extends SertiaClientRequest {
+public class GetAllUnhandledComplaintsRequest extends SertiaBasicRequest {
 }

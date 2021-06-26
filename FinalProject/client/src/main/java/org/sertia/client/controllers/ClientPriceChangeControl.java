@@ -1,6 +1,6 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 
 public class ClientPriceChangeControl {
 
@@ -8,7 +8,7 @@ public class ClientPriceChangeControl {
 	 * 
 	 * @param parameter
 	 */
-	public void requestPriceChange(ClientPriceChangeRequest parameter) {
+	public void requestPriceChange(BasicPriceChangeRequest parameter) {
 		// TODO - implement ClientPriceChangeControl.requestPriceChange
 		throw new UnsupportedOperationException();
 	}

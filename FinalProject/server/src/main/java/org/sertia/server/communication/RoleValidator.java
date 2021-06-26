@@ -5,9 +5,9 @@ import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest
 import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
-import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
-import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequests;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
 import org.sertia.contracts.user.login.UserRole;
 
 public class RoleValidator {
@@ -33,7 +33,7 @@ public class RoleValidator {
     }
 
     public boolean isMediaManagerOperation(Class<?> requestType) {
-        return requestType == ClientPriceChangeRequest.class ||
+        return requestType == BasicPriceChangeRequest.class ||
                 requestType == StreamingAdditionRequest.class ||
                 requestType == StreamingRemovalRequest.class ||
                 requestType == AddScreeningRequest.class ||
@@ -54,7 +54,7 @@ public class RoleValidator {
     }
 
     public boolean isBranchManagerOperation(Class<?> requestType) {
-        return requestType == GetUnapprovedPriceChangeRequests.class ||
+        return requestType == GetUnapprovedPriceChangeRequest.class ||
                 requestType == ApprovePriceChangeRequest.class ||
                 requestType == DissapprovePriceChangeRequest.class;
     }

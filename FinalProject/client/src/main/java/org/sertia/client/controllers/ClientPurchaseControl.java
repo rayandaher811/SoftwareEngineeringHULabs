@@ -1,7 +1,7 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
-import org.sertia.contracts.screening.ticket.ClientSeatMap;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMap;
 
 public class ClientPurchaseControl {
 
@@ -64,7 +64,7 @@ public class ClientPurchaseControl {
 	 * 
 	 * @param payment
 	 */
-	public void purchaseVoucher(ClientPriceChangeRequest payment) {
+	public void purchaseVoucher(BasicPriceChangeRequest payment) {
 		// TODO - implement ClientPurchaseControl.purchaseVoucher
 		throw new UnsupportedOperationException();
 	}

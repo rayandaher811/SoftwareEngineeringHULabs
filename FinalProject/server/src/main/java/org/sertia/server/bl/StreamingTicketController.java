@@ -1,8 +1,8 @@
 package org.sertia.server.bl;
 
 import org.sertia.contracts.reports.ClientReport;
-import org.sertia.contracts.screening.ticket.StreamingPaymentRequest;
-import org.sertia.contracts.screening.ticket.StreamingPaymentResponse;
+import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
+import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
 import org.sertia.server.bl.Services.Reportable;
 
 public class StreamingTicketController implements Reportable {

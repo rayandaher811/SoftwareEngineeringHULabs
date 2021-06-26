@@ -1,20 +1,19 @@
 package org.sertia.server.communication;
 
-import org.sertia.contracts.SertiaClientRequest;
-import org.sertia.contracts.complaints.ClientOpenComplaint;
+import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
 import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
 import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
 import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
-import org.sertia.contracts.movies.catalog.SertiaCatalog;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
-import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
-import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequests;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
+import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
@@ -36,7 +35,8 @@ public class MessageHandler extends AbstractServer {
     private final PriceChangeController priceChangeController;
     private final UserLoginController userLoginController;
     private final ComplaintsController complaintsController;
-    private final Map<Class<? extends SertiaClientRequest>, BiConsumer<SertiaClientRequest, ConnectionToClient>> messageTypeToHandler;
+
+    private final Map<Class<? extends SertiaBasicRequest>, BiConsumer<SertiaBasicRequest, ConnectionToClient>> messageTypeToHandler;
 
     private final RoleValidator roleValidator;
 
@@ -54,23 +54,32 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void initializeHandlerMapping() {
+        messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
+
         messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
         messageTypeToHandler.put(ScreeningUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
-        messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
         messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
         messageTypeToHandler.put(RemoveMovieRequest.class, this::handleMovieRemoval);
         messageTypeToHandler.put(AddScreeningRequest.class, this::handleScreeningAddition);
         messageTypeToHandler.put(RemoveScreeningRequest.class, this::handleScreeningRemoval);
         messageTypeToHandler.put(StreamingAdditionRequest.class, this::handleStreamingAddition);
         messageTypeToHandler.put(StreamingRemovalRequest.class, this::handleStreamingRemoval);
-        messageTypeToHandler.put(ClientPriceChangeRequest.class, this::handlePriceChangeRequest);
+
+        messageTypeToHandler.put(BasicPriceChangeRequest.class, this::handlePriceChangeRequest);
+        messageTypeToHandler.put(GetUnapprovedPriceChangeRequest.class, this::handleAllUnapprovedPriceChangeRequests);
         messageTypeToHandler.put(ApprovePriceChangeRequest.class, this::handleApprovePriceChangeRequest);
         messageTypeToHandler.put(DissapprovePriceChangeRequest.class, this::handleDisapprovePriceChangeRequest);
-        messageTypeToHandler.put(GetUnapprovedPriceChangeRequests.class, this::handleAllUnapprovedPriceChangeRequests);
+
         messageTypeToHandler.put(GetAllUnhandledComplaintsRequest.class, this::handleAllUnhandledComplaintsRequest);
         messageTypeToHandler.put(CreateNewComplaintRequest.class, this::handleNewComplaintCreationRequest);
         messageTypeToHandler.put(CloseComplaintRequest.class, this::handleCloseComplaintRequest);
         messageTypeToHandler.put(PurchaseCancellationFromComplaintRequest.class, this::handlePurchaseCancellationFromComplaintRequest);
+
+        messageTypeToHandler.put(GetScreeningSeatMap.class, this::handleGetScreeningSeatMap);
+        messageTypeToHandler.put(ScreeningTicketWithSeatsRequest.class, this::handleScreeningTicketWithSeats);
+        messageTypeToHandler.put(ScreeningTicketWithCovidRequest.class, this::handleScreeningTicketWithCovid);
+        messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
+        messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
     }
 
     @Override
@@ -88,19 +97,63 @@ public class MessageHandler extends AbstractServer {
             return;
         }
 
-        messageTypeToHandler.get(requestType).accept((SertiaClientRequest) msg, client);
+        messageTypeToHandler.get(requestType).accept((SertiaBasicRequest) msg, client);
     }
 
-    private void handleSertiaCatalog(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleSertiaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
         try {
-            SertiaCatalog sertiaCatalog = moviesCatalogController.getSertiaCatalog();
-            client.sendToClient(sertiaCatalog);
+            client.sendToClient(moviesCatalogController.getSertiaCatalog());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleAllUnapprovedPriceChangeRequests(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleScreeningTicketWithSeats(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            ScreeningTicketWithSeatsRequest ticketRequest = (ScreeningTicketWithSeatsRequest) request;
+            client.sendToClient(screeningTicketController.buyTicketWithSeatChose(ticketRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleScreeningTicketWithCovid(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            ScreeningTicketWithCovidRequest ticketRequest = (ScreeningTicketWithCovidRequest) request;
+            client.sendToClient(screeningTicketController.buyTicketWithRegulations(ticketRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleGetScreeningSeatMap(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            GetScreeningSeatMap seatMapRequest = (GetScreeningSeatMap) request;
+            client.sendToClient(screeningTicketController.getSeatMapForScreening(seatMapRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleVoucherPurchase(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            VoucherPurchaseRequest voucherPurchaseRequest = (VoucherPurchaseRequest) request;
+            client.sendToClient(screeningTicketController.buyVoucher(voucherPurchaseRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleVoucherBalanceRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            VoucherBalanceRequest voucherBalanceRequest = (VoucherBalanceRequest) request;
+            client.sendToClient(screeningTicketController.getVoucherBalance(voucherBalanceRequest));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleAllUnapprovedPriceChangeRequests(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             client.sendToClient(priceChangeController.getUnapprovedRequests());
         } catch (Exception e) {
@@ -108,7 +161,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleDisapprovePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleDisapprovePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int priceChangeRequestId = ((DissapprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
@@ -118,7 +171,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleApprovePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleApprovePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int priceChangeRequestId = ((ApprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
@@ -128,8 +181,8 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handlePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
-        ClientPriceChangeRequest priceChangeRequest = (ClientPriceChangeRequest) request;
+    private void handlePriceChangeRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        BasicPriceChangeRequest priceChangeRequest = (BasicPriceChangeRequest) request;
         try {
             priceChangeController.requestPriceChange(priceChangeRequest, (String) client.getInfo(ClientUsernameType));
             client.sendToClient(Boolean.TRUE);
@@ -138,7 +191,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleMovieRemoval(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleMovieRemoval(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int movieId = ((RemoveMovieRequest) request).movieId;
             moviesCatalogController.removeMovie(movieId);
@@ -148,7 +201,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleScreeningRemoval(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleScreeningRemoval(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int screeningId = ((RemoveScreeningRequest) request).screeningId;
             moviesCatalogController.removeMovieScreening(screeningId);
@@ -158,7 +211,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleMovieAddition(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleMovieAddition(SertiaBasicRequest request, ConnectionToClient client) {
         SertiaMovie newMovie = ((AddMovieRequest) request).sertiaMovie;
         try {
             moviesCatalogController.addMovie(newMovie);
@@ -168,7 +221,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleScreeningAddition(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleScreeningAddition(SertiaBasicRequest request, ConnectionToClient client) {
         CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
         try {
             moviesCatalogController.addMovieScreenings(movieScreenings);
@@ -178,7 +231,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleStreamingAddition(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleStreamingAddition(SertiaBasicRequest request, ConnectionToClient client) {
         StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
         try {
             moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
@@ -188,7 +241,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleStreamingRemoval(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleStreamingRemoval(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int streamingId = ((StreamingRemovalRequest) request).streamingId;
             moviesCatalogController.removeStreaming(streamingId);
@@ -198,7 +251,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleMovieScreeningTimeUpdate(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleMovieScreeningTimeUpdate(SertiaBasicRequest request, ConnectionToClient client) {
         ClientScreening screeningToUpdate = ((ScreeningUpdateRequest) request).screening;
         try {
             moviesCatalogController.updateScreeningTime(screeningToUpdate);
@@ -208,7 +261,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleLoginRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleLoginRequest(SertiaBasicRequest request, ConnectionToClient client) {
         LoginCredentials loginCredentials = ((LoginRequest) request).loginCredentials;
 
         try {
@@ -228,8 +281,8 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handlePurchaseCancellationFromComplaintRequest(SertiaClientRequest request, ConnectionToClient client) {
-        PurchaseCancellationFromComplaintRequest cancellationFromComplaintRequest = (PurchaseCancellationFromComplaintRequest)request;
+    private void handlePurchaseCancellationFromComplaintRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        PurchaseCancellationFromComplaintRequest cancellationFromComplaintRequest = (PurchaseCancellationFromComplaintRequest) request;
         try {
             complaintsController.cancelPurchaseFromComplaint(cancellationFromComplaintRequest.complaintId,
                     (String) client.getInfo(ClientUsernameType),
@@ -240,7 +293,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleCloseComplaintRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleCloseComplaintRequest(SertiaBasicRequest request, ConnectionToClient client) {
         CloseComplaintRequest closeComplaintRequest = (CloseComplaintRequest) request;
         try {
             complaintsController.closeComplaint(closeComplaintRequest.complaintId, (String) client.getInfo(ClientUsernameType));
@@ -250,16 +303,16 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleNewComplaintCreationRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleNewComplaintCreationRequest(SertiaBasicRequest request, ConnectionToClient client) {
         try {
-            complaintsController.createNewComplaint(((CreateNewComplaintRequest)request).complaint);
+            complaintsController.createNewComplaint(((CreateNewComplaintRequest) request).complaint);
             client.sendToClient(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleAllUnhandledComplaintsRequest(SertiaClientRequest request, ConnectionToClient client) {
+    private void handleAllUnhandledComplaintsRequest(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             client.sendToClient(complaintsController.getAllUnhandledComplaints());
         } catch (Exception e) {

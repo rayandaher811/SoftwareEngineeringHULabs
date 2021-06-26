@@ -1,6 +1,5 @@
 package org.sertia.contracts.complaints;
 
-import org.sertia.contracts.SertiaClientRequest;
 import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.Serializable;

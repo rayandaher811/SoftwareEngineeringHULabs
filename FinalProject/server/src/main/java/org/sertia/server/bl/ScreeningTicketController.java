@@ -2,15 +2,17 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
-import org.sertia.contracts.screening.ticket.*;
+import org.sertia.contracts.screening.ticket.HallSeat;
+import org.sertia.contracts.screening.ticket.request.*;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMap;
+import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
+import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
-import org.sertia.server.dl.classes.CustomerPaymentDetails;
-import org.sertia.server.dl.classes.PaymentMethod;
-import org.sertia.server.dl.classes.Screening;
-import org.sertia.server.dl.classes.ScreeningTicket;
+import org.sertia.server.dl.classes.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,31 +26,35 @@ public class ScreeningTicketController implements Reportable {
     }
 
     /**
-     * @param parameter
-     * @param seatMap
-     * @param numberOfSeats
+     * @param
      */
-    private HallSeat[] automaticChoseSeats(int parameter, ClientSeatMap seatMap, int numberOfSeats) {
-        throw new UnsupportedOperationException();
+    public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
+        ClientSeatMap seatMapForScreening = getSeatMapForScreening(request.screeningId);
+        try {
+            Set<HallSeat> seats = automaticChoseSeats(seatMapForScreening, request.numberOfSeats);
+            return purchaseTicketsForScreening(createScreeningTicketWithSeatsRequest(request, seats));
+        } catch (IllegalArgumentException exception) {
+            System.out.println("Failed to buy tickets with regulations");
+            return new ScreeningPaymentResponse()
+                    .setSuccessful(false)
+                    .setFailReason("automatic seats choosing failed");
+        }
     }
 
     /**
      * @param
      */
-    public PaymentResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param
-     */
-    public PaymentResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
+    public SertiaBasicResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
         if (!isPaymentRequestValid(request)) {
-            return new PaymentResponse()
+            return new ScreeningPaymentResponse()
                     .setFailReason("Payment details are invalid")
                     .setSuccessful(false);
         }
 
+        return purchaseTicketsForScreening(request);
+    }
+
+    private SertiaBasicResponse purchaseTicketsForScreening(ScreeningTicketWithSeatsRequest request) {
         ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse();
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Set<ScreeningTicket> screeningTickets = DbUtils.getById(Screening.class, request.screeningId)
@@ -72,7 +78,7 @@ public class ScreeningTicketController implements Reportable {
 
             paymentResponse.setSuccessful(true);
         } catch (RuntimeException exception) {
-            return new PaymentResponse()
+            return new ScreeningPaymentResponse()
                     .setFailReason("Problem during purchase process")
                     .setSuccessful(false);
         }
@@ -80,8 +86,74 @@ public class ScreeningTicketController implements Reportable {
         return paymentResponse;
     }
 
-    public ClientSeatMap getSeatMapForScreening(int screeningId) {
+    public SertiaBasicResponse cancelTicket(int ticketId) {
+        return DbUtils.getById(ScreeningTicket.class, ticketId)
+                .map(screeningTicket -> {
+                    try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                        session.delete(screeningTicket);
+                    } catch (RuntimeException e) {
+                        System.out.println("couldn't delete ticket");
+                        return new SertiaBasicResponse()
+                                .setSuccessful(false)
+                                .setFailReason("couldn't delete ticket");
+                    }
+
+                    return new SertiaBasicResponse()
+                            .setSuccessful(true);
+                }).orElse(new SertiaBasicResponse()
+                        .setSuccessful(false)
+                        .setFailReason("ticket doesn't exist"));
+    }
+
+    public SertiaBasicResponse getSeatMapForScreening(GetScreeningSeatMap request) {
+        return getSeatMapForScreening(request.screeningId).setSuccessful(true);
+    }
+
+    public SertiaBasicResponse buyVoucher(BasicPaymentRequest paymentDetails) {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            TicketsVoucher voucher = new TicketsVoucher();
+            voucher.setCustomerPaymentDetails(getPaymentDetails(paymentDetails));
+            voucher.setTicketsBalance(20);
+            int voucherId = (int) session.save(voucher);
+
+            return new VoucherPaymentResponse()
+                    .setVoucherId(voucherId)
+                    .setSuccessful(true);
+        } catch (RuntimeException exception) {
+            return new VoucherPaymentResponse()
+                    .setSuccessful(false)
+                    .setFailReason("couldn't purchase voucher");
+        }
+    }
+
+
+    public SertiaBasicResponse getVoucherBalance(VoucherBalanceRequest request) {
+        // TODO - implement ScreeningTicketController.getVoucherBalance
+        throw new UnsupportedOperationException();
+    }
+
+    public SertiaBasicResponse useVoucher(String voucherId) {
+        // TODO - implement ScreeningTicketController.useVoucher
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClientReport[] createSertiaReports() {
+        return new ClientReport[0];
+    }
+
+    @Override
+    public ClientReport[] createCinemaReports(String cinemaId) {
+        return new ClientReport[0];
+    }
+
+    private boolean isPaymentRequestValid(BasicPaymentRequest clientPaymentRequest) {
+        return true;
+    }
+
+    private ClientSeatMap getSeatMapForScreening(int screeningId) {
         final List<HallSeat> hallSeatList = new ArrayList<>();
+
         DbUtils.getById(Screening.class, screeningId).ifPresent(screening ->
         {
             Set<Integer> takenSeats =
@@ -102,65 +174,6 @@ public class ScreeningTicketController implements Reportable {
         return new ClientSeatMap(hallSeatList);
     }
 
-    /**
-     * @param purchaseId
-     */
-    public void cancelTicket(int purchaseId) {
-        // TODO - implement ScreeningTicketController.cancelTicket
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param paymentDetails
-     */
-    public PaymentResponse buyVoucher(ClientPaymentRequest paymentDetails) {
-        // TODO - implement ScreeningTicketController.buyVoucher
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean getAreRegulationsActivated() {
-        // TODO - implement ScreeningTicketController.getAreRegulationsActivated
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param screeningId
-     */
-    public void getScreeningSeatMap(ClientSeatMap screeningId) {
-        // TODO - implement ScreeningTicketController.getScreeningSeatMap
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param voucherId
-     */
-    public void getVoucherBalance(String voucherId) {
-        // TODO - implement ScreeningTicketController.getVoucherBalance
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @param voucherId
-     */
-    public void useVoucher(String voucherId) {
-        // TODO - implement ScreeningTicketController.useVoucher
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ClientReport[] createSertiaReports() {
-        return new ClientReport[0];
-    }
-
-    @Override
-    public ClientReport[] createCinemaReports(String cinemaId) {
-        return new ClientReport[0];
-    }
-
-    private boolean isPaymentRequestValid(ClientPaymentRequest clientPaymentRequest) {
-        return true;
-    }
-
     private ScreeningTicket createScreeningTicket(int hallSeat, Screening screening, Session session) {
         ScreeningTicket ticket = new ScreeningTicket();
         org.sertia.server.dl.classes.HallSeat requestedSeat =
@@ -178,16 +191,46 @@ public class ScreeningTicketController implements Reportable {
         return ticket;
     }
 
+    private Set<HallSeat> automaticChoseSeats(ClientSeatMap seatMap, int numberOfSeats) {
+        Set<HallSeat> seats = new HashSet<>();
+
+        for (HallSeat hallSeat : seatMap.hallSeats) {
+            if (!hallSeat.isTaken) {
+                seats.add(hallSeat);
+                numberOfSeats--;
+                if (numberOfSeats == 0) {
+                    return seats;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("can't choose seats for desired screening");
+    }
+
     private boolean isSeatFree(int screeningId, int seatId, Session session) {
-        Query query =
-                session
-                        .createQuery("from ScreeningTicket where seat_seat_id = :seat and screening_screening_id = :screening");
+        Query query = session
+                .createQuery("from ScreeningTicket where seat_seat_id = :seat and screening_screening_id = :screening");
         query.setParameter("seat", seatId);
         query.setParameter("screening", screeningId);
         return query.list().isEmpty();
     }
 
-    private CustomerPaymentDetails getPaymentDetails(ClientPaymentRequest paymentRequest) {
+    private ScreeningTicketWithSeatsRequest createScreeningTicketWithSeatsRequest(ScreeningTicketWithCovidRequest request, Set<HallSeat> seats) {
+        ScreeningTicketWithSeatsRequest screeningTicketRequest = new ScreeningTicketWithSeatsRequest();
+        screeningTicketRequest.cardHolderId = request.cardHolderId;
+        screeningTicketRequest.creditCardNumber = request.creditCardNumber;
+        screeningTicketRequest.cardHolderName = request.cardHolderName;
+        screeningTicketRequest.cardHolderPhone = request.cardHolderPhone;
+        screeningTicketRequest.cardHolderEmail = request.cardHolderEmail;
+        screeningTicketRequest.expirationDate = request.expirationDate;
+        screeningTicketRequest.cvv = request.cvv;
+        screeningTicketRequest.screeningId = request.screeningId;
+        screeningTicketRequest.chosenSeats = seats.stream().map(HallSeat::getId).collect(Collectors.toList());
+
+        return screeningTicketRequest;
+    }
+
+    private CustomerPaymentDetails getPaymentDetails(BasicPaymentRequest paymentRequest) {
         CustomerPaymentDetails paymentDetails = new CustomerPaymentDetails();
         paymentDetails.setPayerId(paymentRequest.cardHolderId);
         paymentDetails.setFullName(paymentRequest.cardHolderName);

@@ -3,6 +3,10 @@ package org.sertia.contracts.screening.ticket;
 import java.io.Serializable;
 
 public class HallSeat  implements Serializable {
+	public int getId() {
+		return id;
+	}
+
 	public int id;
 	public int row;
 	public int numberInRow;

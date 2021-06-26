@@ -1,8 +1,9 @@
-package org.sertia.contracts.screening.ticket;
+package org.sertia.contracts.screening.ticket.request;
 
 import org.joda.time.DateTime;
+import org.sertia.contracts.SertiaBasicRequest;
 
-public class ClientPaymentRequest {
+public class BasicPaymentRequest extends SertiaBasicRequest {
 	public String cardHolderId;
 	public String cardHolderName;
 	public String creditCardNumber;

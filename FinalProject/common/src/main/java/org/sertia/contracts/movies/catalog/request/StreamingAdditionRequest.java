@@ -1,8 +1,8 @@
 package org.sertia.contracts.movies.catalog.request;
 
-import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.SertiaBasicRequest;
 
-public class StreamingAdditionRequest extends SertiaClientRequest {
+public class StreamingAdditionRequest extends SertiaBasicRequest {
     public int movieId;
     public double pricePerStream;
 }

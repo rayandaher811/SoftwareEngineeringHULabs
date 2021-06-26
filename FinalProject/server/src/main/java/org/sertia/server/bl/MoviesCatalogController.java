@@ -1,7 +1,9 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
@@ -26,7 +28,7 @@ public class MoviesCatalogController implements Reportable {
         notifier = CustomerNotifier.getInstance();
     }
 
-    public SertiaCatalog getSertiaCatalog() {
+    public SertiaBasicResponse getSertiaCatalog() {
         Map<ScreenableMovie, List<Screening>> screeningMovies = getScreenings();
         Map<Integer, Streaming> streamings = getStreamings();
         List<SertiaMovie> sertiaMovieList = new ArrayList<>();

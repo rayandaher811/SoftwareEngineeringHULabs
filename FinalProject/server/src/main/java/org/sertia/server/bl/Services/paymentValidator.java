@@ -1,6 +1,6 @@
 package org.sertia.server.bl.Services;
 
-import org.sertia.contracts.screening.ticket.ClientPaymentRequest;
+import org.sertia.contracts.screening.ticket.request.BasicPaymentRequest;
 
 public class paymentValidator {
 
@@ -8,7 +8,7 @@ public class paymentValidator {
 	 * 
 	 * @param parameter
 	 */
-	public boolean isPaymentRequestValid(ClientPaymentRequest parameter) {
+	public boolean isPaymentRequestValid(BasicPaymentRequest parameter) {
 		// TODO - implement paymentValidator.isPaymentRequestValid
 		throw new UnsupportedOperationException();
 	}

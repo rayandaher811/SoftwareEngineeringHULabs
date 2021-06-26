@@ -4,7 +4,7 @@ package org.sertia.client.controllers;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
-import org.sertia.contracts.movies.catalog.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
 
 public class ClientCatalogControl {
 

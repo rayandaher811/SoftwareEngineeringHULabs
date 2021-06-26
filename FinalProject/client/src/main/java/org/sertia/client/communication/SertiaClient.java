@@ -1,10 +1,8 @@
 package org.sertia.client.communication;
 
-import org.sertia.client.communication.messages.AllMoviesRequestMsg;
-import org.sertia.client.communication.messages.AllMoviesRequestResponse;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
-import org.sertia.contracts.movies.catalog.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalog;
 import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
 
 import java.io.IOException;

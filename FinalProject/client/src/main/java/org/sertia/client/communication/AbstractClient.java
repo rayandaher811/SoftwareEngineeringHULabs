@@ -5,7 +5,8 @@
 package org.sertia.client.communication;
 
 import com.google.gson.Gson;
-import org.json.JSONObject;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.SertiaBasicRequest;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -385,7 +386,7 @@ public abstract class AbstractClient implements Runnable {
         return null;
     }
 
-    protected <Req, Res> Optional<Res> requestAndWaitForResponse(Req request, Class<Res> destClass) {
+    protected <Req extends SertiaBasicRequest, Res extends SertiaBasicResponse> Optional<Res> requestAndWaitForResponse(Req request, Class<Res> destClass) {
         try {
             String requestId = UUID.randomUUID().toString();
             this.sendToServer(request);

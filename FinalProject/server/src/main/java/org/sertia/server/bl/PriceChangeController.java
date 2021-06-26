@@ -1,7 +1,7 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.server.bl.Services.ControllerUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PriceChangeController {
 
-	public void requestPriceChange(ClientPriceChangeRequest priceChangeRequest, String username) throws Exception {
+	public void requestPriceChange(BasicPriceChangeRequest priceChangeRequest, String username) throws Exception {
 		Session session = null;
 
 		try {
@@ -39,14 +39,14 @@ public class PriceChangeController {
 		}
 	}
 
-	public ClientPriceChangeRequest[] getUnapprovedRequests() throws Exception {
+	public BasicPriceChangeRequest[] getUnapprovedRequests() throws Exception {
 		try (Session session = HibernateSessionFactory.getInstance().openSession()){
-			List<ClientPriceChangeRequest> clientRequests = new LinkedList<ClientPriceChangeRequest>();
+			List<BasicPriceChangeRequest> clientRequests = new LinkedList<BasicPriceChangeRequest>();
 
 			// Collecting the unapproved requests
 			for (PriceChangeRequest request : getAllPriceChangeRequests(session)) {
 				if(!request.isAccepted())
-					clientRequests.add(new ClientPriceChangeRequest(request.getId(),
+					clientRequests.add(new BasicPriceChangeRequest(request.getId(),
 																	request.getMovie().getId(),
 																	request.getRequester().getUsername(),
 																	ControllerUtils.dlTicketTypeToClient(request.getTicketType()),
@@ -54,7 +54,7 @@ public class PriceChangeController {
 																	false));
 			}
 
-			return (ClientPriceChangeRequest[]) clientRequests.toArray();
+			return (BasicPriceChangeRequest[]) clientRequests.toArray();
 		} finally {
 		}
 	}

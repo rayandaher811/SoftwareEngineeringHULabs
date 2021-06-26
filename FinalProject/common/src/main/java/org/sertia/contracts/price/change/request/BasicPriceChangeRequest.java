@@ -1,9 +1,9 @@
 package org.sertia.contracts.price.change.request;
 
-import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.price.change.ClientTicketType;
 
-public class ClientPriceChangeRequest extends SertiaClientRequest {
+public class BasicPriceChangeRequest extends SertiaBasicRequest {
 
 	public int requestId;
 	public int movieId;
@@ -12,7 +12,7 @@ public class ClientPriceChangeRequest extends SertiaClientRequest {
 	public double newPrice;
 	public boolean isApproved;
 
-	public ClientPriceChangeRequest(int requestId, int movieId, String userName, ClientTicketType clientTicketType, double newPrice, boolean isApproved) {
+	public BasicPriceChangeRequest(int requestId, int movieId, String userName, ClientTicketType clientTicketType, double newPrice, boolean isApproved) {
 		this.requestId = requestId;
 		this.movieId = movieId;
 		this.userName = userName;

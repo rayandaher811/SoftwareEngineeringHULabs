@@ -1,9 +1,12 @@
-package org.sertia.contracts.screening.ticket;
+package org.sertia.contracts.screening.ticket.response;
+
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.screening.ticket.HallSeat;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScreeningPaymentResponse extends PaymentResponse {
+public class ScreeningPaymentResponse extends SertiaBasicResponse {
     Map<Integer, HallSeat> ticketIdToSeat;
 
     public ScreeningPaymentResponse() {

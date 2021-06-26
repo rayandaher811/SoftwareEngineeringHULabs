@@ -12,13 +12,11 @@ public class TicketsVoucher {
 
     private int ticketsBalance;
 
-
+    @ManyToOne
+    private CustomerPaymentDetails customerPaymentDetails;
 
     public TicketsVoucher() {
     }
-
-    @ManyToOne
-    private CustomerPaymentDetails customerPaymentDetails;
 
     public int getId() {
         return id;

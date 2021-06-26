@@ -1,7 +1,7 @@
 package org.sertia.contracts.complaints.requests;
 
-import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.SertiaBasicRequest;
 
-public class CloseComplaintRequest extends SertiaClientRequest {
+public class CloseComplaintRequest extends SertiaBasicRequest {
     public int complaintId;
 }
