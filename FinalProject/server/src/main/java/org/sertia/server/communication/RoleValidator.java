@@ -1,5 +1,8 @@
 package org.sertia.server.communication;
 
+import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
+import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
+import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
@@ -41,7 +44,9 @@ public class RoleValidator {
     }
 
     public boolean isCustomerSupportOperation(Class<?> requestType) {
-        return false;
+        return requestType == CloseComplaintRequest.class ||
+                requestType == PurchaseCancellationFromComplaintRequest.class ||
+                requestType == GetAllUnhandledComplaintsRequest.class;
     }
 
     public boolean isCinemaManagerOperation(Class<?> requestType) {
