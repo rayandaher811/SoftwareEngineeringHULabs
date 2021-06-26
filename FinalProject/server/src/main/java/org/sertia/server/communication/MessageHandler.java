@@ -85,6 +85,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(CancelScreeningTicketRequest.class, this::handleTicketCancel);
         messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
         messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
+        messageTypeToHandler.put(UseVoucherRequest.class, this::handleUseVoucherRequest);
     }
 
     @Override
@@ -106,73 +107,118 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleSertiaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
-            client.sendToClient(moviesCatalogController.getSertiaCatalog());
-        } catch (IOException e) {
+            response = moviesCatalogController.getSertiaCatalog();
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't handle get Sertia catalog.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleCinemaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
-            client.sendToClient(moviesCatalogController.getCinemaCatalog((CinemaCatalogRequest) request));
-        } catch (IOException e) {
+            response = moviesCatalogController.getCinemaCatalog((CinemaCatalogRequest) request);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't get cinema catalog.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleScreeningTicketWithSeats(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             ScreeningTicketWithSeatsRequest ticketRequest = (ScreeningTicketWithSeatsRequest) request;
-            client.sendToClient(screeningTicketController.buyTicketWithSeatChose(ticketRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.buyTicketWithSeatChose(ticketRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't couldn't handle purchase request.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleScreeningTicketWithCovid(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             ScreeningTicketWithCovidRequest ticketRequest = (ScreeningTicketWithCovidRequest) request;
-            client.sendToClient(screeningTicketController.buyTicketWithRegulations(ticketRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.buyTicketWithRegulations(ticketRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't couldn't handle purchase request.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             CancelScreeningTicketRequest cancelRequest = (CancelScreeningTicketRequest) request;
-            client.sendToClient(screeningTicketController.cancelTicket(cancelRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.cancelTicket(cancelRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't handle ticket cancel.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleGetScreeningSeatMap(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             GetScreeningSeatMap seatMapRequest = (GetScreeningSeatMap) request;
-            client.sendToClient(screeningTicketController.getSeatMapForScreening(seatMapRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.getSeatMapForScreening(seatMapRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't get the seat map for the screening.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleVoucherPurchase(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             VoucherPurchaseRequest voucherPurchaseRequest = (VoucherPurchaseRequest) request;
-            client.sendToClient(screeningTicketController.buyVoucher(voucherPurchaseRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.buyVoucher(voucherPurchaseRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't handle the voucher purchase request.");
         }
+
+        sendResponseToClient(client, response);
     }
 
     private void handleVoucherBalanceRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
         try {
             VoucherBalanceRequest voucherBalanceRequest = (VoucherBalanceRequest) request;
-            client.sendToClient(screeningTicketController.getVoucherBalance(voucherBalanceRequest));
-        } catch (IOException e) {
+            response = screeningTicketController.getVoucherBalance(voucherBalanceRequest);
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            response.setFailReason("We couldn't handle the voucher balance request.");
         }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleUseVoucherRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            UseVoucherRequest useVoucherRequest = (UseVoucherRequest) request;
+            response = screeningTicketController.useVoucher(useVoucherRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't the voucher use request.");
+        }
+
+        sendResponseToClient(client, response);
     }
 
     // region Price change requests handlers
@@ -468,7 +514,7 @@ public class MessageHandler extends AbstractServer {
         try{
             client.sendToClient(response);
         } catch (Exception e){
-            System.out.println("We couldn't send a response to " + (String) client.getInfo(ClientSessionIdType));
+            System.out.println("We couldn't send a response to " + client.getInfo(ClientSessionIdType));
         }
     }
 }

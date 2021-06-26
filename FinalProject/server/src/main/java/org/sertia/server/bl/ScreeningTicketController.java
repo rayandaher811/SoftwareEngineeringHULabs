@@ -9,6 +9,7 @@ import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
+import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
@@ -68,10 +69,15 @@ public class ScreeningTicketController implements Reportable {
     }
 
     public SertiaBasicResponse buyVoucher(BasicPaymentRequest paymentDetails) {
+        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, 1).orElse(null);
+        if (vouchersInfo == null) {
+            return new SertiaBasicResponse(false).setFailReason("no voucher info in system");
+        }
+
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             TicketsVoucher voucher = new TicketsVoucher();
             voucher.setCustomerPaymentDetails(getPaymentDetails(paymentDetails));
-            voucher.setTicketsBalance(20);
+            voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
             int voucherId = (int) session.save(voucher);
 
             return new VoucherPaymentResponse(false)
@@ -82,15 +88,38 @@ public class ScreeningTicketController implements Reportable {
         }
     }
 
-
     public SertiaBasicResponse getVoucherBalance(VoucherBalanceRequest request) {
-        // TODO - implement ScreeningTicketController.getVoucherBalance
-        throw new UnsupportedOperationException();
+        return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
+            VoucherBalanceResponse response = new VoucherBalanceResponse(true);
+            response.balance = ticketsVoucher.getTicketsBalance();
+
+            return response;
+        }).orElseGet(() -> {
+            VoucherBalanceResponse response = new VoucherBalanceResponse(false);
+            response.setFailReason("voucher doesn't exist");
+
+            return response;
+        });
     }
 
-    public SertiaBasicResponse useVoucher(String voucherId) {
-        // TODO - implement ScreeningTicketController.useVoucher
-        throw new UnsupportedOperationException();
+    public SertiaBasicResponse useVoucher(UseVoucherRequest request) {
+        return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
+            try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                if (ticketsVoucher.getTicketsBalance() == 1) {
+                    session.delete(ticketsVoucher);
+                }
+
+                ticketsVoucher.setTicketsBalance(ticketsVoucher.getTicketsBalance() - 1);
+                session.save(ticketsVoucher);
+                return new SertiaBasicResponse(true);
+            } catch (RuntimeException exception) {
+                return new SertiaBasicResponse(false).setFailReason("failed to update voucher");
+            }
+        }).orElseGet(() -> {
+            SertiaBasicResponse response = new SertiaBasicResponse(false);
+            response.setFailReason("voucher doesn't exist");
+            return response;
+        });
     }
 
     @Override
