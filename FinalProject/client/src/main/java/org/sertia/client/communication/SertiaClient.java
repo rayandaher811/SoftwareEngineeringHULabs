@@ -2,10 +2,13 @@ package org.sertia.client.communication;
 
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
+import org.sertia.contracts.SertiaBasicRequest;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -65,6 +68,21 @@ public class SertiaClient extends AbstractClient {
             return new MoviesCatalog();
         else
             return null;
+    }
+
+    public <requestType extends SertiaBasicRequest,responseType extends SertiaBasicResponse> responseType request(requestType request) {
+        Class<responseType> responseTypeClass = extractClassObject();
+        Optional<responseType> res =
+                client.requestAndWaitForResponse(request, responseTypeClass);
+
+        if (res.isPresent())
+            return res.get();
+        else
+            return null;
+    }
+
+    private <responseType extends SertiaBasicResponse> Class<responseType> extractClassObject() {
+        return (Class<responseType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {
