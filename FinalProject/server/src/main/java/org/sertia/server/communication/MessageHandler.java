@@ -153,6 +153,8 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
+    // region Price change requests handlers
+
     private void handleAllUnapprovedPriceChangeRequests(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             client.sendToClient(priceChangeController.getUnapprovedRequests());
@@ -191,20 +193,14 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
+    // endregion
+
+    // region Movies Addition/Removal handlers
+
     private void handleMovieRemoval(SertiaBasicRequest request, ConnectionToClient client) {
         try {
             int movieId = ((RemoveMovieRequest) request).movieId;
             moviesCatalogController.removeMovie(movieId);
-            client.sendToClient(Boolean.TRUE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleScreeningRemoval(SertiaBasicRequest request, ConnectionToClient client) {
-        try {
-            int screeningId = ((RemoveScreeningRequest) request).screeningId;
-            moviesCatalogController.removeMovieScreening(screeningId);
             client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -221,6 +217,10 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
+    // endregion
+
+    // region Screening Addition/Removal/Update handlers
+
     private void handleScreeningAddition(SertiaBasicRequest request, ConnectionToClient client) {
         CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
         try {
@@ -230,6 +230,30 @@ public class MessageHandler extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+    private void handleScreeningRemoval(SertiaBasicRequest request, ConnectionToClient client) {
+        try {
+            int screeningId = ((RemoveScreeningRequest) request).screeningId;
+            moviesCatalogController.removeMovieScreening(screeningId);
+            client.sendToClient(Boolean.TRUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleMovieScreeningTimeUpdate(SertiaBasicRequest request, ConnectionToClient client) {
+        ClientScreening screeningToUpdate = ((ScreeningUpdateRequest) request).screening;
+        try {
+            moviesCatalogController.updateScreeningTime(screeningToUpdate);
+            client.sendToClient(Boolean.TRUE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // endregion
+
+    // region Streaming Addition/Removal handlers
 
     private void handleStreamingAddition(SertiaBasicRequest request, ConnectionToClient client) {
         StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
@@ -251,15 +275,7 @@ public class MessageHandler extends AbstractServer {
         }
     }
 
-    private void handleMovieScreeningTimeUpdate(SertiaBasicRequest request, ConnectionToClient client) {
-        ClientScreening screeningToUpdate = ((ScreeningUpdateRequest) request).screening;
-        try {
-            moviesCatalogController.updateScreeningTime(screeningToUpdate);
-            client.sendToClient(Boolean.TRUE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // endregion
 
     private void handleLoginRequest(SertiaBasicRequest request, ConnectionToClient client) {
         LoginCredentials loginCredentials = ((LoginRequest) request).loginCredentials;
@@ -280,6 +296,8 @@ public class MessageHandler extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+    // region Complaints handlers
 
     private void handlePurchaseCancellationFromComplaintRequest(SertiaBasicRequest request, ConnectionToClient client) {
         PurchaseCancellationFromComplaintRequest cancellationFromComplaintRequest = (PurchaseCancellationFromComplaintRequest) request;
@@ -319,6 +337,8 @@ public class MessageHandler extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+    // endregion
 
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
