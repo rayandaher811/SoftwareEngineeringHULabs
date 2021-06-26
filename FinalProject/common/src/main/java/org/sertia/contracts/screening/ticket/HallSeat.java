@@ -1,6 +1,8 @@
 package org.sertia.contracts.screening.ticket;
 
-public class HallSeat {
+import java.io.Serializable;
+
+public class HallSeat  implements Serializable {
 	public int id;
 	public int row;
 	public int numberInRow;

@@ -13,9 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The <code> AbstractClient </code> contains all the
@@ -111,7 +109,7 @@ public abstract class AbstractClient implements Runnable {
      */
     private int port;
 
-    private HashMap<String, String> clientIdsToResponses;
+    private Object serverResponse;
     private static Gson GSON = new Gson();
 
 // CONSTRUCTORS *****************************************************
@@ -126,7 +124,6 @@ public abstract class AbstractClient implements Runnable {
         // Initialize variables
         this.host = host;
         this.port = port;
-        this.clientIdsToResponses = new HashMap<>();
     }
 
 // INSTANCE METHODS *************************************************
@@ -276,19 +273,15 @@ public abstract class AbstractClient implements Runnable {
                     // Concrete subclasses do what they want with the
                     // msg by implementing the following method
                     if (!readyToStop) {  // Added in version 2.2
-                        JSONObject rawMessage = new JSONObject(msg.toString());
-                        String originRequestId = rawMessage.getString("originRequestId");
-                        clientIdsToResponses.put(originRequestId, msg.toString());
+                        serverResponse = msg;
                     }
 
-                } catch (ClassNotFoundException ex) { // when an unknown class is received
+                } catch (ClassNotFoundException | RuntimeException ex) { // when an unknown class is received
 
                     connectionException(ex);
 
-                } catch (RuntimeException ex) { // thrown by handleMessageFromServer
+                } // thrown by handleMessageFromServer
 
-                    connectionException(ex);
-                }
             }
         } catch (Exception exception) {
             if (!readyToStop) {
@@ -384,9 +377,11 @@ public abstract class AbstractClient implements Runnable {
         }
     }
 
-    protected String getResponse(String messageId) {
-        if (clientIdsToResponses.containsKey(messageId))
-            return clientIdsToResponses.remove(messageId);
+    protected Object getResponse(String messageId) {
+        if (serverResponse != null) {
+            return serverResponse;
+        }
+
         return null;
     }
 
@@ -394,15 +389,19 @@ public abstract class AbstractClient implements Runnable {
         try {
             String requestId = UUID.randomUUID().toString();
             this.sendToServer(request);
-            String response = getResponse(requestId);
+            Object response = getResponse(requestId);
             while (response == null) {
                 Thread.sleep(1);
                 response = getResponse(requestId);
             }
-            return Optional.of(GSON.fromJson(response, destClass));
+            serverResponse = null;
+            if(response.getClass() == destClass) {
+                return Optional.of((Res) response);
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
         return Optional.empty();
     }
 

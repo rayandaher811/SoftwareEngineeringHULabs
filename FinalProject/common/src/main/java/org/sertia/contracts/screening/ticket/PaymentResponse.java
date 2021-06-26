@@ -1,6 +1,8 @@
 package org.sertia.contracts.screening.ticket;
 
-public class PaymentResponse {
+import java.io.Serializable;
+
+public class PaymentResponse implements Serializable {
 	public boolean isSuccessful;
 	public String failReason;
 

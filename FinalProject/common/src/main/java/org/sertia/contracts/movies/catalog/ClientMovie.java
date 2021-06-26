@@ -1,6 +1,8 @@
 package org.sertia.contracts.movies.catalog;
 
-public class ClientMovie {
+import java.io.Serializable;
+
+public class ClientMovie implements Serializable {
     public int id;
     public String hebrewName;
     public String name;
