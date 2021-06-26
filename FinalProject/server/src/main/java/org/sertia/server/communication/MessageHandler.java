@@ -1,6 +1,11 @@
 package org.sertia.server.communication;
 
 import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.complaints.ClientOpenComplaint;
+import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
+import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
+import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
+import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaCatalog;
@@ -14,10 +19,7 @@ import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
 import org.sertia.contracts.user.login.response.LoginResult;
-import org.sertia.server.bl.MoviesCatalogController;
-import org.sertia.server.bl.PriceChangeController;
-import org.sertia.server.bl.ScreeningTicketController;
-import org.sertia.server.bl.UserLoginController;
+import org.sertia.server.bl.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ public class MessageHandler extends AbstractServer {
     private final ScreeningTicketController screeningTicketController;
     private final PriceChangeController priceChangeController;
     private final UserLoginController userLoginController;
+    private final ComplaintsController complaintsController;
     private final Map<Class<? extends SertiaClientRequest>, BiConsumer<SertiaClientRequest, ConnectionToClient>> messageTypeToHandler;
 
     private final RoleValidator roleValidator;
@@ -46,12 +49,8 @@ public class MessageHandler extends AbstractServer {
         this.screeningTicketController = screeningTicketController;
         this.userLoginController = new UserLoginController();
         this.priceChangeController = new PriceChangeController();
-
-        LoginCredentials a = new LoginCredentials();
-        a.username = "Admin";
-        a.password = "123123";
-        userLoginController.login(a);
-        moviesCatalogController = new MoviesCatalogController();
+        this.complaintsController = new ComplaintsController();
+        this.moviesCatalogController = new MoviesCatalogController();
     }
 
     private void initializeHandlerMapping() {
@@ -68,6 +67,10 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(ApprovePriceChangeRequest.class, this::handleApprovePriceChangeRequest);
         messageTypeToHandler.put(DissapprovePriceChangeRequest.class, this::handleDisapprovePriceChangeRequest);
         messageTypeToHandler.put(GetUnapprovedPriceChangeRequests.class, this::handleAllUnapprovedPriceChangeRequests);
+        messageTypeToHandler.put(GetAllUnhandledComplaintsRequest.class, this::handleAllUnhandledComplaintsRequest);
+        messageTypeToHandler.put(CreateNewComplaintRequest.class, this::handleNewComplaintCreationRequest);
+        messageTypeToHandler.put(CloseComplaintRequest.class, this::handleCloseComplaintRequest);
+        messageTypeToHandler.put(PurchaseCancellationFromComplaintRequest.class, this::handlePurchaseCancellationFromComplaintRequest);
     }
 
     @Override
@@ -221,6 +224,45 @@ public class MessageHandler extends AbstractServer {
 
             client.sendToClient(result);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handlePurchaseCancellationFromComplaintRequest(SertiaClientRequest request, ConnectionToClient client) {
+        PurchaseCancellationFromComplaintRequest cancellationFromComplaintRequest = (PurchaseCancellationFromComplaintRequest)request;
+        try {
+            complaintsController.cancelPurchaseFromComplaint(cancellationFromComplaintRequest.complaintId,
+                    (String) client.getInfo(ClientUsernameType),
+                    cancellationFromComplaintRequest.refundAmount);
+            client.sendToClient(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleCloseComplaintRequest(SertiaClientRequest request, ConnectionToClient client) {
+        CloseComplaintRequest closeComplaintRequest = (CloseComplaintRequest) request;
+        try {
+            complaintsController.closeComplaint(closeComplaintRequest.complaintId, (String) client.getInfo(ClientUsernameType));
+            client.sendToClient(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleNewComplaintCreationRequest(SertiaClientRequest request, ConnectionToClient client) {
+        try {
+            complaintsController.createNewComplaint(((CreateNewComplaintRequest)request).complaint);
+            client.sendToClient(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleAllUnhandledComplaintsRequest(SertiaClientRequest request, ConnectionToClient client) {
+        try {
+            client.sendToClient(complaintsController.getAllUnhandledComplaints());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

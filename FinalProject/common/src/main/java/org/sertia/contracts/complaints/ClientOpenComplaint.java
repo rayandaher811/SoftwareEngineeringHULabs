@@ -1,10 +1,12 @@
 package org.sertia.contracts.complaints;
 
+import org.sertia.contracts.SertiaClientRequest;
 import org.sertia.contracts.price.change.ClientTicketType;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ClientOpenComplaint {
+public class ClientOpenComplaint implements Serializable {
 
 	public int complaintId;
 	public String customerName;

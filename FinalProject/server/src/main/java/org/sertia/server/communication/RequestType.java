@@ -14,4 +14,8 @@ public class RequestType {
     public static final String APPROVE_PRICE_CHANGE = "APPROVE_PRICE_CHANGE";
     public static final String DISAPPROVE_PRICE_CHANGE = "DISAPPROVE_PRICE_CHANGE";
     public static final String ALL_UNAPPROVED_REQUESTS = "ALL_UNAPPROVED_REQUESTS";
+    public static final String CREATE_NEW_COMPLAINT = "CREATE_NEW_COMPLAINT";
+    public static final String ALL_UNHANDLED_COMPLAINTS_REQUESTS = "ALL_UNHANDLED_COMPLAINTS_REQUESTS";
+    public static final String CLOSE_COMPLAINT = "CLOSE_COMPLAINT";
+    public static final String CANCEL_PURCHASE_FROM_COMPLAINT = "CANCEL_PURCHASE_FROM_COMPLAINT";
 }
