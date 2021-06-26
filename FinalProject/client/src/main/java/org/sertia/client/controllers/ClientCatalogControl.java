@@ -3,6 +3,7 @@ package org.sertia.client.controllers;
 
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -32,30 +33,30 @@ public class ClientCatalogControl {
 	}
 
 	public boolean tryCreateMovie(SertiaMovie movie) {
-		return client.request(new AddMovieRequest(movie)).isSuccessful;
+		return client.request(new AddMovieRequest(movie), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryRemoveMovie(int movieId) {
-		return client.request(new RemoveMovieRequest(movieId)).isSuccessful;
+		return client.request(new RemoveMovieRequest(movieId), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryUpdateScreeningTime(ClientScreening screening) {
-		return client.request(new ScreeningTimeUpdateRequest(screening)).isSuccessful;
+		return client.request(new ScreeningTimeUpdateRequest(screening), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryAddScreening(CinemaScreeningMovie parameter) {
-		return client.request(new AddScreeningRequest(parameter)).isSuccessful;
+		return client.request(new AddScreeningRequest(parameter), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryRemoveScreening(int screeningId) {
-		return client.request(new RemoveScreeningRequest(screeningId)).isSuccessful;
+		return client.request(new RemoveScreeningRequest(screeningId), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryAddStreaming(int movieId, double pricePerStream) {
-		return client.request(new StreamingAdditionRequest(movieId, pricePerStream)).isSuccessful;
+		return client.request(new StreamingAdditionRequest(movieId, pricePerStream), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryRemoveStreaming(int movieId) {
-		return client.request(new StreamingRemovalRequest(movieId)).isSuccessful;
+		return client.request(new StreamingRemovalRequest(movieId), SertiaBasicResponse.class).isSuccessful;
 	}
 }

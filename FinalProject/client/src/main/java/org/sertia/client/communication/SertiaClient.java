@@ -70,8 +70,7 @@ public class SertiaClient extends AbstractClient {
             return null;
     }
 
-    public <requestType extends SertiaBasicRequest,responseType extends SertiaBasicResponse> responseType request(requestType request) {
-        Class<responseType> responseTypeClass = extractClassObject();
+    public <requestType extends SertiaBasicRequest,responseType extends SertiaBasicResponse> responseType request(requestType request, Class<responseType> responseTypeClass) {
         Optional<responseType> res =
                 client.requestAndWaitForResponse(request, responseTypeClass);
 
@@ -79,10 +78,6 @@ public class SertiaClient extends AbstractClient {
             return res.get();
         else
             return null;
-    }
-
-    private <responseType extends SertiaBasicResponse> Class<responseType> extractClassObject() {
-        return (Class<responseType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {

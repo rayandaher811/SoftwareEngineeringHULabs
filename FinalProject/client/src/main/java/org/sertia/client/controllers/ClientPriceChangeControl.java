@@ -1,6 +1,7 @@
 package org.sertia.client.controllers;
 
 import org.sertia.client.communication.SertiaClient;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.request.StreamingAdditionRequest;
 import org.sertia.contracts.price.change.ClientTicketType;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
@@ -20,19 +21,19 @@ public class ClientPriceChangeControl {
 	}
 
 	public void requestPriceChange(int movieId, String userName, ClientTicketType clientTicketType, double newPrice) {
-		client.request(new BasicPriceChangeRequest(movieId, userName, clientTicketType, newPrice));
+		client.request(new BasicPriceChangeRequest(movieId, userName, clientTicketType, newPrice), SertiaBasicResponse.class);
 	}
 
 	public boolean tryApprovePriceChange(int requestId) {
-		return client.request(new ApprovePriceChangeRequest(requestId)).isSuccessful;
+		return client.request(new ApprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public boolean tryDisapprovePriceChange(int requestId) {
-		return client.request(new DissapprovePriceChangeRequest(requestId)).isSuccessful;
+		return client.request(new DissapprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
 	}
 
 	public List<BasicPriceChangeRequest> getAllOpenedPriceChangeRequests() {
-		GetUnapprovedPriceChangeResponse response = client.request(new GetUnapprovedPriceChangeRequest());
+		GetUnapprovedPriceChangeResponse response = client.request(new GetUnapprovedPriceChangeRequest(), GetUnapprovedPriceChangeResponse.class);
 		return response.unapprovedRequests;
 	}
 

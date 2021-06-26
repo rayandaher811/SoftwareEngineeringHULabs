@@ -16,7 +16,7 @@ public class ClientUserLoginController {
 	}
 
 	public UserRole login(LoginCredentials credentials) {
-		LoginResult response = client.request(new LoginRequest(credentials));
+		LoginResult response = client.request(new LoginRequest(credentials),LoginResult.class);
 		return response.userRole;
 	}
 
