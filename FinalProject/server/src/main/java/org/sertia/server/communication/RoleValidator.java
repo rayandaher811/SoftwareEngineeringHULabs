@@ -1,31 +1,56 @@
 package org.sertia.server.communication;
 
+import org.sertia.contracts.movies.catalog.request.*;
+import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequests;
 import org.sertia.contracts.user.login.UserRole;
-import org.sertia.server.dl.classes.Role;
 
 public class RoleValidator {
 
-	public boolean isClientAllowed(UserRole role, String requestType) {
-		switch (requestType){
-			case RequestType.ALL_MOVIES_REQ:
-			case RequestType.LOGIN_REQ:
-				return true;
-			case RequestType.UPDATE_SCREENING_TIME_REQ:
-			case RequestType.ADD_MOVIE:
-			case RequestType.REMOVE_MOVIE:
-			case RequestType.ADD_SCREENINGS:
-			case RequestType.REMOVE_SCREENINGS:
-			case RequestType.ADD_STREAMING:
-			case RequestType.REMOVE_STREAMING:
-			case RequestType.REQUEST_PRICE_CHANGE:
-				return role == UserRole.MediaManager;
-			case RequestType.ALL_UNAPPROVED_REQUESTS:
-			case RequestType.APPROVE_PRICE_CHANGE:
-			case RequestType.DISAPPROVE_PRICE_CHANGE:
-				return role == UserRole.BranchManager;
-			default:
-				return false;
-		}
-	}
+    public boolean isClientAllowed(UserRole role, Class<?> requestType) {
+        if (isMediaManagerOperation(requestType)) {
+            return role == UserRole.MediaManager;
+        }
 
+        if (isCustomerSupportOperation(requestType)) {
+            return role == UserRole.CostumerSupport;
+        }
+
+        if (isCinemaManagerOperation(requestType)) {
+            return role == UserRole.CinemaManager;
+        }
+
+        if (isBranchManagerOperation(requestType)) {
+            return role == UserRole.BranchManager;
+        }
+
+        return true;
+    }
+
+    public boolean isMediaManagerOperation(Class<?> requestType) {
+        return requestType == ClientPriceChangeRequest.class ||
+                requestType == StreamingAdditionRequest.class ||
+                requestType == StreamingRemovalRequest.class ||
+                requestType == AddScreeningRequest.class ||
+                requestType == RemoveScreeningRequest.class ||
+                requestType == AddMovieRequest.class ||
+                requestType == RemoveMovieRequest.class ||
+                requestType == ScreeningUpdateRequest.class;
+    }
+
+    public boolean isCustomerSupportOperation(Class<?> requestType) {
+        return false;
+    }
+
+    public boolean isCinemaManagerOperation(Class<?> requestType) {
+        return false;
+    }
+
+    public boolean isBranchManagerOperation(Class<?> requestType) {
+        return requestType == GetUnapprovedPriceChangeRequests.class ||
+                requestType == ApprovePriceChangeRequest.class ||
+                requestType == DissapprovePriceChangeRequest.class;
+    }
 }

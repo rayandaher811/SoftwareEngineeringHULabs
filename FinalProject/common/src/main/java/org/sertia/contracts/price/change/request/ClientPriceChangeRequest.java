@@ -1,6 +1,9 @@
-package org.sertia.contracts.price.change;
+package org.sertia.contracts.price.change.request;
 
-public class ClientPriceChangeRequest {
+import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.price.change.ClientTicketType;
+
+public class ClientPriceChangeRequest extends SertiaClientRequest {
 
 	public int requestId;
 	public int movieId;

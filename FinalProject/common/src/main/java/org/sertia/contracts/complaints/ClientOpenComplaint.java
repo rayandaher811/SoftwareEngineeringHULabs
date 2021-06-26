@@ -1,6 +1,5 @@
-package org.sertia.contracts.complaints.controller;
+package org.sertia.contracts.complaints;
 
-import org.joda.time.DateTime;
 import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.time.LocalDateTime;

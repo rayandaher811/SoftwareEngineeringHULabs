@@ -1,4 +1,4 @@
-package org.sertia.contracts.complaints.controller;
+package org.sertia.contracts.complaints;
 
 public class ClientPurchaseDetails {
 

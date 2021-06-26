@@ -1,44 +1,51 @@
 package org.sertia.server.communication;
 
-import com.google.gson.Gson;
-import org.json.JSONObject;
-import org.sertia.contracts.movies.catalog.controller.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.controller.StreamingAdditionRequest;
-import org.sertia.contracts.movies.catalog.controller.ClientScreening;
-import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
-import org.sertia.contracts.movies.catalog.controller.SertiaMovie;
-import org.sertia.contracts.price.change.ClientPriceChangeRequest;
+import org.sertia.contracts.SertiaClientRequest;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.movies.catalog.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.request.*;
+import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequests;
 import org.sertia.contracts.user.login.LoginCredentials;
-import org.sertia.contracts.user.login.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
+import org.sertia.contracts.user.login.request.LoginRequest;
+import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.server.bl.MoviesCatalogController;
 import org.sertia.server.bl.PriceChangeController;
 import org.sertia.server.bl.ScreeningTicketController;
 import org.sertia.server.bl.UserLoginController;
-import org.sertia.server.dl.classes.PriceChangeRequest;
-import org.sertia.server.dl.classes.User;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class MessageHandler extends AbstractServer {
-    private static Gson GSON = new Gson();
-    private final MoviesCatalogController moviesCatalogController;
-    private final ScreeningTicketController screeningTicketController;
-    private final PriceChangeController priceChangeController;
-
-
-    private UserLoginController userLoginController;
     private final String ClientRoleType = "Role";
     private final String ClientSessionIdType = "Session";
     private final String ClientUsernameType = "Username";
-    private RoleValidator roleValidator;
+
+    private final MoviesCatalogController moviesCatalogController;
+    private final ScreeningTicketController screeningTicketController;
+    private final PriceChangeController priceChangeController;
+    private final UserLoginController userLoginController;
+    private final Map<Class<? extends SertiaClientRequest>, BiConsumer<SertiaClientRequest, ConnectionToClient>> messageTypeToHandler;
+
+    private final RoleValidator roleValidator;
 
     public MessageHandler(int port, ScreeningTicketController screeningTicketController) {
         super(port);
+        this.roleValidator = new RoleValidator();
+        this.messageTypeToHandler = new HashMap<>();
+        initializeHandlerMapping();
+
         this.screeningTicketController = screeningTicketController;
-        userLoginController = new UserLoginController();
-        priceChangeController = new PriceChangeController();
-        roleValidator = new RoleValidator();
+        this.userLoginController = new UserLoginController();
+        this.priceChangeController = new PriceChangeController();
 
         LoginCredentials a = new LoginCredentials();
         a.username = "Admin";
@@ -47,180 +54,159 @@ public class MessageHandler extends AbstractServer {
         moviesCatalogController = new MoviesCatalogController();
     }
 
+    private void initializeHandlerMapping() {
+        messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
+        messageTypeToHandler.put(ScreeningUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
+        messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
+        messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
+        messageTypeToHandler.put(RemoveMovieRequest.class, this::handleMovieRemoval);
+        messageTypeToHandler.put(AddScreeningRequest.class, this::handleScreeningAddition);
+        messageTypeToHandler.put(RemoveScreeningRequest.class, this::handleScreeningRemoval);
+        messageTypeToHandler.put(StreamingAdditionRequest.class, this::handleStreamingAddition);
+        messageTypeToHandler.put(StreamingRemovalRequest.class, this::handleStreamingRemoval);
+        messageTypeToHandler.put(ClientPriceChangeRequest.class, this::handlePriceChangeRequest);
+        messageTypeToHandler.put(ApprovePriceChangeRequest.class, this::handleApprovePriceChangeRequest);
+        messageTypeToHandler.put(DissapprovePriceChangeRequest.class, this::handleDisapprovePriceChangeRequest);
+        messageTypeToHandler.put(GetUnapprovedPriceChangeRequests.class, this::handleAllUnapprovedPriceChangeRequests);
+    }
+
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         System.out.println("Received Message: " + msg.toString());
-        String requestType = new JSONObject(msg.toString()).getString("messageName");
 
-        // Validating the user requests
-        if(!roleValidator.isClientAllowed((UserRole)client.getInfo(ClientRoleType),
-                                            requestType))
+        Class<?> requestType = msg.getClass();
+        if (!messageTypeToHandler.containsKey(requestType)) {
+            System.out.println("user " + client.getName() + " requested non-existing action " + msg.getClass());
             return;
-
-        switch (requestType) {
-            case RequestType.ALL_MOVIES_REQ:
-                handleAllMoviesRequest(client);
-                break;
-            case RequestType.UPDATE_SCREENING_TIME_REQ:
-                handleMovieScreeningTimeUpdate(msg.toString(),client);
-                break;
-            case RequestType.LOGIN_REQ:
-                handleLoginRequest(msg.toString(),client);
-                break;
-            case RequestType.ADD_MOVIE:
-                handleMovieAddition(msg.toString(),client);
-                break;
-            case RequestType.REMOVE_MOVIE:
-                handleMovieRemoval(msg.toString(),client);
-                break;
-            case RequestType.ADD_SCREENINGS:
-                handleScreeningAddition(msg.toString(),client);
-                break;
-            case RequestType.REMOVE_SCREENINGS:
-                handleScreeningRemoval(msg.toString(),client);
-                break;
-            case RequestType.ADD_STREAMING:
-                handleStreamingAddition(msg.toString(),client);
-                break;
-            case RequestType.REMOVE_STREAMING:
-                handleStreamingRemoval(msg.toString(),client);
-                break;
-            case RequestType.REQUEST_PRICE_CHANGE:
-                handlePriceChangeRequest(msg.toString(),client);
-                break;
-            case RequestType.APPROVE_PRICE_CHANGE:
-                handleApprovePriceChangeRequest(msg.toString(),client);
-                break;
-            case RequestType.DISAPPROVE_PRICE_CHANGE:
-                handleDisapprovePriceChangeRequest(msg.toString(),client);
-                break;
-            case RequestType.ALL_UNAPPROVED_REQUESTS:
-                handleAllUnapprovedPriceChangeRequests(client);
-                break;
-            default:
-                System.out.println("Got uknown message: " + msg);
         }
+
+        if (!roleValidator.isClientAllowed((UserRole) client.getInfo(ClientRoleType), msg.getClass())) {
+            System.out.println("user " + client.getName() + " denied request of type " + msg.getClass());
+            return;
+        }
+
+        messageTypeToHandler.get(requestType).accept((SertiaClientRequest) msg, client);
     }
 
-    private void handleAllUnapprovedPriceChangeRequests(ConnectionToClient client) {
+    private void handleSertiaCatalog(SertiaClientRequest request, ConnectionToClient client) {
         try {
-            client.sendToClient(GSON.toJson(priceChangeController.getUnapprovedRequests()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleDisapprovePriceChangeRequest(String msg, ConnectionToClient client) {
-        try {
-            int priceChangeRequestId = Integer.parseInt(msg);
-            priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
-            client.sendToClient(GSON.toJson(true));
+            SertiaCatalog sertiaCatalog = moviesCatalogController.getSertiaCatalog();
+            client.sendToClient(sertiaCatalog);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleApprovePriceChangeRequest(String msg, ConnectionToClient client) {
+    private void handleAllUnapprovedPriceChangeRequests(SertiaClientRequest request, ConnectionToClient client) {
         try {
-            int priceChangeRequestId = Integer.parseInt(msg);
-            priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(priceChangeController.getUnapprovedRequests());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handlePriceChangeRequest(String msg, ConnectionToClient client) {
-        ClientPriceChangeRequest priceChangeRequest = GSON.fromJson(msg, ClientPriceChangeRequest.class);
+    private void handleDisapprovePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
+        try {
+            int priceChangeRequestId = ((DissapprovePriceChangeRequest) request).priceChangeRequestId;
+            priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
+            client.sendToClient(Boolean.TRUE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleApprovePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
+        try {
+            int priceChangeRequestId = ((ApprovePriceChangeRequest) request).priceChangeRequestId;
+            priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
+            client.sendToClient(Boolean.TRUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handlePriceChangeRequest(SertiaClientRequest request, ConnectionToClient client) {
+        ClientPriceChangeRequest priceChangeRequest = (ClientPriceChangeRequest) request;
         try {
             priceChangeController.requestPriceChange(priceChangeRequest, (String) client.getInfo(ClientUsernameType));
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleMovieRemoval(String msg, ConnectionToClient client) {
+    private void handleMovieRemoval(SertiaClientRequest request, ConnectionToClient client) {
         try {
-            int movieId = Integer.parseInt(msg);
+            int movieId = ((RemoveMovieRequest) request).movieId;
             moviesCatalogController.removeMovie(movieId);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleScreeningRemoval(String msg, ConnectionToClient client) {
+    private void handleScreeningRemoval(SertiaClientRequest request, ConnectionToClient client) {
         try {
-            int screeningId = Integer.parseInt(msg);
+            int screeningId = ((RemoveScreeningRequest) request).screeningId;
             moviesCatalogController.removeMovieScreening(screeningId);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleMovieAddition(String msg, ConnectionToClient client) {
-        SertiaMovie newMovie = GSON.fromJson(msg, SertiaMovie.class);
+    private void handleMovieAddition(SertiaClientRequest request, ConnectionToClient client) {
+        SertiaMovie newMovie = ((AddMovieRequest) request).sertiaMovie;
         try {
             moviesCatalogController.addMovie(newMovie);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleScreeningAddition(String msg, ConnectionToClient client) {
-        CinemaScreeningMovie movieScreenings = GSON.fromJson(msg, CinemaScreeningMovie.class);
+    private void handleScreeningAddition(SertiaClientRequest request, ConnectionToClient client) {
+        CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
         try {
             moviesCatalogController.addMovieScreenings(movieScreenings);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleStreamingAddition(String msg, ConnectionToClient client) {
-        StreamingAdditionRequest streamingAdditionRequest = GSON.fromJson(msg, StreamingAdditionRequest.class);
+    private void handleStreamingAddition(SertiaClientRequest request, ConnectionToClient client) {
+        StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
         try {
             moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void handleStreamingRemoval(String msg, ConnectionToClient client) {
+    private void handleStreamingRemoval(SertiaClientRequest request, ConnectionToClient client) {
         try {
-            int streamingId = Integer.parseInt(msg);
+            int streamingId = ((StreamingRemovalRequest) request).streamingId;
             moviesCatalogController.removeStreaming(streamingId);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void handleAllMoviesRequest(ConnectionToClient client) {
-        try {
-            SertiaCatalog requestResponse = moviesCatalogController.getSertiaCatalog();
-            client.sendToClient(GSON.toJson(requestResponse));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleMovieScreeningTimeUpdate(String msg, ConnectionToClient client) {
-        ClientScreening screeningToUpdate = GSON.fromJson(msg, ClientScreening.class);
+    private void handleMovieScreeningTimeUpdate(SertiaClientRequest request, ConnectionToClient client) {
+        ClientScreening screeningToUpdate = ((ScreeningUpdateRequest) request).screening;
         try {
             moviesCatalogController.updateScreeningTime(screeningToUpdate);
-            client.sendToClient(GSON.toJson(true));
+            client.sendToClient(Boolean.TRUE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleLoginRequest(String msg, ConnectionToClient client) {
-        LoginCredentials loginCredentials = GSON.fromJson(msg, LoginCredentials.class);
+    private void handleLoginRequest(SertiaClientRequest request, ConnectionToClient client) {
+        LoginCredentials loginCredentials = ((LoginRequest) request).loginCredentials;
 
         try {
             LoginResult result = userLoginController.login(loginCredentials);
@@ -230,11 +216,10 @@ public class MessageHandler extends AbstractServer {
             client.setInfo(ClientSessionIdType, result.sessionId);
 
             // Saving the username if the client has special role
-            if(result.userRole != UserRole.None)
+            if (result.userRole != UserRole.None)
                 client.setInfo(ClientUsernameType, loginCredentials.username);
 
-            client.sendToClient(GSON.toJson(result));
-
+            client.sendToClient(result);
         } catch (IOException e) {
             e.printStackTrace();
         }

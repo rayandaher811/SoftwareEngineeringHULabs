@@ -1,4 +1,4 @@
-package org.sertia.contracts.reports.controller;
+package org.sertia.contracts.reports;
 
 public class ClientReport {
 

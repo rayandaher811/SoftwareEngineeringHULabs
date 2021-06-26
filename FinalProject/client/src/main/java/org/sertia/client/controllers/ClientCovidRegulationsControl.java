@@ -1,6 +1,6 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.movies.catalog.controller.ClientScreening;
+import org.sertia.contracts.movies.catalog.ClientScreening;
 
 public class ClientCovidRegulationsControl {
 

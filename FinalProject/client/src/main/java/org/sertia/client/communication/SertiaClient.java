@@ -4,6 +4,8 @@ import org.sertia.client.communication.messages.AllMoviesRequestMsg;
 import org.sertia.client.communication.messages.AllMoviesRequestResponse;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
+import org.sertia.contracts.movies.catalog.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -57,18 +59,17 @@ public class SertiaClient extends AbstractClient {
     }
 
     public MoviesCatalog getMoviesCatalog() {
-        AllMoviesRequestMsg allMoviesRequestMsg = new AllMoviesRequestMsg(clientId);
-
-        Optional<AllMoviesRequestResponse> res =
-                client.requestAndWaitForResponse(allMoviesRequestMsg, allMoviesRequestMsg.getMessageId(), AllMoviesRequestResponse.class);
+        SertiaCatalogRequest sertiaCatalogRequest = new SertiaCatalogRequest();
+        Optional<SertiaCatalog> res =
+                client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalog.class);
 
         if (res.isPresent())
-            return res.get().getMoviesCatalog();
+            return new MoviesCatalog();
         else
             return null;
     }
 
     public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {
-        client.publishToServer(updateMovieScreeningTimeMsg, updateMovieScreeningTimeMsg.getMessageId());
+        client.publishToServer(updateMovieScreeningTimeMsg);
     }
 }

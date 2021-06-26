@@ -2,9 +2,9 @@ package org.sertia.client.controllers;
 
 
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.contracts.movies.catalog.controller.ClientMovie;
-import org.sertia.contracts.movies.catalog.controller.ClientScreening;
-import org.sertia.contracts.movies.catalog.controller.SertiaCatalog;
+import org.sertia.contracts.movies.catalog.ClientMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.movies.catalog.SertiaCatalog;
 
 public class ClientCatalogControl {
 

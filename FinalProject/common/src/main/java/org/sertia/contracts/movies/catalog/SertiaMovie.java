@@ -1,4 +1,4 @@
-package org.sertia.contracts.movies.catalog.controller;
+package org.sertia.contracts.movies.catalog;
 
 public class SertiaMovie extends CinemaScreeningMovie {
 	public boolean isStreamable;

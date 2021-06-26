@@ -1,6 +1,6 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.price.change.ClientPriceChangeRequest;
+import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
 
 public class ClientPriceChangeControl {
 

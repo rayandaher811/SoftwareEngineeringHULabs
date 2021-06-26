@@ -2,7 +2,7 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.sertia.contracts.reports.controller.ClientReport;
+import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.*;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;

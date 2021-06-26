@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The <code> AbstractClient </code> contains all the
@@ -389,9 +390,10 @@ public abstract class AbstractClient implements Runnable {
         return null;
     }
 
-    protected <Req, Res> Optional<Res> requestAndWaitForResponse(Req requestType, String requestId, Class<Res> destClass) {
+    protected <Req, Res> Optional<Res> requestAndWaitForResponse(Req request, Class<Res> destClass) {
         try {
-            this.sendToServer(GSON.toJson(requestType));
+            String requestId = UUID.randomUUID().toString();
+            this.sendToServer(request);
             String response = getResponse(requestId);
             while (response == null) {
                 Thread.sleep(1);
@@ -404,7 +406,7 @@ public abstract class AbstractClient implements Runnable {
         return Optional.empty();
     }
 
-    protected <Req> void publishToServer(Req requestType, String requestId) {
+    protected <Req> void publishToServer(Req requestType) {
         try {
             this.sendToServer(GSON.toJson(requestType));
         } catch (IOException e) {

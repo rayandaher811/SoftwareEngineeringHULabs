@@ -1,4 +1,4 @@
-package org.sertia.contracts.movies.catalog.controller;
+package org.sertia.contracts.movies.catalog;
 
 import java.time.LocalDateTime;
 

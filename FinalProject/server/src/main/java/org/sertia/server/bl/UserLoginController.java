@@ -2,7 +2,7 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.user.login.LoginCredentials;
-import org.sertia.contracts.user.login.LoginResult;
+import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.User;

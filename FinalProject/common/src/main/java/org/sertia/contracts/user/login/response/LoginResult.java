@@ -1,4 +1,6 @@
-package org.sertia.contracts.user.login;
+package org.sertia.contracts.user.login.response;
+
+import org.sertia.contracts.user.login.UserRole;
 
 public class LoginResult {
 

@@ -1,6 +1,6 @@
 package org.sertia.server.bl;
 
-import org.sertia.contracts.reports.controller.ClientReport;
+import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.StreamingPaymentResponse;
 import org.sertia.server.bl.Services.Reportable;

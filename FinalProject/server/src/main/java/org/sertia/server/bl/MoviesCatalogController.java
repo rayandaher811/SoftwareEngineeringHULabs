@@ -1,9 +1,8 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
-import org.sertia.contracts.movies.catalog.controller.*;
-import org.sertia.contracts.reports.controller.ClientReport;
+import org.sertia.contracts.movies.catalog.*;
+import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICustomerNotifier;
@@ -13,8 +12,6 @@ import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.io.NotActiveException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;

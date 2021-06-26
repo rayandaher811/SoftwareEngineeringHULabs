@@ -1,10 +1,8 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.hibernate.event.service.internal.EventListenerServiceInitiator;
-import org.sertia.contracts.complaints.controller.ClientOpenComplaint;
-import org.sertia.contracts.price.change.ClientTicketType;
-import org.sertia.contracts.reports.controller.ClientReport;
+import org.sertia.contracts.complaints.ClientOpenComplaint;
+import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.bl.Services.ControllerUtils;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
@@ -18,10 +16,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.NotSupportedException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ComplaintsController implements Reportable {
 

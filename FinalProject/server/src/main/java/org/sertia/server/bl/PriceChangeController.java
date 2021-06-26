@@ -1,8 +1,7 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.sertia.contracts.price.change.ClientPriceChangeRequest;
-import org.sertia.contracts.price.change.ClientTicketType;
+import org.sertia.contracts.price.change.request.ClientPriceChangeRequest;
 import org.sertia.server.bl.Services.ControllerUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
