@@ -7,7 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScreeningPaymentResponse extends SertiaBasicResponse {
-    Map<Integer, HallSeat> ticketIdToSeat;
+    public Map<Integer, HallSeat> ticketIdToSeat;
+    public double finalPrice;
+    public String movieName;
+    public String cinemaName;
+    public int hallNumber;
 
     public ScreeningPaymentResponse(boolean isSuccessful) {
         super(isSuccessful);

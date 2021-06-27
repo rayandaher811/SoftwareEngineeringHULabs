@@ -1,6 +1,5 @@
 package org.sertia.server.bl;
 
-import com.mysql.cj.xdevapi.Client;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
@@ -141,9 +140,15 @@ public class ScreeningTicketController implements Reportable {
         ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(true);
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Set<ScreeningTicket> screeningTickets = DbUtils.getById(Screening.class, request.screeningId)
-                    .map(screening -> request.chosenSeats.stream()
-                            .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
-                            .collect(Collectors.toSet()))
+                    .map(screening -> {
+                        paymentResponse.hallNumber = screening.getHall().getHallNumber();
+                        paymentResponse.cinemaName = screening.getHall().getCinema().getName();
+                        paymentResponse.finalPrice = screening.getScreenableMovie().getTicketPrice() * request.chosenSeats.size();
+                        paymentResponse.movieName = screening.getScreenableMovie().getMovie().getName();
+                        return request.chosenSeats.stream()
+                                .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
+                                .collect(Collectors.toSet());
+                    })
                     .orElse(Collections.emptySet());
 
             CustomerPaymentDetails paymentDetails = getPaymentDetails(request);
@@ -158,7 +163,6 @@ public class ScreeningTicketController implements Reportable {
                 purchasedSeat.numberInRow = seat.getNumberInRow();
                 paymentResponse.addTicket(ticketId, purchasedSeat);
             }
-
         } catch (RuntimeException exception) {
             return new ScreeningPaymentResponse(false)
                     .setFailReason("Problem during purchase process");
@@ -253,7 +257,7 @@ public class ScreeningTicketController implements Reportable {
         CustomerPaymentDetails paymentDetails = new CustomerPaymentDetails();
         paymentDetails.setPayerId(paymentRequest.cardHolderId);
         paymentDetails.setFullName(paymentRequest.cardHolderName);
-        paymentDetails.setExperationDate(new Date(paymentRequest.expirationDate.getMillis()));
+        paymentDetails.setExperationDate(paymentRequest.expirationDate);
         paymentDetails.setPaymentMethod(PaymentMethod.Credit);
         paymentDetails.setCreditNumber(paymentRequest.creditCardNumber);
         paymentDetails.setCvv(paymentRequest.cvv);

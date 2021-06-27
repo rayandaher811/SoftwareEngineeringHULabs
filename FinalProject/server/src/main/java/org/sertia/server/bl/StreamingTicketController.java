@@ -7,20 +7,12 @@ import org.sertia.server.bl.Services.Reportable;
 
 public class StreamingTicketController implements Reportable {
 
-	/**
-	 * 
-	 * @param parameter
-	 */
 	public StreamingPaymentResponse purchaseStreamingTicket(StreamingPaymentRequest parameter) {
 		// TODO - implement StreamingTicketController.purchaseStreamingTicket
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param purchaseId
-	 */
-	public void cancelStreamingTicket(String purchaseId) {
+	public void cancelStreamingTicket(int streamingTicketId) {
 		// TODO - implement StreamingTicketController.cancelStreamingTicket
 		throw new UnsupportedOperationException();
 	}

@@ -128,11 +128,11 @@ public class    DBFiller {
 
     private void fillHalls() {
         halls = new ArrayList<Hall>();
-        halls.add(new Hall(50, 80, cinemas.get(0)));
-        halls.add(new Hall(50, 80, cinemas.get(0)));
-        halls.add(new Hall(50, 80, cinemas.get(1)));
-        halls.add(new Hall(50, 80, cinemas.get(2)));
-        halls.add(new Hall(50, 80, cinemas.get(2)));
+        halls.add(new Hall(50, 80, cinemas.get(0), 1));
+        halls.add(new Hall(50, 80, cinemas.get(0), 2));
+        halls.add(new Hall(50, 80, cinemas.get(1),1));
+        halls.add(new Hall(50, 80, cinemas.get(2),1 ));
+        halls.add(new Hall(50, 80, cinemas.get(2), 2));
     }
 
     private void fillHallSeats() {
