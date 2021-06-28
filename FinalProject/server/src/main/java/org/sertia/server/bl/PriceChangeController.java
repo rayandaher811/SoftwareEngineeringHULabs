@@ -1,6 +1,7 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.server.bl.Services.ControllerUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
@@ -8,11 +9,32 @@ import org.sertia.server.dl.classes.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.sound.sampled.Control;
 import javax.transaction.NotSupportedException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class PriceChangeController {
+
+	public PriceChangeController() {
+		List<VouchersInfo> vouchersInfoTable = ControllerUtils.getAllRecords(VouchersInfo.class);
+
+		// Initializing the vouchers info table if its not initialized
+		if(vouchersInfoTable.size() == 0){
+			try(Session session = HibernateSessionFactory.getInstance().openSession()){
+				VouchersInfo vouchersInfo = new VouchersInfo();
+				vouchersInfo.setVoucherInitialBalance(20);
+				vouchersInfo.setPrice(0);
+
+				session.save(vouchersInfo);
+				session.flush();
+				session.clear();
+			} finally {
+
+			}
+		}
+	}
 
 	public void requestPriceChange(BasicPriceChangeRequest priceChangeRequest, String username) throws Exception {
 		Session session = null;
