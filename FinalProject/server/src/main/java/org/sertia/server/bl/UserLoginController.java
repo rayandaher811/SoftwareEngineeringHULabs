@@ -39,10 +39,18 @@ public class UserLoginController {
 
 				// Parsing the DB Role to the contract role
 				switch (user.getRole()){
-					case MediaManager: result.userRole = UserRole.MediaManager;
-					case BranchManager: result.userRole = UserRole.BranchManager;
-					case CostumerSupport: result.userRole = UserRole.CostumerSupport;
-					case CinemaManager: result.userRole = UserRole.CinemaManager;
+					case MediaManager:
+						result.userRole = UserRole.MediaManager;
+						break;
+					case BranchManager:
+						result.userRole = UserRole.BranchManager;
+						break;
+					case CostumerSupport:
+						result.userRole = UserRole.CostumerSupport;
+						break;
+					case CinemaManager:
+						result.userRole = UserRole.CinemaManager;
+						break;
 					default: result.userRole = UserRole.None;
 				}
 

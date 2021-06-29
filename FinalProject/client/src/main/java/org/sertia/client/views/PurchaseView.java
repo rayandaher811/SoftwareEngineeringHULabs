@@ -9,7 +9,6 @@ import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.global.LoggedInUser;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;

@@ -1,39 +1,32 @@
 package org.sertia.client.controllers;
 
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.price.change.ClientTicketType;
+import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
+import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
+import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
+import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
 
-public class ClientPriceChangeControl {
+import java.util.List;
 
-	/**
-	 * 
-	 * @param parameter
-	 */
-	public void requestPriceChange(BasicPriceChangeRequest parameter) {
-		// TODO - implement ClientPriceChangeControl.requestPriceChange
-		throw new UnsupportedOperationException();
+public class ClientPriceChangeControl extends ClientControl {
+
+	public void requestPriceChange(int movieId, ClientTicketType clientTicketType, double newPrice) {
+		client.request(new BasicPriceChangeRequest(movieId, clientTicketType, newPrice), SertiaBasicResponse.class);
 	}
 
-	/**
-	 * 
-	 * @param requestId
-	 */
-	public void approvePriceChange(String requestId) {
-		// TODO - implement ClientPriceChangeControl.approvePriceChange
-		throw new UnsupportedOperationException();
+	public boolean tryApprovePriceChange(int requestId) {
+		return client.request(new ApprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
 	}
 
-	/**
-	 * 
-	 * @param requestId
-	 */
-	public void disapprovePriceChange(String requestId) {
-		// TODO - implement ClientPriceChangeControl.disapprovePriceChange
-		throw new UnsupportedOperationException();
+	public boolean tryDisapprovePriceChange(int requestId) {
+		return client.request(new DissapprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
 	}
 
-	public void getAllOpenedPriceChangeRequests() {
-		// TODO - implement ClientPriceChangeControl.getAllOpenedPriceChangeRequests
-		throw new UnsupportedOperationException();
+	public List<BasicPriceChangeRequest> getAllOpenedPriceChangeRequests() {
+		GetUnapprovedPriceChangeResponse response = client.request(new GetUnapprovedPriceChangeRequest(), GetUnapprovedPriceChangeResponse.class);
+		return response.unapprovedRequests;
 	}
 
 }

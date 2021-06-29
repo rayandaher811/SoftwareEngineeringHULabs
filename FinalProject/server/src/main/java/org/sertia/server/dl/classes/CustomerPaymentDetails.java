@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ public class CustomerPaymentDetails {
 
     private String fullName;
     private String creditNumber;
-    private Date experationDate;
+    private LocalDateTime experationDate;
     private String cvv;
     private String email;
     private String phoneNumber;
@@ -23,7 +24,7 @@ public class CustomerPaymentDetails {
     public CustomerPaymentDetails() {
     }
 
-    public CustomerPaymentDetails(String payerId, String fullName, String creditNumber, Date experationDate, String cvv, String email, String phoneNumber, PaymentMethod paymentMethod) {
+    public CustomerPaymentDetails(String payerId, String fullName, String creditNumber, LocalDateTime experationDate, String cvv, String email, String phoneNumber, PaymentMethod paymentMethod) {
         this.payerId = payerId;
         this.fullName = fullName;
         this.creditNumber = creditNumber;
@@ -66,11 +67,11 @@ public class CustomerPaymentDetails {
         this.creditNumber = creditNumber;
     }
 
-    public Date getExperationDate() {
+    public LocalDateTime getExperationDate() {
         return experationDate;
     }
 
-    public void setExperationDate(Date experationDate) {
+    public void setExperationDate(LocalDateTime experationDate) {
         this.experationDate = experationDate;
     }
 

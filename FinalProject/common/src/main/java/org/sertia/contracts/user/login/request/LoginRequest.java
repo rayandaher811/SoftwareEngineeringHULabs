@@ -5,4 +5,8 @@ import org.sertia.contracts.user.login.LoginCredentials;
 
 public class LoginRequest extends SertiaBasicRequest {
     public LoginCredentials loginCredentials;
+
+    public LoginRequest(LoginCredentials loginCredentials) {
+        this.loginCredentials = loginCredentials;
+    }
 }

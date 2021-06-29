@@ -6,6 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.sertia.client.communication.SertiaClient;
+import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.controllers.ClientUserLoginController;
+import org.sertia.client.views.LoginController;
+import org.sertia.contracts.user.login.LoginCredentials;
 
 import java.io.IOException;
 

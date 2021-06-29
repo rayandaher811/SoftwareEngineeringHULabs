@@ -25,7 +25,7 @@ public class PrimaryController {
     @FXML
     private void toMovieTicketsPurchase() throws IOException {
         boolean isTavSagolRunning = true;
-        if (isTavSagolRunning){
+        if (isTavSagolRunning) {
             App.setRoot("covidMovieTicketsPurchase");
         } else {
             App.setRoot("movieTicketPurchaseForm");

@@ -140,9 +140,15 @@ public class ScreeningTicketController implements Reportable {
         ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(true);
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Set<ScreeningTicket> screeningTickets = DbUtils.getById(Screening.class, request.screeningId)
-                    .map(screening -> request.chosenSeats.stream()
-                            .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
-                            .collect(Collectors.toSet()))
+                    .map(screening -> {
+                        paymentResponse.hallNumber = screening.getHall().getHallNumber();
+                        paymentResponse.cinemaName = screening.getHall().getCinema().getName();
+                        paymentResponse.finalPrice = screening.getScreenableMovie().getTicketPrice() * request.chosenSeats.size();
+                        paymentResponse.movieName = screening.getScreenableMovie().getMovie().getName();
+                        return request.chosenSeats.stream()
+                                .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
+                                .collect(Collectors.toSet());
+                    })
                     .orElse(Collections.emptySet());
 
             CustomerPaymentDetails paymentDetails = getPaymentDetails(request);
@@ -157,7 +163,6 @@ public class ScreeningTicketController implements Reportable {
                 purchasedSeat.numberInRow = seat.getNumberInRow();
                 paymentResponse.addTicket(ticketId, purchasedSeat);
             }
-
         } catch (RuntimeException exception) {
             return new ScreeningPaymentResponse(false)
                     .setFailReason("Problem during purchase process");
@@ -169,7 +174,7 @@ public class ScreeningTicketController implements Reportable {
     private ClientSeatMapResponse getSeatMapForScreening(int screeningId) {
         final List<HallSeat> hallSeatList = new ArrayList<>();
 
-        DbUtils.getById(Screening.class, screeningId).ifPresent(screening ->
+        return DbUtils.getById(Screening.class, screeningId).map(screening ->
         {
             Set<Integer> takenSeats =
                     screening.getTickets().stream()
@@ -184,9 +189,12 @@ public class ScreeningTicketController implements Reportable {
                 clientHallSeat.isTaken = takenSeats.contains(hallSeat.getId());
                 return clientHallSeat;
             }).forEach(hallSeatList::add);
+            return new ClientSeatMapResponse(true, hallSeatList);
+        }).orElseGet(() -> {
+            ClientSeatMapResponse response = new ClientSeatMapResponse(false, Collections.emptyList());
+            response.setFailReason("screening doesn't exist");
+            return response;
         });
-
-        return new ClientSeatMapResponse(true, hallSeatList);
     }
 
     private ScreeningTicket createScreeningTicket(int hallSeat, Screening screening, Session session) {
@@ -249,7 +257,7 @@ public class ScreeningTicketController implements Reportable {
         CustomerPaymentDetails paymentDetails = new CustomerPaymentDetails();
         paymentDetails.setPayerId(paymentRequest.cardHolderId);
         paymentDetails.setFullName(paymentRequest.cardHolderName);
-        paymentDetails.setExperationDate(new Date(paymentRequest.expirationDate.getMillis()));
+        paymentDetails.setExperationDate(paymentRequest.expirationDate);
         paymentDetails.setPaymentMethod(PaymentMethod.Credit);
         paymentDetails.setCreditNumber(paymentRequest.creditCardNumber);
         paymentDetails.setCvv(paymentRequest.cvv);

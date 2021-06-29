@@ -95,11 +95,13 @@ public class MessageHandler extends AbstractServer {
         Class<?> requestType = msg.getClass();
         if (!messageTypeToHandler.containsKey(requestType)) {
             System.out.println("user " + client.getName() + " requested non-existing action " + msg.getClass());
+            sendResponseToClient(client, new SertiaBasicResponse(false, "There are no such action"));
             return;
         }
 
         if (!roleValidator.isClientAllowed((UserRole) client.getInfo(ClientRoleType), msg.getClass())) {
             System.out.println("user " + client.getName() + " denied request of type " + msg.getClass());
+            sendResponseToClient(client, new SertiaBasicResponse(false, "Access denied you are not allowed to do such actions."));
             return;
         }
 
@@ -150,7 +152,7 @@ public class MessageHandler extends AbstractServer {
             response = screeningTicketController.buyTicketWithRegulations(ticketRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't couldn't handle purchase request.");
+            response.setFailReason("We couldn't handle purchase request.");
         }
 
         sendResponseToClient(client, response);
@@ -324,8 +326,8 @@ public class MessageHandler extends AbstractServer {
         SertiaBasicResponse response = new SertiaBasicResponse(false);
 
         try {
-            CinemaScreeningMovie movieScreenings = ((AddScreeningRequest) request).cinemaScreeningMovie;
-            moviesCatalogController.addMovieScreenings(movieScreenings);
+            AddScreeningRequest addScreeningRequest = (AddScreeningRequest) request;
+            moviesCatalogController.addMovieScreenings(addScreeningRequest);
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();

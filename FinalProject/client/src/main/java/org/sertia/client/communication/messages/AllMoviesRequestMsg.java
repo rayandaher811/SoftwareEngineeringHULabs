@@ -1,7 +1,5 @@
 package org.sertia.client.communication.messages;
 
-import com.google.gson.Gson;
-
 public class AllMoviesRequestMsg {
     private final String messageName = "ALL_MOVIES_REQ";
     private BaseClientServerMessage metadata;
@@ -10,7 +8,7 @@ public class AllMoviesRequestMsg {
         metadata = new BaseClientServerMessage(clientId);
     }
 
-    public String getMessageId(){
+    public String getMessageId() {
         return metadata.getMessageId();
     }
 

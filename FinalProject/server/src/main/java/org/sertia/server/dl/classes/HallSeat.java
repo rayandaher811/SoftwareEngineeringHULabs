@@ -16,6 +16,10 @@ public class HallSeat {
     public HallSeat() {
     }
 
+    public Hall getHall() {
+        return hall;
+    }
+
     @ManyToOne
     @JoinColumn(name="hall_hall_id", nullable=false)
     private Hall hall;

@@ -9,6 +9,11 @@ public class ScreenableMovie {
     @Column(name = "movie_id")
     private int id;
 
+    public ScreenableMovie setId(int id) {
+        this.id = id;
+        return this;
+    }
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "movie_id")
