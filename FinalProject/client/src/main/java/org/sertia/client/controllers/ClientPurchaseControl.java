@@ -5,7 +5,10 @@ import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 public class ClientPurchaseControl extends ClientControl {
 
-    public void getScreeningSeatMap(String screeningId) {
+
+
+    // TODO: fixme!
+    public static int getScreeningSeatMap(int screeningId) {
         // TODO - implement ClientPurchaseControl.getScreeningSeatMap
         throw new UnsupportedOperationException();
     }

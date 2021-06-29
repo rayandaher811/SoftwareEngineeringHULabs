@@ -12,4 +12,8 @@ public class ClientScreening implements Serializable {
     public String getCinemaName() {
         return cinemaName;
     }
+
+    public int getScreeningId() {
+        return screeningId;
+    }
 }
