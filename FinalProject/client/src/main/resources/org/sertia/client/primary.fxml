@@ -25,6 +25,8 @@
                   <Button mnemonicParsing="false" onAction="#toMovieTicketsPurchase" prefHeight="26.0" prefWidth="179.0" text="רכישת כרטיס/י קולנוע" />
                   <Button mnemonicParsing="false" onAction="#toPrepaidPurchaseView" prefHeight="26.0" prefWidth="179.0" text="רכישת כרטיסייה" />
                   <Button mnemonicParsing="false" onAction="#toHomeLinkView" prefHeight="26.0" prefWidth="179.0" text="רכישת לינק לצפיה ביתית" />
+                  <Button mnemonicParsing="false" onAction="#toMovieDetails" prefHeight="26.0" prefWidth="179.0" text="מידע על הסרט" />
+
                </children>
             </VBox>
          </center>

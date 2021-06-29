@@ -98,21 +98,21 @@ public class AvailableMoviesForEdit implements Initializable {
 
         HashMap<String, ArrayList<CinemaScreeningMovie>> cinemaNameToMovie = new HashMap<>();
 
-        ArrayList<CinemaScreeningMovie> screeningMovieArrayList = (ArrayList<CinemaScreeningMovie>) catalog.getMoviesCatalog();
-        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
-            final CinemaScreeningMovie screeningMovie = screeningMovieArrayList.get(i);
-            if (cinemaNameToMovie.containsKey(screeningMovie.getBranchName())) {
-                cinemaNameToMovie.get(screeningMovie.getBranchName()).add(screeningMovie);
-            } else {
-                cinemaNameToMovie.put(screeningMovie.getBranchName(), new ArrayList<>() {{
-                    add(screeningMovie);
-                }});
-            }
-        }
-
-        cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
-
-        moviesAccordion.getPanes().addAll(list);
+//        ArrayList<CinemaScreeningMovie> screeningMovieArrayList = (ArrayList<CinemaScreeningMovie>) catalog.getMoviesCatalog();
+//        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
+//            final CinemaScreeningMovie screeningMovie = screeningMovieArrayList.get(i);
+//            if (cinemaNameToMovie.containsKey(screeningMovie.getBranchName())) {
+//                cinemaNameToMovie.get(screeningMovie.getBranchName()).add(screeningMovie);
+//            } else {
+//                cinemaNameToMovie.put(screeningMovie.getBranchName(), new ArrayList<>() {{
+//                    add(screeningMovie);
+//                }});
+//            }
+//        }
+//
+//        cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
+//
+//        moviesAccordion.getPanes().addAll(list);
 
     }
 }

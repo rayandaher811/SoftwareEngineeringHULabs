@@ -4,8 +4,8 @@ import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -65,12 +65,12 @@ public class SertiaClient extends AbstractClient {
                 client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalogResponse.class);
 
         if (res.isPresent())
-            return new MoviesCatalog();
+            return new MoviesCatalog(res.get().getMovies());
         else
             return null;
     }
 
-    public <requestType extends SertiaBasicRequest,responseType extends SertiaBasicResponse> responseType request(requestType request) {
+    public <requestType extends SertiaBasicRequest, responseType extends SertiaBasicResponse> responseType request(requestType request) {
         Class<responseType> responseTypeClass = extractClassObject();
         Optional<responseType> res =
                 client.requestAndWaitForResponse(request, responseTypeClass);

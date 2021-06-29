@@ -10,6 +10,7 @@ import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.global.LoggedInUser;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,21 +98,21 @@ public class PurchaseView implements Initializable {
 
         HashMap<String, ArrayList<CinemaScreeningMovie>> cinemaNameToMovie = new HashMap<>();
 
-        ArrayList<CinemaScreeningMovie> screeningMovieArrayList = (ArrayList<CinemaScreeningMovie>) catalog.getMoviesCatalog();
-        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
-            final CinemaScreeningMovie screeningMovie = screeningMovieArrayList.get(i);
-            if (cinemaNameToMovie.containsKey(screeningMovie.getBranchName())) {
-                cinemaNameToMovie.get(screeningMovie.getBranchName()).add(screeningMovie);
-            } else {
-                cinemaNameToMovie.put(screeningMovie.getBranchName(), new ArrayList<>() {{
-                    add(screeningMovie);
-                }});
-            }
-        }
-
-        cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
-
-        moviesAccordion.getPanes().addAll(list);
+        ArrayList<SertiaMovie> screeningMovieArrayList = (ArrayList<SertiaMovie>) catalog.getMoviesCatalog();
+//        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
+//            final CinemaScreeningMovie screeningMovie = screeningMovieArrayList.get(i);
+//            if (cinemaNameToMovie.containsKey(screeningMovie.getBranchName())) {
+//                cinemaNameToMovie.get(screeningMovie.getBranchName()).add(screeningMovie);
+//            } else {
+//                cinemaNameToMovie.put(screeningMovie.getBranchName(), new ArrayList<>() {{
+//                    add(screeningMovie);
+//                }});
+//            }
+//        }
+//
+//        cinemaNameToMovie.entrySet().forEach(stringCollectionEntry -> list.add(screeningMovieToTilePane(stringCollectionEntry)));
+//
+//        moviesAccordion.getPanes().addAll(list);
 
     }
 }

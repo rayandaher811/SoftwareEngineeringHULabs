@@ -11,4 +11,7 @@ public class ClientMovie implements Serializable {
     public String producerName;
 	public String posterImageUrl;
 
+    public String getName() {
+        return name;
+    }
 }

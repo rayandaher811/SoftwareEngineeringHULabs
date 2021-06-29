@@ -14,6 +14,14 @@
                     </font>
                 </Label>
             </top>
+            <center>
+                <VBox alignment="CENTER">
+                    <GridPane fx:id="movietheater" alignment="CENTER" >
+                    </GridPane>
+                </VBox>
+            </center>
         </BorderPane>
+        <Button fx:id="resetSelection" onAction="#resetOrderSelection">איפוס בחירה</Button>
+
     </children>
 </AnchorPane>

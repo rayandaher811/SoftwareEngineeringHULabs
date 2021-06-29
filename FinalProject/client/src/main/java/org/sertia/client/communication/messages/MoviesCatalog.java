@@ -1,24 +1,23 @@
 package org.sertia.client.communication.messages;
 
+import org.sertia.contracts.movies.catalog.SertiaMovie;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class MoviesCatalog {
-    private Collection<CinemaScreeningMovie> moviesCatalog;
+    public List<SertiaMovie> movies;
 
-    public MoviesCatalog(Collection<CinemaScreeningMovie> moviesCatalog) {
-        this.moviesCatalog = moviesCatalog;
+    public MoviesCatalog(List<SertiaMovie> sertiaMovieList) {
+        this.movies = sertiaMovieList;
     }
 
     public MoviesCatalog() {
-        this.moviesCatalog = Collections.emptyList();
+        this.movies = Collections.emptyList();
     }
 
-    public void addMovie(CinemaScreeningMovie cinemaScreeningMovie) {
-        moviesCatalog.add(cinemaScreeningMovie);
-    }
-
-    public Collection<CinemaScreeningMovie> getMoviesCatalog() {
-        return moviesCatalog;
+    public Collection<SertiaMovie> getMoviesCatalog() {
+        return movies;
     }
 }

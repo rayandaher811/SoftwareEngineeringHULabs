@@ -1,40 +1,39 @@
 package org.sertia.client.controllers;
 
-import org.sertia.client.communication.SertiaClient;
-import org.sertia.contracts.complaints.ClientOpenComplaint;
-import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
-import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
-import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
-import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
-import org.sertia.contracts.complaints.responses.AllUnhandledComplaintsResponse;
-import org.sertia.contracts.price.change.ClientTicketType;
-import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
-
-import java.util.List;
-
 public class ClientComplaintControl {
 
-	private SertiaClient client;
+	public int onOpenedComplaintsResponse;
 
-	public ClientComplaintControl() {
-		client = SertiaClient.getInstance();
+	/**
+	 * 
+	 * @param ComplaintId
+	 */
+	public void resolveComplaint(String ComplaintId) {
+		// TODO - implement ClientComplaintControl.resolveComplaint
+		throw new UnsupportedOperationException();
 	}
 
-	public boolean tryResolveComplaint(int complaintId, double refundAmount) {
-		return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount)).isSuccessful;
+	/**
+	 * 
+	 * @param complaintId
+	 */
+	public void closeComplaint(String complaintId) {
+		// TODO - implement ClientComplaintControl.closeComplaint
+		throw new UnsupportedOperationException();
 	}
 
-	public boolean tryCloseComplaint(int complaintId) {
-		return client.request(new CloseComplaintRequest(complaintId)).isSuccessful;
+	public void getOpenedComplaints() {
+		// TODO - implement ClientComplaintControl.getOpenedComplaints
+		throw new UnsupportedOperationException();
 	}
 
-	public List<ClientOpenComplaint> getOpenedComplaints() {
-		AllUnhandledComplaintsResponse response =  client.request(new GetAllUnhandledComplaintsRequest());
-
-		return response.openComplaints;
+	/**
+	 * 
+	 * @param ClientComplaint
+	 */
+	public void createComplaint(int ClientComplaint) {
+		// TODO - implement ClientComplaintControl.createComplaint
+		throw new UnsupportedOperationException();
 	}
 
-	public void createComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
-		client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)));
-	}
 }

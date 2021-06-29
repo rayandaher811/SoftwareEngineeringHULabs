@@ -8,4 +8,8 @@ public class ClientScreening implements Serializable {
     public int hallId;
     public LocalDateTime screeningTime;
     public String cinemaName;
+
+    public String getCinemaName() {
+        return cinemaName;
+    }
 }

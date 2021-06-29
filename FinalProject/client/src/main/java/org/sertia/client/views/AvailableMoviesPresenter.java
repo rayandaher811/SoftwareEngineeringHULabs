@@ -24,7 +24,7 @@ public class AvailableMoviesPresenter implements Initializable {
         HashSet<String> availableMovies = new HashSet<>();
         ObservableList<String> list = FXCollections.observableArrayList();
         MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
-        catalog.getMoviesCatalog().forEach(cinemaScreeningMovie -> availableMovies.add(cinemaScreeningMovie.getName()));
+        catalog.getMoviesCatalog().forEach(cinemaScreeningMovie -> availableMovies.add(cinemaScreeningMovie.getMovieDetails().getName()));
         list.addAll(availableMovies);
         lstView.setItems(list);
     }

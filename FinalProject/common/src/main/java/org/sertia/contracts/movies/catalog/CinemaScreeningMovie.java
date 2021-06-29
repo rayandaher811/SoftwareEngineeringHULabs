@@ -7,4 +7,12 @@ public class CinemaScreeningMovie implements Serializable {
     public ClientMovie movieDetails;
     public List<ClientScreening> screenings;
     public double ticketPrice;
+
+    public ClientMovie getMovieDetails() {
+        return movieDetails;
+    }
+
+    public List<ClientScreening> getScreenings() {
+        return screenings;
+    }
 }

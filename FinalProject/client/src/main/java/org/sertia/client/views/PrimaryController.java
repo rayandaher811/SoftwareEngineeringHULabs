@@ -41,4 +41,9 @@ public class PrimaryController {
     private void toHomeLinkView() throws IOException {
         App.setRoot("onlineWatchLinkForm");
     }
+
+    @FXML
+    private void toMovieDetails() throws IOException{
+        App.setRoot("movieDetails");
+    }
 }
