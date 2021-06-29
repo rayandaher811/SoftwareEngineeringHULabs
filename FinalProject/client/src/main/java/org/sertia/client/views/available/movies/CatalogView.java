@@ -8,7 +8,7 @@ import javafx.scene.control.ListView;
 import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.views.BasicView;
+import org.sertia.client.views.BasicPresenter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
     public int purchaseVoucherButton;
     public int createMovieButton;
  */
-public class CatalogView extends BasicView implements Initializable {
+public class CatalogView extends BasicPresenter implements Initializable {
 
     @FXML
     private ListView<String> lstView;

@@ -17,6 +17,8 @@
                 </Label>
             </top>
             <center>
+<!--                <GridPane fx:id="movietheater" alignment="CENTER" >-->
+<!--                </GridPane>-->
                 <VBox alignment="CENTER">
                     <GridPane fx:id="movietheater" alignment="CENTER" >
                     </GridPane>

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class SeatChooseView extends BasicView implements Initializable {
+public class SeatChooseView extends BasicPresenter implements Initializable {
 
     public int hallName;
     public int continueToPaymentButton;

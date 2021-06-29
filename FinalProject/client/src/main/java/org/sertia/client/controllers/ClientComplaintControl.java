@@ -13,6 +13,19 @@ import java.util.List;
 
 public class ClientComplaintControl extends ClientControl {
 
+	private static ClientComplaintControl instance;
+
+	protected ClientComplaintControl() {
+		super();
+	}
+
+	public static ClientComplaintControl getInstance() {
+		if (instance == null){
+			instance = new ClientComplaintControl();
+		}
+		return instance;
+	}
+
 	public boolean tryResolveComplaint(int complaintId, double refundAmount) {
 		return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class).isSuccessful;
 	}
@@ -27,6 +40,7 @@ public class ClientComplaintControl extends ClientControl {
 		return response.openComplaints;
 	}
 
+	// TODO: after validations return response object with response status or somehing.. UI must know that response 200 returned
 	public void createComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
 		client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
 				SertiaBasicResponse.class);

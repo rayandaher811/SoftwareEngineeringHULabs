@@ -18,8 +18,8 @@ public class PrimaryController {
     }
 
     @FXML
-    private void toComplaintsView() throws IOException {
-        App.setRoot("complaintsView");
+    private void toAddComplaintView() throws IOException {
+        App.setRoot("createComplaintView");
     }
 
     @FXML

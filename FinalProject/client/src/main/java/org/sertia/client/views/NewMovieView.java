@@ -1,6 +1,6 @@
 package org.sertia.client.views;
 
-public class NewMovieView extends BasicView {
+public class NewMovieView extends BasicPresenter {
 
     public int movieName;
     public int moviePosterUpload;

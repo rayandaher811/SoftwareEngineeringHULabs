@@ -1,4 +1,4 @@
 package org.sertia.client.views;
 
-public class CinemaManagerView extends BasicView {
+public class CinemaManagerView extends BasicPresenter {
 }

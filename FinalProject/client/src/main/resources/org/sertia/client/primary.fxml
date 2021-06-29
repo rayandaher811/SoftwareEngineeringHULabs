@@ -24,7 +24,7 @@
                         <Separator prefWidth="200.0"/>
                         <Button mnemonicParsing="false" onAction="#toMoviesCatalog" prefHeight="26.0"
                                 prefWidth="179.0" text="קטלוג הסרטים ברשת"/>
-                        <Button mnemonicParsing="false" onAction="#toComplaintsView" prefHeight="26.0" prefWidth="179.0"
+                        <Button mnemonicParsing="false" onAction="#toAddComplaintView" prefHeight="26.0" prefWidth="179.0"
                                 text="הגשת תלונה"/>
                         <Button mnemonicParsing="false" onAction="#toMovieTicketsPurchase" prefHeight="26.0"
                                 prefWidth="179.0" text="רכישת כרטיס/י קולנוע"/>

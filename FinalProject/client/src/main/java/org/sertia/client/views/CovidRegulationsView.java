@@ -1,6 +1,6 @@
 package org.sertia.client.views;
 
-public class CovidRegulationsView extends BasicView {
+public class CovidRegulationsView extends BasicPresenter {
 
     public int maxPeopleInClosedPlaceTextBox;
     public int applyButton;

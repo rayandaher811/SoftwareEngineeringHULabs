@@ -1,6 +1,6 @@
 package org.sertia.client.views;
 
-public class PurchaseResultView extends BasicView {
+public class PurchaseResultView extends BasicPresenter {
 
     public boolean isSuccess;
     public int purchaseId;

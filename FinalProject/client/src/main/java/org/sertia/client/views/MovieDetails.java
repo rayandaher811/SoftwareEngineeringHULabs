@@ -2,7 +2,6 @@ package org.sertia.client.views;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -11,7 +10,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MovieDetails extends BasicView implements Initializable {
+public class MovieDetails extends BasicPresenter implements Initializable {
     @FXML private VBox detailesPage;
     public int movieTitle=1;
     public int moviePoster=1;
