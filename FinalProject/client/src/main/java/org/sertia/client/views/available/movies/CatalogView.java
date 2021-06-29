@@ -1,4 +1,4 @@
-package org.sertia.client.views;
+package org.sertia.client.views.available.movies;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,13 +8,20 @@ import javafx.scene.control.ListView;
 import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
+import org.sertia.client.views.BasicView;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
-public class AvailableMoviesPresenter implements Initializable {
+/*
+    public int userLoginButton;
+    public int openComplaintButton;
+    public int purchaseVoucherButton;
+    public int createMovieButton;
+ */
+public class CatalogView extends BasicView implements Initializable {
 
     @FXML
     private ListView<String> lstView;

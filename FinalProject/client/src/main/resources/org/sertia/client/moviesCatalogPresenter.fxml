@@ -6,11 +6,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.AvailableMoviesPresenter">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.available.movies.CatalogView">
     <children>
         <BorderPane prefHeight="400.0" prefWidth="600.0">
             <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="407.0" text="סרטים אפשריים לצפיה ברשת"
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="407.0" text="קטלוג הסרטייה"
                        BorderPane.alignment="CENTER">
                     <font>
                         <Font size="26.0"/>

@@ -64,7 +64,7 @@ public class SertiaClient extends AbstractClient {
                 client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalogResponse.class);
 
         if (res.isPresent())
-            return new MoviesCatalog();
+            return sertialCatalogResponseToMoviesCatalog(res.get());
         else
             return null;
     }
@@ -81,5 +81,9 @@ public class SertiaClient extends AbstractClient {
 
     public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {
         client.publishToServer(updateMovieScreeningTimeMsg);
+    }
+
+    private static MoviesCatalog sertialCatalogResponseToMoviesCatalog(SertiaCatalogResponse response){
+        return new MoviesCatalog(response.getMovies());
     }
 }

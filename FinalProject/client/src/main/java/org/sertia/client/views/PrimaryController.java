@@ -13,8 +13,8 @@ public class PrimaryController {
     }
 
     @FXML
-    private void toAvailableMoviesView() throws IOException {
-        App.setRoot("availableMoviesPresenter");
+    private void toMoviesCatalog() throws IOException {
+        App.setRoot("moviesCatalogPresenter");
     }
 
     @FXML

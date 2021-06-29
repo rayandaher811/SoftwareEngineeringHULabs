@@ -17,4 +17,6 @@ module org.sertia {
     exports org.sertia.client.views;
     exports org.sertia.client.boxes;
     opens org.sertia.client.boxes to com.google.gson, javafx.fxml;
+    exports org.sertia.client.views.available.movies;
+    opens org.sertia.client.views.available.movies to com.google.gson, javafx.fxml;
 }
