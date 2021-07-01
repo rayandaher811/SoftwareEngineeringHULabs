@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name="covid_regulations_info")
 public class CovidRegulationsInfo {
     // The table is single lined table and this is it's single record Id
-    public static final int singleRecordId = 0;
+    public static final int singleRecordId = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

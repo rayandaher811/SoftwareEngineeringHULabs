@@ -51,8 +51,7 @@ public class RoleValidator {
                 requestType == CancelAllScreeningsDueCovidRequest.class ||
                 requestType == CancelCovidRegulationsRequest.class ||
                 requestType == ActiveCovidRegulationsRequest.class ||
-                requestType == UpdateCovidCrowdingRegulationsRequest.class ||
-                requestType == GetCovidRegulationsStatusRequest.class;
+                requestType == UpdateCovidCrowdingRegulationsRequest.class;
     }
 
     public boolean isCinemaManagerOperation(Class<?> requestType) {
