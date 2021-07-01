@@ -22,11 +22,7 @@ import java.util.stream.Collectors;
 import static org.sertia.server.bl.Utils.getPaymentDetails;
 
 public class ScreeningTicketController implements Reportable {
-
-    private final CovidRegulationsController covidRegulationsController;
-
-    public ScreeningTicketController(CovidRegulationsController covidRegulationsController) {
-        this.covidRegulationsController = covidRegulationsController;
+    public ScreeningTicketController() {
     }
 
     public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
@@ -71,7 +67,7 @@ public class ScreeningTicketController implements Reportable {
     }
 
     public SertiaBasicResponse buyVoucher(BasicPaymentRequest paymentDetails) {
-        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, 1).orElse(null);
+        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, VouchersInfo.singleRecordId).orElse(null);
         if (vouchersInfo == null) {
             return new SertiaBasicResponse(false).setFailReason("no voucher info in system");
         }

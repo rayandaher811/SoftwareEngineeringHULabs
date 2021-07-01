@@ -21,12 +21,15 @@ public class PriceChangeController {
 		if(vouchersInfoTable.size() == 0){
 			try(Session session = HibernateSessionFactory.getInstance().openSession()){
 				VouchersInfo vouchersInfo = new VouchersInfo();
+				vouchersInfo.setId(VouchersInfo.singleRecordId);
 				vouchersInfo.setVoucherInitialBalance(20);
 				vouchersInfo.setPrice(0);
 
+				session.beginTransaction();
 				session.save(vouchersInfo);
 				session.flush();
 				session.clear();
+				session.getTransaction().commit();
 			} finally {
 
 			}

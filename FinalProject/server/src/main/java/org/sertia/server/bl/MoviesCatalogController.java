@@ -190,6 +190,7 @@ public class MoviesCatalogController implements Reportable {
 
             // Refunding all relevant costumers and deleting the tickets
             for (ScreeningTicket ticket : screeningTickets) {
+                notifier.notify(ticket.getPaymentInfo().getPhoneNumber(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
                 creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
                 session.remove(ticket);
             }

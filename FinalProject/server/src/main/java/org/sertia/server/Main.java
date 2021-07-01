@@ -13,9 +13,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         fillDb();
-        CovidRegulationsController covidRegulationsController = new CovidRegulationsController();
-        ScreeningTicketController screeningTicketController = new ScreeningTicketController(covidRegulationsController);
-        MessageHandler messageHandler = new MessageHandler(1325, screeningTicketController);
+        MessageHandler messageHandler = new MessageHandler(1325);
         try {
             messageHandler.startListening();
         } catch (IOException e) {
