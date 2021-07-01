@@ -142,7 +142,7 @@ public class MoviesCatalogController implements Reportable {
 
             // Notifing ll relevant customers for the update
             for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
-                notifier.notify(ticket.getPaymentInfo().getPhoneNumber(),
+                notifier.notify(ticket.getPaymentInfo().getEmail(),
                         "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
             }
 
@@ -190,7 +190,7 @@ public class MoviesCatalogController implements Reportable {
 
             // Refunding all relevant costumers and deleting the tickets
             for (ScreeningTicket ticket : screeningTickets) {
-                notifier.notify(ticket.getPaymentInfo().getPhoneNumber(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
+                notifier.notify(ticket.getPaymentInfo().getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
                 creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
                 session.remove(ticket);
             }

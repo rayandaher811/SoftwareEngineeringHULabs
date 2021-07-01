@@ -60,7 +60,7 @@ public class ComplaintsController implements Reportable {
 			session.getTransaction().commit();
 
 			// Notifying our client
-			notifier.notify(clientComplaint.customerPhoneNumber, "You had opened an complaint in sertia server, we will contact you within 24 hours.");
+			notifier.notify(clientComplaint.customerEmail, "You had opened an complaint in sertia server, we will contact you within 24 hours.");
 		} catch (Exception e){
 			session.getTransaction().rollback();
 			throw e;
@@ -98,7 +98,7 @@ public class ComplaintsController implements Reportable {
 				complaint.setHandler(DbUtils.getUserByUsername(handlerUsername));
 
 				// Notifying our client
-				notifier.notify(extractCustomerPaymentDetails(complaint).getPhoneNumber(),
+				notifier.notify(extractCustomerPaymentDetails(complaint).getEmail(),
 						"Your complaint in sertia cinema has been closed.");
 			}
 			else {
