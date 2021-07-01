@@ -315,15 +315,6 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    private List<Screening> getAllScreenings(Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-
-        CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
-        query.from(Screening.class);
-
-        return session.createQuery(query).getResultList();
-    }
-
     private boolean isMovieValid(SertiaMovie movie) {
         // TODO - implement MoviesCatalogController.isMovieValid
         throw new UnsupportedOperationException();

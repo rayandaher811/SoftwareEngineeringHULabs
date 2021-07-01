@@ -7,11 +7,14 @@ import javax.persistence.*;
 @Entity
 @Table(name="users")
 public class User {
+    public static final String usernameFieldName = "username";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
     
 	@NaturalId
+    @Column(name = usernameFieldName)
     private String username;
     private String password;
 

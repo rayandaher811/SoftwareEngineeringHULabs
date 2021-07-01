@@ -1,16 +1,13 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
-import org.sertia.server.bl.Services.ControllerUtils;
+import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.sound.sampled.Control;
 import javax.transaction.NotSupportedException;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
 public class PriceChangeController {
 
 	public PriceChangeController() {
-		List<VouchersInfo> vouchersInfoTable = ControllerUtils.getAllRecords(VouchersInfo.class);
+		List<VouchersInfo> vouchersInfoTable = DbUtils.getAll(VouchersInfo.class);
 
 		// Initializing the vouchers info table if its not initialized
 		if(vouchersInfoTable.size() == 0){
@@ -43,10 +40,10 @@ public class PriceChangeController {
 			session = HibernateSessionFactory.getInstance().openSession();
 
 			PriceChangeRequest request = new PriceChangeRequest();
-			request.setRequester(ControllerUtils.getUser(username, session));
+			request.setRequester(DbUtils.getUserByUsername(username));
 			request.setAccepted(false);
 			request.setMovie(session.get(Movie.class, priceChangeRequest.movieId));
-			request.setTicketType(ControllerUtils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
+			request.setTicketType(Utils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
 			request.setNewPrice(priceChangeRequest.newPrice);
 
 			// Saving the request
@@ -72,7 +69,7 @@ public class PriceChangeController {
 					clientRequests.add(new BasicPriceChangeRequest(request.getId(),
 																	request.getMovie().getId(),
 																	request.getRequester().getUsername(),
-																	ControllerUtils.dlTicketTypeToClient(request.getTicketType()),
+																	Utils.dlTicketTypeToClient(request.getTicketType()),
 																	request.getNewPrice(),
 																	false));
 			}
@@ -96,7 +93,7 @@ public class PriceChangeController {
 
 			// Updating
 			request.setAccepted(true);
-			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
+			request.setHandler(DbUtils.getUserByUsername(handlingUsername));
 
 			session.beginTransaction();
 
@@ -145,7 +142,7 @@ public class PriceChangeController {
 
 			// Updating
 			request.setAccepted(false);
-			request.setHandler(ControllerUtils.getUser(handlingUsername, session));
+			request.setHandler(DbUtils.getUserByUsername(handlingUsername));
 
 			session.beginTransaction();
 			session.update(request);

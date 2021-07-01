@@ -3,10 +3,10 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.reports.ClientReport;
-import org.sertia.server.bl.Services.ControllerUtils;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.Reportable;
+import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
@@ -38,7 +38,7 @@ public class ComplaintsController implements Reportable {
 			CostumerComplaint complaint = new CostumerComplaint();
 			complaint.setOpenedDate(LocalDateTime.now());
 			complaint.setDescription(clientComplaint.description);
-			complaint.setTicketType(ControllerUtils.clientTicketTypeToDL(clientComplaint.ticketType));
+			complaint.setTicketType(Utils.clientTicketTypeToDL(clientComplaint.ticketType));
 
 			// Extracting and adding the right ticket type in the right place
 			switch (complaint.getTicketType()) {
@@ -73,7 +73,7 @@ public class ComplaintsController implements Reportable {
 		try(Session session = HibernateSessionFactory.getInstance().openSession()) {
 			List<ClientOpenComplaint> complaintsToReturn = new LinkedList<>();
 
-			for (CostumerComplaint complaint : getAllComplaints(session)) {
+			for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
 				if(complaint.getHandler() == null){
 					complaintsToReturn.add(parseDlComplaintToClientComplaint(complaint));
 				}
@@ -95,7 +95,7 @@ public class ComplaintsController implements Reportable {
 			// Closing the complaint
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
 				complaint.setClosedDate(LocalDateTime.now());
-				complaint.setHandler(ControllerUtils.getUser(handlerUsername, session));
+				complaint.setHandler(DbUtils.getUserByUsername(handlerUsername));
 
 				// Notifying our client
 				notifier.notify(extractCustomerPaymentDetails(complaint).getPhoneNumber(),
@@ -128,7 +128,7 @@ public class ComplaintsController implements Reportable {
 			// Closing the complaint with a refund
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
 				complaint.setClosedDate(LocalDateTime.now());
-				complaint.setHandler(ControllerUtils.getUser(handlerUsername, session));
+				complaint.setHandler(DbUtils.getUserByUsername(handlerUsername));
 				creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund);
 			}
 			else {
@@ -167,7 +167,7 @@ public class ComplaintsController implements Reportable {
 				complaint.getOpenedDate(),
 				complaint.getDescription(),
 				extractTicketId(complaint),
-				ControllerUtils.dlTicketTypeToClient(complaint.getTicketType()));
+				Utils.dlTicketTypeToClient(complaint.getTicketType()));
 	}
 
 	private CustomerPaymentDetails extractCustomerPaymentDetails(CostumerComplaint complaint) throws NotSupportedException {
@@ -194,12 +194,5 @@ public class ComplaintsController implements Reportable {
 			default:
 				throw new NotSupportedException("There are no such ticket");
 		}
-	}
-
-	private List<CostumerComplaint> getAllComplaints(Session session) {
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<CostumerComplaint> query = builder.createQuery(CostumerComplaint.class);
-		query.from(CostumerComplaint.class);
-		return session.createQuery(query).getResultList();
 	}
 }
