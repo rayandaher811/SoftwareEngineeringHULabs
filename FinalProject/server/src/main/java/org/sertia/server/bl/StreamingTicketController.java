@@ -1,29 +1,86 @@
 package org.sertia.server.bl;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
+import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketRequest;
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
 import org.sertia.server.bl.Services.Reportable;
+import org.sertia.server.dl.DbUtils;
+import org.sertia.server.dl.HibernateSessionFactory;
+import org.sertia.server.dl.classes.CustomerPaymentDetails;
+import org.sertia.server.dl.classes.Streaming;
+import org.sertia.server.dl.classes.StreamingLink;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 public class StreamingTicketController implements Reportable {
 
-	public StreamingPaymentResponse purchaseStreamingTicket(StreamingPaymentRequest parameter) {
-		// TODO - implement StreamingTicketController.purchaseStreamingTicket
-		throw new UnsupportedOperationException();
-	}
+    public StreamingPaymentResponse purchaseStreamingTicket(StreamingPaymentRequest request) {
+        Streaming streaming = getStreaming(request.movieId).orElse(null);
+        StreamingPaymentResponse response = new StreamingPaymentResponse(true);
+        if (streaming == null) {
+            return Utils.createFailureResponse(response, "no streaming exist for movie " + request.movieId);
+        }
 
-	public void cancelStreamingTicket(int streamingTicketId) {
-		// TODO - implement StreamingTicketController.cancelStreamingTicket
-		throw new UnsupportedOperationException();
-	}
+        StreamingLink streamingLink = new StreamingLink();
+        CustomerPaymentDetails paymentDetails = Utils.getPaymentDetails(request);
+        streamingLink.setCustomerPaymentDetails(paymentDetails);
+        LocalDateTime startTime = request.startTime;
+        streamingLink.setActivationStart(startTime);
+        int availabilityDays = 1 + request.extraDays;
+        streamingLink.setActivationEnd(startTime.plusDays(availabilityDays));
+        streamingLink.setPaidPrice(streaming.getExtraDayPrice() * availabilityDays);
+        streamingLink.setLink("http://Sertia/link=" + UUID.randomUUID());
 
-	@Override
-	public ClientReport[] createSertiaReports() {
-		return new ClientReport[0];
-	}
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            session.save(streamingLink);
+            response.startTime = streamingLink.getActivationStart();
+            response.endTime = streamingLink.getActivationEnd();
+            response.price = streamingLink.getPaidPrice();
+            response.streamingLink = streamingLink.getLink();
 
-	@Override
-	public ClientReport[] createCinemaReports(String cinemaId) {
-		return new ClientReport[0];
-	}
+            return response;
+        } catch (RuntimeException exception) {
+            return Utils.createFailureResponse(response, "failed to purchase link");
+        }
+    }
+
+    private Optional<Streaming> getStreaming(int movieId) {
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            Query query = session
+                    .createQuery("from Screening where movie_id = :movieId");
+            query.setParameter("movieId", movieId);
+            return Optional.ofNullable((Streaming) query.list().get(0));
+        } catch (RuntimeException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public SertiaBasicResponse cancelStreamingTicket(CancelStreamingTicketRequest request) {
+        int streamingTickerId = request.streamingId;
+        return DbUtils.getById(StreamingLink.class, streamingTickerId).map(streamingTicket -> {
+            try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                session.delete(streamingTicket);
+                return new SertiaBasicResponse(true);
+            } catch (RuntimeException exception) {
+                return new SertiaBasicResponse(false).setFailReason("failed to delete streaming ticket");
+            }
+        }).orElseGet(() ->
+                new SertiaBasicResponse(false).setFailReason("no streaming with id " + streamingTickerId));
+    }
+
+    @Override
+    public ClientReport[] createSertiaReports() {
+        return new ClientReport[0];
+    }
+
+    @Override
+    public ClientReport[] createCinemaReports(String cinemaId) {
+        return new ClientReport[0];
+    }
 }

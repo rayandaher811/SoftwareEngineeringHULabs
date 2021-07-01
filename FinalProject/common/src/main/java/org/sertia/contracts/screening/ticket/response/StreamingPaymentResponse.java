@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class StreamingPaymentResponse extends SertiaBasicResponse {
 	public String streamingLink;
-	public int price;
+	public double price;
 	public LocalDateTime startTime;
 	public LocalDateTime endTime;
 

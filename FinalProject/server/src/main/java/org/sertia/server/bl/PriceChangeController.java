@@ -8,7 +8,6 @@ import org.sertia.server.dl.classes.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.sound.sampled.Control;
 import javax.transaction.NotSupportedException;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,7 +82,7 @@ public class PriceChangeController {
 				case Streaming :
 					// Updating the streaming properly
 					Streaming streaming = session.get(Streaming.class, request.getMovie().getId());
-					streaming.setPricePerStream(request.getNewPrice());
+					streaming.setExtraDayPrice(request.getNewPrice());
 					session.update(streaming);
 					break;
 				case Screening:

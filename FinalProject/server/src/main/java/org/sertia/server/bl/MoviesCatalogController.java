@@ -1,7 +1,6 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
@@ -22,7 +21,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MoviesCatalogController implements Reportable {
 
@@ -78,7 +76,7 @@ public class MoviesCatalogController implements Reportable {
                     Optional.ofNullable(streamings.get(movie.getId()))
                             .ifPresent(streaming -> {
                                 sertiaMovie.isStreamable = true;
-                                sertiaMovie.pricePerStream = streaming.pricePerStream;
+                                sertiaMovie.extraDayPrice = streaming.extraDayPrice;
                             });
                     sertiaMovieList.add(sertiaMovie);
                 });
@@ -115,7 +113,7 @@ public class MoviesCatalogController implements Reportable {
 
             // In case the movie is streamable
             if (movieData.isStreamable) {
-                Streaming streaming = new Streaming(newMovie, movieData.pricePerStream);
+                Streaming streaming = new Streaming(newMovie, movieData.extraDayPrice);
                 session.save(streaming);
             }
             session.flush();
