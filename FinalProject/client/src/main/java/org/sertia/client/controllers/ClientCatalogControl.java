@@ -14,6 +14,19 @@ import java.util.List;
 
 public class ClientCatalogControl extends ClientControl {
 
+    private static ClientCatalogControl instance = null;
+
+    private ClientCatalogControl(){
+
+    }
+
+    public static ClientCatalogControl getInstance() {
+        if (instance == null)
+            instance = new ClientCatalogControl();
+
+        return instance;
+    }
+
     public List<CinemaScreeningMovie> requestSpecificCinemaCatalog(int cinemaId) {
         return client.request(new CinemaCatalogRequest(cinemaId), CinemaCatalogResponse.class).movies;
     }

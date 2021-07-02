@@ -11,6 +11,6 @@
             fx:controller="org.sertia.client.views.MovieDetails"
             prefHeight="400.0" prefWidth="600.0">
 <VBox fx:id="detailesPage" alignment="CENTER">
-
+    <Button fx:id="backBtn" onAction="#back" text="חזור"/>
 </VBox>
 </AnchorPane>

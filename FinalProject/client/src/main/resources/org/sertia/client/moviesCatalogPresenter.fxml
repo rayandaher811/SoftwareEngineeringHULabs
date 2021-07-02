@@ -5,12 +5,13 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Accordion?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.available.movies.CatalogView">
     <children>
-        <BorderPane prefHeight="400.0" prefWidth="600.0">
+        <BorderPane prefHeight="368.0" prefWidth="618.0">
             <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="407.0" text="קטלוג הסרטייה"
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="קטלוג הסרטים ברשת"
                        BorderPane.alignment="CENTER">
                     <font>
                         <Font size="26.0"/>
@@ -18,12 +19,10 @@
                 </Label>
             </top>
             <center>
-                <ListView fx:id="lstView" prefHeight="343.0" prefWidth="400.0" BorderPane.alignment="CENTER"/>
+                <Accordion fx:id="moviesKindAndDataAccordion" BorderPane.alignment="CENTER_RIGHT">
+                </Accordion>
             </center>
-            <bottom>
-                <Button mnemonicParsing="false" onAction="#backToClientsView" text="חזרה"
-                        BorderPane.alignment="CENTER"/>
-            </bottom>
         </BorderPane>
+        <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#backToClientsView" text="חזרה"/>
     </children>
 </AnchorPane>

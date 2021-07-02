@@ -6,7 +6,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.sertia.client.App;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,6 +25,15 @@ public class MovieDetails extends BasicPresenter implements Initializable {
     public int reuqestPriceChangeButton;
     public int removeMovieButton;
     public int createStreamButton;
+
+    @FXML
+    private void back(){
+        try {
+            App.setRoot("moviesCatalogPresenter");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String path = "https://assets2.rockpapershotgun.com/shrek-again.jpg/BROK/resize/880%3E/format/jpg/quality/80/shrek-again.jpg";
