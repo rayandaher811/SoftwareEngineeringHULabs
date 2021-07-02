@@ -13,22 +13,36 @@ import java.util.List;
 
 public class ClientComplaintControl extends ClientControl {
 
-    public boolean tryResolveComplaint(int complaintId, double refundAmount) {
-        return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class).isSuccessful;
-    }
+	private static ClientComplaintControl instance;
 
-    public boolean tryCloseComplaint(int complaintId) {
-        return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class).isSuccessful;
-    }
+	protected ClientComplaintControl() {
+		super();
+	}
 
-    public List<ClientOpenComplaint> getOpenedComplaints() {
-        AllUnhandledComplaintsResponse response = client.request(new GetAllUnhandledComplaintsRequest(), AllUnhandledComplaintsResponse.class);
+	public static ClientComplaintControl getInstance() {
+		if (instance == null){
+			instance = new ClientComplaintControl();
+		}
+		return instance;
+	}
 
-        return response.openComplaints;
-    }
+	public boolean tryResolveComplaint(int complaintId, double refundAmount) {
+		return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class).isSuccessful;
+	}
 
-    public void createComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
-        client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
-                SertiaBasicResponse.class);
-    }
+	public boolean tryCloseComplaint(int complaintId) {
+		return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class).isSuccessful;
+	}
+
+	public List<ClientOpenComplaint> getOpenedComplaints() {
+		AllUnhandledComplaintsResponse response = client.request(new GetAllUnhandledComplaintsRequest(), AllUnhandledComplaintsResponse.class);
+
+		return response.openComplaints;
+	}
+
+	// TODO: after validations return response object with response status or somehing.. UI must know that response 200 returned
+	public void createComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
+		client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
+				SertiaBasicResponse.class);
+	}
 }

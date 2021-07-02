@@ -6,11 +6,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.EmployeesForm">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.EmployeesFormPresenter">
     <children>
         <BorderPane prefHeight="368.0" prefWidth="618.0">
             <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="ברוך הבא למערכת הסרטייה"
+                <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="618.0"
                        BorderPane.alignment="CENTER">
                     <font>
                         <Font size="26.0"/>
@@ -18,12 +18,7 @@
                 </Label>
             </top>
             <center>
-                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Separator prefWidth="200.0"/>
-                        <Button onAction="#updateMovie" prefHeight="25.0" prefWidth="170.0"
-                                text="עדכון זמן הקרנה לסרט"/>
-                    </children>
+                <VBox fx:id="buttonsVbox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                 </VBox>
             </center>
             <bottom>

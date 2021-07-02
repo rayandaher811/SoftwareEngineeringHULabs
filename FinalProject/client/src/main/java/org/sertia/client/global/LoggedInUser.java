@@ -1,6 +1,8 @@
 package org.sertia.client.global;
 
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.user.login.UserRole;
 
 import java.util.UUID;
 
@@ -8,18 +10,14 @@ public class LoggedInUser {
     // User
     private String userName;
     private String uuid;
-    private CinemaScreeningMovie chosenMovieForUpdateTimeOperation;
+    private UserRole userRole;
 
     private static LoggedInUser loggedInUser = null;
 
-    private LoggedInUser(String userName) {
+    private LoggedInUser(String userName, UserRole userRole) {
         this.userName = userName;
         this.uuid = UUID.randomUUID().toString();
-        this.chosenMovieForUpdateTimeOperation = null;
-    }
-
-    public void setChosenMovieForUpdateTimeOperation(CinemaScreeningMovie chosenMovieForUpdateTimeOperation) {
-        this.chosenMovieForUpdateTimeOperation = chosenMovieForUpdateTimeOperation;
+        this.userRole = userRole;
     }
 
     public static LoggedInUser getInstance() {
@@ -30,20 +28,20 @@ public class LoggedInUser {
         return loggedInUser;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
     public String getUuid() {
         return uuid;
     }
 
-    public static void setConnectionStatus(String userName) {
+    public static void setConnectionStatus(String userName, UserRole role) {
         if (loggedInUser == null)
-            loggedInUser = new LoggedInUser(userName);
+            loggedInUser = new LoggedInUser(userName, role);
     }
 
     public static void onDisconnection() {
         loggedInUser = null;
-    }
-
-    public CinemaScreeningMovie getChosenMovieForUpdateTimeOperation() {
-        return this.chosenMovieForUpdateTimeOperation;
     }
 }

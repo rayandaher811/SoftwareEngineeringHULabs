@@ -12,4 +12,8 @@ public class SertiaCatalogResponse extends SertiaBasicResponse {
     }
 
     public List<SertiaMovie> movies;
+
+    public List<SertiaMovie> getMovies() {
+        return movies;
+    }
 }

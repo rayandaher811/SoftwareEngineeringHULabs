@@ -1,14 +1,18 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.covidRegulations.requests.*;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
-import org.sertia.contracts.movies.catalog.ClientScreening;
 
 import java.time.LocalDateTime;
 
 public class ClientCovidRegulationsControl extends ClientControl {
+
+    private static final ClientCovidRegulationsControl instance = new ClientCovidRegulationsControl();
+
+    public static ClientCovidRegulationsControl getInstance() {
+        return instance;
+    }
     public boolean areRegulationsActive() {
         return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class).isActive;
     }
@@ -25,7 +29,7 @@ public class ClientCovidRegulationsControl extends ClientControl {
         client.request(new ActiveCovidRegulationsRequest(), SertiaBasicResponse.class);
     }
 
-    public void cancelAllScreeningsDueCovid(LocalDateTime cancellationStartDate, LocalDateTime cancellationEndDate){
+    public void cancelAllScreeningsDueCovid(LocalDateTime cancellationStartDate, LocalDateTime cancellationEndDate) {
         client.request(new CancelAllScreeningsDueCovidRequest(cancellationStartDate, cancellationEndDate), SertiaBasicResponse.class);
     }
 

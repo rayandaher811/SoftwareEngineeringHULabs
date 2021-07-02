@@ -9,27 +9,22 @@ public class PrimaryController {
 
     @FXML
     private void toLoginView() throws IOException {
-        App.setRoot("loginForm");
+        App.setRoot("userLoginForm");
     }
 
     @FXML
-    private void toAvailableMoviesView() throws IOException {
-        App.setRoot("availableMoviesPresenter");
+    private void toMoviesCatalog() throws IOException {
+        App.setRoot("moviesCatalogPresenter");
     }
 
     @FXML
-    private void toComplaintsView() throws IOException {
-        App.setRoot("complaintsView");
+    private void toAddComplaintView() throws IOException {
+        App.setRoot("createComplaintView");
     }
 
     @FXML
     private void toMovieTicketsPurchase() throws IOException {
-        boolean isTavSagolRunning = true;
-        if (isTavSagolRunning) {
-            App.setRoot("covidMovieTicketsPurchase");
-        } else {
-            App.setRoot("movieTicketPurchaseForm");
-        }
+        App.setRoot("purchaseMovieTickets");
     }
 
     @FXML

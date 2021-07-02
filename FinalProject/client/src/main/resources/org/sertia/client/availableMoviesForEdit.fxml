@@ -7,7 +7,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.AvailableMoviesForEdit">
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sertia.client.views.authorized.EditScreeningTimePresenter">
     <children>
         <BorderPane prefHeight="368.0" prefWidth="618.0">
             <top>
@@ -19,10 +20,11 @@
                 </Label>
             </top>
             <center>
-                <Accordion fx:id="moviesAccordion" BorderPane.alignment="CENTER">
+                <Accordion fx:id="moviesKindAndDataAccordion" BorderPane.alignment="CENTER_RIGHT">
                 </Accordion>
             </center>
         </BorderPane>
-        <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#back" text="חזרה"/>
+        <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#back"
+                text="חזרה"/>
     </children>
 </AnchorPane>

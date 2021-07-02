@@ -12,21 +12,21 @@ import java.util.List;
 
 public class ClientPriceChangeControl extends ClientControl {
 
-    public void requestPriceChange(int movieId, ClientTicketType clientTicketType, double newPrice) {
-        client.request(new BasicPriceChangeRequest(movieId, clientTicketType, newPrice), SertiaBasicResponse.class);
-    }
+	public void requestPriceChange(int movieId, ClientTicketType clientTicketType, double newPrice) {
+		client.request(new BasicPriceChangeRequest(movieId, clientTicketType, newPrice), SertiaBasicResponse.class);
+	}
 
-    public boolean tryApprovePriceChange(int requestId) {
-        return client.request(new ApprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
-    }
+	public boolean tryApprovePriceChange(int requestId) {
+		return client.request(new ApprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
+	}
 
-    public boolean tryDisapprovePriceChange(int requestId) {
-        return client.request(new DissapprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
-    }
+	public boolean tryDisapprovePriceChange(int requestId) {
+		return client.request(new DissapprovePriceChangeRequest(requestId), SertiaBasicResponse.class).isSuccessful;
+	}
 
-    public List<BasicPriceChangeRequest> getAllOpenedPriceChangeRequests() {
-        GetUnapprovedPriceChangeResponse response = client.request(new GetUnapprovedPriceChangeRequest(), GetUnapprovedPriceChangeResponse.class);
-        return response.unapprovedRequests;
-    }
+	public List<BasicPriceChangeRequest> getAllOpenedPriceChangeRequests() {
+		GetUnapprovedPriceChangeResponse response = client.request(new GetUnapprovedPriceChangeRequest(), GetUnapprovedPriceChangeResponse.class);
+		return response.unapprovedRequests;
+	}
 
 }
