@@ -1,4 +1,4 @@
-package org.sertia.client.views.unauthorized.purchase;
+package org.sertia.client.views.unauthorized.purchase.movie;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,7 +8,10 @@ import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.MoviesCatalog;
+import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.ScreeningHolder;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -54,10 +57,18 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
                     try {
                         int numberOfTicketsPurchased = Integer.parseInt(this.amountOfTicketsTxt.getText());
                         // TODO: fixme, it should be seat map or something like that
-                        int screeningId = ClientPurchaseControl.getScreeningSeatMap(cinemaScreeningMovie.getScreeningId());
-
+//                        int screeningId = ClientPurchaseControl.getScreeningSeatMap(cinemaScreeningMovie.getScreeningId());
+                        ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
+                        MovieHolder.getInstance().setMovie(movieToScreenings.getKey());
+                        boolean isCovidLimitationsEnbaled = false;
                         System.out.println("number of tickets is: " + numberOfTicketsPurchased);
-                        App.setRoot("seatMapView");
+//                        if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()){
+                        if (isCovidLimitationsEnbaled){
+                            System.out.println("Need to go to covid view");
+                        } else {
+                            System.out.println("Need to show available spots");
+                            App.setRoot("seatMapView");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

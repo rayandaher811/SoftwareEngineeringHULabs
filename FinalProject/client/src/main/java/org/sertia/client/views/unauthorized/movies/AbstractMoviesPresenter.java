@@ -38,47 +38,47 @@ public class AbstractMoviesPresenter {
         return movieToDetailsMapping;
     }
 
-    private TitledPane screeningMovieToTilePane(Map.Entry<String,
-            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies) {
-        Accordion moviesAccordion = new Accordion();
-        ObservableList<TitledPane> list = FXCollections.observableArrayList();
-
-        HashMap<String, ArrayList<CinemaScreeningMovie>> moviesToScreening =
-                mapMoviesByMovieNameToCinemaScreeningMovie(cinemaToScreeningMovies);
-        ArrayList<TitledPane> values = new ArrayList<>();
-
-        moviesToScreening.entrySet().forEach(s -> {
-            ListView<Button> buttonListView = new ListView<>();
-
-            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
-            s.getValue().stream().forEach(cinemaScreeningMovie -> {
-
-
-                Button btn = new Button();
-                btn.setText(cinemaScreeningMovie.getScreeningTimeStampStr());
-                buttonObservableList.add(btn);
-                btn.setOnMouseClicked(mouseEvent -> {
-                    try {
-                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
-                        App.setRoot("editMovieScreeningTimePresenter");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            });
-            buttonListView.getItems().setAll(buttonObservableList);
-            values.add(new TitledPane(s.getKey(), buttonListView));
-        });
-
-        list.addAll(values);
-        moviesAccordion.getPanes().setAll(values);
-
-        TitledPane tiledPane = new TitledPane("AllMoviesByCinema", moviesAccordion);
-        tiledPane.setAnimated(false);
-        tiledPane.setText(cinemaToScreeningMovies.getKey());
-//        tiledPane.setContent(moviesAccordion);
-        return tiledPane;
-    }
+//    private TitledPane screeningMovieToTilePane(Map.Entry<String,
+//            ArrayList<CinemaScreeningMovie>> cinemaToScreeningMovies) {
+//        Accordion moviesAccordion = new Accordion();
+//        ObservableList<TitledPane> list = FXCollections.observableArrayList();
+//
+//        HashMap<String, ArrayList<CinemaScreeningMovie>> moviesToScreening =
+//                mapMoviesByMovieNameToCinemaScreeningMovie(cinemaToScreeningMovies);
+//        ArrayList<TitledPane> values = new ArrayList<>();
+//
+//        moviesToScreening.entrySet().forEach(s -> {
+//            ListView<Button> buttonListView = new ListView<>();
+//
+//            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+//            s.getValue().stream().forEach(cinemaScreeningMovie -> {
+//
+//
+//                Button btn = new Button();
+//                btn.setText(cinemaScreeningMovie.getScreeningTimeStampStr());
+//                buttonObservableList.add(btn);
+//                btn.setOnMouseClicked(mouseEvent -> {
+//                    try {
+//                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
+//                        App.setRoot("editMovieScreeningTimePresenter");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//
+//            });
+//            buttonListView.getItems().setAll(buttonObservableList);
+//            values.add(new TitledPane(s.getKey(), buttonListView));
+//        });
+//
+//        list.addAll(values);
+//        moviesAccordion.getPanes().setAll(values);
+//
+//        TitledPane tiledPane = new TitledPane("AllMoviesByCinema", moviesAccordion);
+//        tiledPane.setAnimated(false);
+//        tiledPane.setText(cinemaToScreeningMovies.getKey());
+////        tiledPane.setContent(moviesAccordion);
+//        return tiledPane;
+//    }
 
 }

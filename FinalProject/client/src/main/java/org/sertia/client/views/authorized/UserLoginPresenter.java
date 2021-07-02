@@ -1,15 +1,18 @@
-package org.sertia.client.views.unauthorized.didntuse;
+package org.sertia.client.views.authorized;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
+import org.sertia.client.controllers.ClientUserLoginController;
 import org.sertia.client.global.LoggedInUser;
+import org.sertia.contracts.user.login.LoginCredentials;
+import org.sertia.contracts.user.login.UserRole;
 
 import java.io.IOException;
 
-public class LoginController {
+public class UserLoginPresenter {
 
     @FXML
     private TextField userNameTextField;
@@ -49,10 +52,10 @@ public class LoginController {
     private void login() throws IOException {
         String userName = userNameTextField.getText();
         String password = passwordField.getText();
+
         if (isInputValid(userName, password)) {
             System.out.println("username: " + userName + " , password: " + password);
             if (isUserAuthorized(userName, password)) {
-                LoggedInUser.setConnectionStatus(userName);
                 App.setRoot("employeesForm");
             } else {
                 alertForWronCredentials();
@@ -61,8 +64,12 @@ public class LoginController {
     }
 
     private boolean isUserAuthorized(String userName, String password) {
-        // TODO: validate with server that user name registerd and password is correct
-        return !userName.equals("TEST_FAILED") && !password.equals("TEST_FAILED");
+        UserRole role = ClientUserLoginController.getInstance().login(new LoginCredentials(userName, password));
+        if (role != UserRole.None) {
+            LoggedInUser.setConnectionStatus(userName, role);
+            return true;
+        }
+        return false;
     }
 
     @FXML

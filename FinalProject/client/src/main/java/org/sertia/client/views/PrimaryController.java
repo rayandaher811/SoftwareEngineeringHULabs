@@ -9,7 +9,7 @@ public class PrimaryController {
 
     @FXML
     private void toLoginView() throws IOException {
-        App.setRoot("loginForm");
+        App.setRoot("userLoginForm");
     }
 
     @FXML
@@ -24,7 +24,7 @@ public class PrimaryController {
 
     @FXML
     private void toMovieTicketsPurchase() throws IOException {
-        App.setRoot("movieTicketPurchaseForm");
+        App.setRoot("purchaseMovieTickets");
     }
 
     @FXML

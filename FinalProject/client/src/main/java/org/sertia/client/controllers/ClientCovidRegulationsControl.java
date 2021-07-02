@@ -7,6 +7,12 @@ import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsSta
 import java.time.LocalDateTime;
 
 public class ClientCovidRegulationsControl extends ClientControl {
+
+    private static final ClientCovidRegulationsControl instance = new ClientCovidRegulationsControl();
+
+    public static ClientCovidRegulationsControl getInstance() {
+        return instance;
+    }
     public boolean areRegulationsActive() {
         return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class).isActive;
     }

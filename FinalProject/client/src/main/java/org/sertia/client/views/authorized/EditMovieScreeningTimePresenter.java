@@ -44,19 +44,19 @@ public class EditMovieScreeningTimePresenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
-        if (movie != null) {
-            mainLabel.setText(mainLabel.getText() + movie.getName());
-            mainLabel.setMaxWidth(400);
-            movieNameLabel.setText(movie.getName());
-            actorNameLabel.setText(movie.getMainActorName());
-            branchNameLabel.setText(movie.getBranchName());
-            hallNumber.setText(String.valueOf(movie.getHallNumber()));
-            String movieScreeningTime = movie.getScreeningTimeStampStr();
-            DateTime dateTime = DateTime.parse(movieScreeningTime);
-            datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
-            screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
-        }
+//        CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
+//        if (movie != null) {
+//            mainLabel.setText(mainLabel.getText() + movie.getName());
+//            mainLabel.setMaxWidth(400);
+//            movieNameLabel.setText(movie.getName());
+//            actorNameLabel.setText(movie.getMainActorName());
+//            branchNameLabel.setText(movie.getBranchName());
+//            hallNumber.setText(String.valueOf(movie.getHallNumber()));
+//            String movieScreeningTime = movie.getScreeningTimeStampStr();
+//            DateTime dateTime = DateTime.parse(movieScreeningTime);
+//            datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
+//            screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
+//        }
     }
 
     @FXML
@@ -69,14 +69,14 @@ public class EditMovieScreeningTimePresenter implements Initializable {
         String newHour = screeningTimeTxt.getText();
         LocalDate inputDate = datePickerComp.getValue();
 
-        if (isCorrectHour(newHour)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(inputDate.getYear(), inputDate.getMonth().getValue() - 1, inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
-            LocalDateTime dateTime = LocalDateTime.fromCalendarFields(calendar);
-            CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
-            UpdateMovieScreeningTime updateMovieScreeningTime = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), movie, dateTime.toString());
-            SertiaClient.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
-        }
+//        if (isCorrectHour(newHour)) {
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.set(inputDate.getYear(), inputDate.getMonth().getValue() - 1, inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
+//            LocalDateTime dateTime = LocalDateTime.fromCalendarFields(calendar);
+//            CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
+//            UpdateMovieScreeningTime updateMovieScreeningTime = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), movie, dateTime.toString());
+//            SertiaClient.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
+//        }
         App.setRoot("availableMoviesForEdit");
     }
 

@@ -34,20 +34,9 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
 
     @FXML
     public void toMain() throws IOException {
-        App.setRoot("movieTicketPurchaseForm");
+        App.setRoot("purchaseMovieTickets");
     }
-
-
-    private SeatBox[][] generateBySize(int row, int col) {
-        SeatBox[][] hall = new SeatBox[row][col];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                hall[i][j] = new SeatBox(1, i, j, false, true);
-            }
-        }
-        return hall;
-    }
-
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
