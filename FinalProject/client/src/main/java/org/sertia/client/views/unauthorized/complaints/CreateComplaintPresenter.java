@@ -1,4 +1,4 @@
-package org.sertia.client.views.complaints;
+package org.sertia.client.views.unauthorized.complaints;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
-import org.sertia.client.views.BasicPresenterWithValidations;
+import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;

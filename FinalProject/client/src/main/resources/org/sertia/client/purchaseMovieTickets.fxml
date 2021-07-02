@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.purchase.PurchaseMovieTicketsPresenter">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.purchase.PurchaseMovieTicketsPresenter">
     <children>
         <BorderPane prefHeight="368.0" prefWidth="618.0">
             <top>

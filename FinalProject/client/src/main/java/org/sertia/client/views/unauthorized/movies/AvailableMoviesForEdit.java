@@ -1,4 +1,4 @@
-package org.sertia.client.views.available.movies;
+package org.sertia.client.views.unauthorized.movies;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TitledPane;
 import org.sertia.client.App;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
-import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.global.LoggedInUser;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.sertia.client.views.didntuse;
+package org.sertia.client.views.unauthorized.didntuse;
 
 import javafx.fxml.FXML;
 import org.sertia.client.App;

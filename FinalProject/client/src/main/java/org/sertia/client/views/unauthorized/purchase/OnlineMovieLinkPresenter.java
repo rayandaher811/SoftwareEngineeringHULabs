@@ -1,4 +1,4 @@
-package org.sertia.client.views.purchase;
+package org.sertia.client.views.unauthorized.purchase;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

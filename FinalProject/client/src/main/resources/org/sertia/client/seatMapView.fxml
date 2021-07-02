@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.purchase.movie.SeatChooseView">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.purchase.movie.SeatChooseView">
     <children>
         <BorderPane prefHeight="368.0" prefWidth="618.0">
             <top>

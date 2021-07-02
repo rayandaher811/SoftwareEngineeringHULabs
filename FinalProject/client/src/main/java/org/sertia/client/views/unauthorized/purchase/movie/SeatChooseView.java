@@ -1,4 +1,4 @@
-package org.sertia.client.views.purchase.movie;
+package org.sertia.client.views.unauthorized.purchase.movie;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,7 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import org.sertia.client.App;
 import org.sertia.client.boxes.SeatBox;
-import org.sertia.client.views.didntuse.BasicPresenter;
+import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 
 import java.io.IOException;
 import java.net.URL;

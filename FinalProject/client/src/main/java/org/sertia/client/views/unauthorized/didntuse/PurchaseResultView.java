@@ -1,6 +1,4 @@
-package org.sertia.client.views.didntuse;
-
-import org.sertia.client.views.didntuse.BasicPresenter;
+package org.sertia.client.views.unauthorized.didntuse;
 
 public class PurchaseResultView extends BasicPresenter {
 

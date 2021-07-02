@@ -1,4 +1,4 @@
-package org.sertia.client.views.available.movies;
+package org.sertia.client.views.unauthorized.movies;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

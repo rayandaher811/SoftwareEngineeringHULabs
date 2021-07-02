@@ -1,14 +1,15 @@
-package org.sertia.client.views.available.movies;
+package org.sertia.client.views.unauthorized.movies;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.client.views.didntuse.BasicPresenter;
+import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 
 import java.io.IOException;
@@ -37,7 +38,10 @@ public class MovieDetails extends BasicPresenter implements Initializable {
         Text actors = new Text("שחקנים:" + movie.getMainActorName());
         Text desc = new Text("תיאור:" + movie.getDescription());
         Text prod = new Text("מפיק:" + movie.getProducerName());
-        detailsPage.getChildren().addAll(title, actors, prod, desc, imageView);
+        Button back = new Button();
+        back.setText("חזרה");
+        back.setOnMouseClicked(mouseEvent -> back());
+        detailsPage.getChildren().addAll(title, actors, prod, desc, imageView, back);
     }
 
     private ImageView getImageView(ClientMovie movie) {

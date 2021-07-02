@@ -1,4 +1,4 @@
-package org.sertia.client.views.available.movies;
+package org.sertia.client.views.unauthorized.movies;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.client.views.didntuse.BasicPresenter;
+import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
