@@ -5,7 +5,7 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.VBox?>
 <VBox alignment="CENTER" prefHeight="190.0" prefWidth="291.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.LoginController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.didntuse.LoginController">
     <children>
         <Label text="אנא הזן שם משתמש וסיסמא"/>
         <Group>

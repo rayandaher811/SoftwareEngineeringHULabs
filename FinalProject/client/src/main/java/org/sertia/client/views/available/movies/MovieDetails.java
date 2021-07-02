@@ -1,4 +1,4 @@
-package org.sertia.client.views;
+package org.sertia.client.views.available.movies;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.views.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 
 import java.io.IOException;

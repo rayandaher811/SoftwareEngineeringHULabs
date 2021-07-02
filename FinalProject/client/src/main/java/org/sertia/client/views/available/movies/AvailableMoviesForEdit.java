@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TitledPane;
 import org.sertia.client.App;
-import org.sertia.client.communication.SertiaClient;
 import org.sertia.client.communication.messages.CinemaScreeningMovie;
 import org.sertia.client.communication.messages.MoviesCatalog;
 import org.sertia.client.global.LoggedInUser;
@@ -36,7 +35,6 @@ public class AvailableMoviesForEdit extends AbstractMoviesPresenter implements I
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         // Need to get movies by start time
-        MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
 
         HashMap<String, ArrayList<CinemaScreeningMovie>> cinemaNameToMovie = new HashMap<>();
 

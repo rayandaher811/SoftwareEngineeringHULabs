@@ -24,12 +24,7 @@ public class PrimaryController {
 
     @FXML
     private void toMovieTicketsPurchase() throws IOException {
-        boolean isTavSagolRunning = false;
-        if (isTavSagolRunning) {
-            App.setRoot("covidMovieTicketsPurchase");
-        } else {
-            App.setRoot("movieTicketPurchaseForm");
-        }
+        App.setRoot("movieTicketPurchaseForm");
     }
 
     @FXML
@@ -40,10 +35,5 @@ public class PrimaryController {
     @FXML
     private void toHomeLinkView() throws IOException {
         App.setRoot("onlineWatchLinkForm");
-    }
-
-    @FXML
-    private void toMovieDetails() throws IOException{
-        App.setRoot("movieDetails");
     }
 }

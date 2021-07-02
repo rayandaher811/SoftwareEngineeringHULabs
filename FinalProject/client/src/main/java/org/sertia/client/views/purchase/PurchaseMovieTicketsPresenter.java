@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class PurchaseView implements Initializable {
+public class PurchaseMovieTicketsPresenter implements Initializable {
     @FXML
     private TextField amountOfTicketsTxt;
     @FXML
@@ -100,8 +100,6 @@ public class PurchaseView implements Initializable {
                 movieToScreenings.put(screeningMovie.getMovieDetails(), screeningMovie.getScreenings());
             }
         }
-
-        System.out.println("VF");
 
         movieToScreenings.entrySet().forEach(specificMovieToScreenings -> list.add(screeningMovieToTilePane(specificMovieToScreenings)));
 

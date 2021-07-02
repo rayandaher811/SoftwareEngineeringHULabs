@@ -1,4 +1,4 @@
-package org.sertia.client.views;
+package org.sertia.client.views.authorized.only;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

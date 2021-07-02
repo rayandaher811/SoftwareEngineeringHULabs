@@ -1,4 +1,4 @@
-package org.sertia.client.views;
+package org.sertia.client.views.didntuse;
 
 import javafx.fxml.FXML;
 import org.sertia.client.App;
