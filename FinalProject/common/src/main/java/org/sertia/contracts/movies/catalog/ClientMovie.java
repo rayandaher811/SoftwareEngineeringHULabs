@@ -13,4 +13,24 @@ public class ClientMovie implements Serializable {
     public String getName() {
         return name;
     }
+
+    public String getHebrewName() {
+        return hebrewName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getMainActorName() {
+        return mainActorName;
+    }
+
+    public String getProducerName() {
+        return producerName;
+    }
+
+    public String getPosterImageUrl() {
+        return posterImageUrl;
+    }
 }

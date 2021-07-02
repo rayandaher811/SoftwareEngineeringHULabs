@@ -7,49 +7,48 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.sertia.client.App;
+import org.sertia.client.global.MovieHolder;
+import org.sertia.contracts.movies.catalog.ClientMovie;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MovieDetails extends BasicPresenter implements Initializable {
-    @FXML private VBox detailesPage;
-    public int movieTitle=1;
-    public int moviePoster=1;
-    public int leadingActors=1;
-    public int description=1;
-    public int producer=1;
-    public boolean isComingSoon=true;
-    public int purchaseStreamButton;
-    public int newPriceTextBox;
-    public int reuqestPriceChangeButton;
-    public int removeMovieButton;
-    public int createStreamButton;
+    @FXML
+    private VBox detailsPage;
 
     @FXML
-    private void back(){
+    private void back() {
         try {
             App.setRoot("moviesCatalogPresenter");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        String path = "https://assets2.rockpapershotgun.com/shrek-again.jpg/BROK/resize/880%3E/format/jpg/quality/80/shrek-again.jpg";
+        ClientMovie movie = MovieHolder.getInstance().getMovie();
+
+        ImageView imageView = getImageView(movie);
+        Text title = new Text("שם הסרט:" + movie.getName());
+        Text actors = new Text("שחקנים:" + movie.getMainActorName());
+        Text desc = new Text("תיאור:" + movie.getDescription());
+        Text prod = new Text("מפיק:" + movie.getProducerName());
+        detailsPage.getChildren().addAll(title, actors, prod, desc, imageView);
+    }
+
+    private ImageView getImageView(ClientMovie movie) {
+        String path;
+        if (movie.getPosterImageUrl() == null)
+            path = "https://assets2.rockpapershotgun.com/shrek-again.jpg/BROK/resize/880%3E/format/jpg/quality/80/shrek-again.jpg";
+        else
+            path = movie.getPosterImageUrl();
         Image image = new Image(path);
         ImageView imageView = new ImageView(image);//movieposter
         imageView.setFitHeight(111.1);
         imageView.setFitWidth(111.1);
-        detailesPage.getChildren().add(imageView);
-        Text title = new Text("שם הסרט:"+movieTitle);
-        Text actors = new Text("שחקנים:"+leadingActors);
-        Text desc = new Text("תיאור:"+description);
-        Text prod = new Text("מפיק:"+producer);
-        Text issoon = new Text("האם בקרוב?:"+isComingSoon);
-        detailesPage.getChildren().add(actors);
-        detailesPage.getChildren().add(desc);
-        detailesPage.getChildren().add(prod);
-        detailesPage.getChildren().add(issoon);
+        return imageView;
     }
 }
