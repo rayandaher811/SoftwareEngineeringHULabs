@@ -6,6 +6,8 @@ import javax.persistence.*;
 @Entity
 @Table(name="vouchers_info")
 public class VouchersInfo {
+    // The table is single lined table and this is it's single record Id
+    public static final int singleRecordId = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="vouchers_info_id")
@@ -14,6 +16,14 @@ public class VouchersInfo {
     private int voucherInitialBalance;
 
     private double price;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getVoucherInitialBalance() {
         return voucherInitialBalance;

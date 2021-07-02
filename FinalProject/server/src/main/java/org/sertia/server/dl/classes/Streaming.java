@@ -15,7 +15,7 @@ public class Streaming {
     @JoinColumn(name = "movie_id")
     public Movie movie;
 
-    public double pricePerStream;
+    public double extraDayPrice;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="streaming_streaming_id")
@@ -24,9 +24,9 @@ public class Streaming {
     public Streaming() {
     }
 
-    public Streaming(Movie movie, double pricePerStream) {
+    public Streaming(Movie movie, double extraDayPrice) {
         this.movie = movie;
-        this.pricePerStream = pricePerStream;
+        this.extraDayPrice = extraDayPrice;
     }
 
     public Movie getMovie() {
@@ -37,12 +37,12 @@ public class Streaming {
         this.movie = movie;
     }
 
-    public double getPricePerStream() {
-        return pricePerStream;
+    public double getExtraDayPrice() {
+        return extraDayPrice;
     }
 
-    public void setPricePerStream(double pricePerStream) {
-        this.pricePerStream = pricePerStream;
+    public void setExtraDayPrice(double extraDayPrice) {
+        this.extraDayPrice = extraDayPrice;
     }
 
     public List<StreamingLink> getLinks() {

@@ -3,7 +3,7 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.request.CancelScreeningTicketRequest;
+import org.sertia.contracts.screening.ticket.request.CancelScreeningTicketRequest;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.*;
@@ -19,12 +19,10 @@ import org.sertia.server.dl.classes.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.sertia.server.bl.Utils.getPaymentDetails;
+
 public class ScreeningTicketController implements Reportable {
-
-    private final CovidRegulationsController covidRegulationsController;
-
-    public ScreeningTicketController(CovidRegulationsController covidRegulationsController) {
-        this.covidRegulationsController = covidRegulationsController;
+    public ScreeningTicketController() {
     }
 
     public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
@@ -54,7 +52,7 @@ public class ScreeningTicketController implements Reportable {
                     try (Session session = HibernateSessionFactory.getInstance().openSession()) {
                         session.delete(screeningTicket);
                     } catch (RuntimeException e) {
-                        System.out.println("couldn't delete ticket");
+                        System.out.println("couldn't delete ticket " + request.ticketId);
                         return new SertiaBasicResponse(false)
                                 .setFailReason("couldn't delete ticket");
                     }
@@ -69,7 +67,7 @@ public class ScreeningTicketController implements Reportable {
     }
 
     public SertiaBasicResponse buyVoucher(BasicPaymentRequest paymentDetails) {
-        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, 1).orElse(null);
+        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, VouchersInfo.singleRecordId).orElse(null);
         if (vouchersInfo == null) {
             return new SertiaBasicResponse(false).setFailReason("no voucher info in system");
         }
@@ -253,17 +251,5 @@ public class ScreeningTicketController implements Reportable {
         return screeningTicketRequest;
     }
 
-    private CustomerPaymentDetails getPaymentDetails(BasicPaymentRequest paymentRequest) {
-        CustomerPaymentDetails paymentDetails = new CustomerPaymentDetails();
-        paymentDetails.setPayerId(paymentRequest.cardHolderId);
-        paymentDetails.setFullName(paymentRequest.cardHolderName);
-        paymentDetails.setExperationDate(paymentRequest.expirationDate);
-        paymentDetails.setPaymentMethod(PaymentMethod.Credit);
-        paymentDetails.setCreditNumber(paymentRequest.creditCardNumber);
-        paymentDetails.setCvv(paymentRequest.cvv);
-        paymentDetails.setEmail(paymentRequest.cardHolderEmail);
-        paymentDetails.setPhoneNumber(paymentRequest.cardHolderPhone);
 
-        return paymentDetails;
-    }
 }

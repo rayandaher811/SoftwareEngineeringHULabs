@@ -1,4 +1,4 @@
-package org.sertia.contracts.movies.catalog.request;
+package org.sertia.contracts.screening.ticket.request;
 
 import org.sertia.contracts.SertiaBasicRequest;
 

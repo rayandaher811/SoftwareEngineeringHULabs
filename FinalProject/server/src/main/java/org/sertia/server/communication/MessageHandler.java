@@ -7,7 +7,8 @@ import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
 import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
 import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
 import org.sertia.contracts.complaints.responses.AllUnhandledComplaintsResponse;
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.covidRegulations.requests.*;
+import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
@@ -35,25 +36,29 @@ public class MessageHandler extends AbstractServer {
 
     private final MoviesCatalogController moviesCatalogController;
     private final ScreeningTicketController screeningTicketController;
+    private final StreamingTicketController streamingTicketController;
     private final PriceChangeController priceChangeController;
     private final UserLoginController userLoginController;
     private final ComplaintsController complaintsController;
+    private final CovidRegulationsController covidRegulationsController;
 
     private final Map<Class<? extends SertiaBasicRequest>, BiConsumer<SertiaBasicRequest, ConnectionToClient>> messageTypeToHandler;
 
     private final RoleValidator roleValidator;
 
-    public MessageHandler(int port, ScreeningTicketController screeningTicketController) {
+    public MessageHandler(int port) {
         super(port);
         this.roleValidator = new RoleValidator();
         this.messageTypeToHandler = new HashMap<>();
         initializeHandlerMapping();
 
-        this.screeningTicketController = screeningTicketController;
+        this.screeningTicketController = new ScreeningTicketController();
+        this.streamingTicketController = new StreamingTicketController();
         this.userLoginController = new UserLoginController();
         this.priceChangeController = new PriceChangeController();
         this.complaintsController = new ComplaintsController();
         this.moviesCatalogController = new MoviesCatalogController();
+        this.covidRegulationsController = new CovidRegulationsController(moviesCatalogController);
     }
 
     private void initializeHandlerMapping() {
@@ -83,9 +88,17 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(ScreeningTicketWithSeatsRequest.class, this::handleScreeningTicketWithSeats);
         messageTypeToHandler.put(ScreeningTicketWithCovidRequest.class, this::handleScreeningTicketWithCovid);
         messageTypeToHandler.put(CancelScreeningTicketRequest.class, this::handleTicketCancel);
+        messageTypeToHandler.put(StreamingPaymentRequest.class, this::handleStreamingPurchase);
+        messageTypeToHandler.put(CancelStreamingTicketRequest.class, this::handleStreamingTicketCancel);
         messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
         messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
         messageTypeToHandler.put(UseVoucherRequest.class, this::handleUseVoucherRequest);
+
+        messageTypeToHandler.put(ActiveCovidRegulationsRequest.class, this::handleActiveCovidRegulationRequest);
+        messageTypeToHandler.put(CancelAllScreeningsDueCovidRequest.class, this::handleCancelAllScreeningsDueCovidRequest);
+        messageTypeToHandler.put(CancelCovidRegulationsRequest.class, this::handleCancelCovidRegulationsRequest);
+        messageTypeToHandler.put(GetCovidRegulationsStatusRequest.class, this::handleGetCovidRegulationsStatusRequest);
+        messageTypeToHandler.put(UpdateCovidCrowdingRegulationsRequest.class, this::handleUpdateCovidCrowdingRegulationsRequest);
     }
 
     @Override
@@ -166,6 +179,32 @@ public class MessageHandler extends AbstractServer {
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handle ticket cancel.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleStreamingPurchase(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            StreamingPaymentRequest streamingPaymentRequest = (StreamingPaymentRequest) request;
+            response = streamingTicketController.purchaseStreamingTicket(streamingPaymentRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle streaming ticket purhcase.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleStreamingTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        try {
+            CancelStreamingTicketRequest streamingCancelRequest = (CancelStreamingTicketRequest) request;
+            response = streamingTicketController.cancelStreamingTicket(streamingCancelRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle streaming ticket purhcase.");
         }
 
         sendResponseToClient(client, response);
@@ -418,7 +457,7 @@ public class MessageHandler extends AbstractServer {
             result.setSuccessful(result.userRole != UserRole.None);
 
             // Saving the username if the client has special role
-            if (result.userRole != UserRole.None){
+            if (result.userRole != UserRole.None) {
                 client.setInfo(ClientUsernameType, loginCredentials.username);
             }
         } catch (Exception e) {
@@ -494,6 +533,84 @@ public class MessageHandler extends AbstractServer {
 
     // endregion
 
+    // region Covid regulation changes + status getter
+
+    private void handleCancelAllScreeningsDueCovidRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            CancelAllScreeningsDueCovidRequest cancellationRequest = (CancelAllScreeningsDueCovidRequest) request;
+            covidRegulationsController.cancelAllScreeningsDueCovid(cancellationRequest.cancellationStartDate,
+                                                                    cancellationRequest.cancellationEndDate);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleCancelAllScreeningsDueCovidRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleUpdateCovidCrowdingRegulationsRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            UpdateCovidCrowdingRegulationsRequest updateRequest = (UpdateCovidCrowdingRegulationsRequest) request;
+            covidRegulationsController.updateCovidCrowdingRegulations(updateRequest.newMaxNumberOfPeople);
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleUpdateCovidCrowdingRegulationsRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleCancelCovidRegulationsRequest(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            covidRegulationsController.cancelCovidRegulations();
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleCancelCovidRegulationsRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleGetCovidRegulationsStatusRequest(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
+        ClientCovidRegulationsStatus response = null;
+
+        try {
+            response = covidRegulationsController.getCovidRegulationsStatus();
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new ClientCovidRegulationsStatus(false);
+            response.setFailReason("We couldn't handleGetCovidRegulationsStatusRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleActiveCovidRegulationRequest(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            covidRegulationsController.activeCovidRegulations();
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleActiveCovidRegulationRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
         userLoginController.disconnect((Integer) client.getInfo(ClientSessionIdType));
@@ -512,10 +629,10 @@ public class MessageHandler extends AbstractServer {
         listen();
     }
 
-    private void sendResponseToClient(ConnectionToClient client, SertiaBasicResponse response){
-        try{
+    private void sendResponseToClient(ConnectionToClient client, SertiaBasicResponse response) {
+        try {
             client.sendToClient(response);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("We couldn't send a response to " + client.getInfo(ClientSessionIdType));
         }
     }

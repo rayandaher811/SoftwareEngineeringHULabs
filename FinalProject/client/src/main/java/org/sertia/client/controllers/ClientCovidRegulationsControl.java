@@ -1,49 +1,36 @@
 package org.sertia.client.controllers;
 
+import org.sertia.contracts.SertiaBasicRequest;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.covidRegulations.requests.*;
+import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 
+import java.time.LocalDateTime;
+
 public class ClientCovidRegulationsControl extends ClientControl {
-
-    private int areRegulationsActive;
-
-    public int areRegulationsActive() {
-        return this.areRegulationsActive;
+    public boolean areRegulationsActive() {
+        return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class).isActive;
     }
 
-    /**
-     * @param ClientCovidRegulation
-     */
-    public void sendNewRegulations(int ClientCovidRegulation) {
-        // TODO - implement ClientCovidRegulationsControl.sendNewRegulations
-        throw new UnsupportedOperationException();
+    public ClientCovidRegulationsStatus getCovidRegulationsStatus() {
+        return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class);
     }
 
     public void cancelRegulations() {
-        // TODO - implement ClientCovidRegulationsControl.cancelRegulations
-        throw new UnsupportedOperationException();
+        client.request(new CancelCovidRegulationsRequest(), SertiaBasicResponse.class);
     }
 
-    public void getProblematicScreenings() {
-        // TODO - implement ClientCovidRegulationsControl.getProblematicScreenings
-        throw new UnsupportedOperationException();
+    public void activeRegulations() {
+        client.request(new ActiveCovidRegulationsRequest(), SertiaBasicResponse.class);
     }
 
-    /**
-     * @param screenings
-     */
-    public void onProblematicScreeningsReponse(ClientScreening[] screenings) {
-        // TODO - implement ClientCovidRegulationsControl.onProblematicScreeningsReponse
-        throw new UnsupportedOperationException();
+    public void cancelAllScreeningsDueCovid(LocalDateTime cancellationStartDate, LocalDateTime cancellationEndDate){
+        client.request(new CancelAllScreeningsDueCovidRequest(cancellationStartDate, cancellationEndDate), SertiaBasicResponse.class);
     }
 
-    public void areRegulationsActivated() {
-        // TODO - implement ClientCovidRegulationsControl.areRegulationsActivated
-        throw new UnsupportedOperationException();
-    }
-
-    public void onRegulationsReceive() {
-        // TODO - implement ClientCovidRegulationsControl.onRegulationsReceive
-        throw new UnsupportedOperationException();
+    public void UpdateCovidCrowdingRegulationsRequest(int newMaxNumberOfPeople) {
+        client.request(new UpdateCovidCrowdingRegulationsRequest(newMaxNumberOfPeople), SertiaBasicResponse.class);
     }
 
 }

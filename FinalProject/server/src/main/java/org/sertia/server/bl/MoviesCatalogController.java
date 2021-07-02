@@ -1,7 +1,6 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
@@ -22,7 +21,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MoviesCatalogController implements Reportable {
 
@@ -78,7 +76,7 @@ public class MoviesCatalogController implements Reportable {
                     Optional.ofNullable(streamings.get(movie.getId()))
                             .ifPresent(streaming -> {
                                 sertiaMovie.isStreamable = true;
-                                sertiaMovie.pricePerStream = streaming.pricePerStream;
+                                sertiaMovie.extraDayPrice = streaming.extraDayPrice;
                             });
                     sertiaMovieList.add(sertiaMovie);
                 });
@@ -115,7 +113,7 @@ public class MoviesCatalogController implements Reportable {
 
             // In case the movie is streamable
             if (movieData.isStreamable) {
-                Streaming streaming = new Streaming(newMovie, movieData.pricePerStream);
+                Streaming streaming = new Streaming(newMovie, movieData.extraDayPrice);
                 session.save(streaming);
             }
             session.flush();
@@ -144,7 +142,7 @@ public class MoviesCatalogController implements Reportable {
 
             // Notifing ll relevant customers for the update
             for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
-                notifier.notify(ticket.getPaymentInfo().getPhoneNumber(),
+                notifier.notify(ticket.getPaymentInfo().getEmail(),
                         "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
             }
 
@@ -192,6 +190,7 @@ public class MoviesCatalogController implements Reportable {
 
             // Refunding all relevant costumers and deleting the tickets
             for (ScreeningTicket ticket : screeningTickets) {
+                notifier.notify(ticket.getPaymentInfo().getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
                 creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
                 session.remove(ticket);
             }
@@ -315,15 +314,6 @@ public class MoviesCatalogController implements Reportable {
             creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
             session.remove(ticket);
         }
-    }
-
-    private List<Screening> getAllScreenings(Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-
-        CriteriaQuery<Screening> query = builder.createQuery(Screening.class);
-        query.from(Screening.class);
-
-        return session.createQuery(query).getResultList();
     }
 
     private boolean isMovieValid(SertiaMovie movie) {

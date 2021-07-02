@@ -21,4 +21,6 @@ module org.sertia.contracts {
     exports org.sertia.contracts.user.login.request;
     exports org.sertia.contracts.user.login.response;
     exports org.sertia.contracts.screening.ticket.request;
+    exports org.sertia.contracts.covidRegulations.requests;
+    exports org.sertia.contracts.covidRegulations.responses;
 }

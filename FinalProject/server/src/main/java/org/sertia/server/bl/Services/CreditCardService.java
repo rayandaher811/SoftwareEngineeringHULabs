@@ -21,19 +21,8 @@ public class CreditCardService {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param creditDetails
-	 * @param amound
-	 */
-	public void refund(ClientCreditDetails creditDetails, int amound) {
-
-		// TODO - implement CreditCardService.refund
-		throw new UnsupportedOperationException();
-	}
-
 	public void refund(CustomerPaymentDetails customerPaymentDetails, double amound) {
-		notifier.notify(customerPaymentDetails.getPhoneNumber(), "You have been refunded by sertia cinema in " + amound + " shekels.");
+		notifier.notify(customerPaymentDetails.getEmail(), "You have been refunded by sertia cinema in " + amound + " shekels.");
 	}
 
 }
