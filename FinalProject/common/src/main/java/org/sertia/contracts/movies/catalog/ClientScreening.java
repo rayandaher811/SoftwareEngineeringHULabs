@@ -16,4 +16,16 @@ public class ClientScreening implements Serializable {
     public int getScreeningId() {
         return screeningId;
     }
+
+    public int getHallId() {
+        return hallId;
+    }
+
+    public LocalDateTime getScreeningTime() {
+        return screeningTime;
+    }
+
+    public void setScreeningTime(LocalDateTime screeningTime) {
+        this.screeningTime = screeningTime;
+    }
 }

@@ -45,7 +45,10 @@
                         <TextField fx:id="complaintData" maxWidth="500" maxHeight="300"></TextField>
                     </children>
                     <children>
-                        <Button onMouseClicked="#buy">רכישת כרטיסייה</Button>
+                        <Button onMouseClicked="#buy" maxWidth="200">רכישת כרטיסייה</Button>
+                    </children>
+                    <children>
+                        <Button fx:id="backBtn" maxWidth="200" onAction="#toMain" text="חזור"/>
                     </children>
                 </VBox>
             </center>

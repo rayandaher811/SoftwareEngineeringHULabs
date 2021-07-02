@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.sertia.client.views.authorized.AddNewMovie"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <BorderPane prefHeight="368.0" prefWidth="618.0">
+            <top>
+                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="הוספת סרט חדש"
+                       BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="26.0"/>
+                    </font>
+                </Label>
+            </top>
+            <center>
+                <VBox alignment="CENTER">
+                    <children>
+                        <Label>שם הסרט באנגלית</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="movieNameTxt" maxWidth="500" maxHeight="300"></TextField>
+                    </children>
+                    <children>
+                        <Label>שם הסרט בעברית</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="movieHebrewNameTxt" maxWidth="500" maxHeight="300"></TextField>
+                    </children>
+                    <children>
+                        <Label>מפיק</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="producerNameTxt" maxWidth="500" maxHeight="300"></TextField>
+                    </children>
+                    <children>
+                        <Label>שחקנים ראשיים</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="mainActorsTxt" maxWidth="500" maxHeight="300"></TextField>
+                    </children>
+                    <children>
+                        <Label>תקציר</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="movieDescriptionTxt" maxWidth="500" maxHeight="300"></TextField>
+                    </children>
+                    <children>
+                        <Label>זמין בצפיה ביתית?</Label>
+                    </children>
+                    <children>
+                        <CheckBox fx:id="availableOnline">
+                        </CheckBox>
+                    </children>
+                    <children>
+                        <Label>בקרוב?</Label>
+                    </children>
+                    <children>
+                        <CheckBox fx:id="isComingSoonCb">
+                        </CheckBox>
+                    </children>
+                    <children>
+                        <Label>מחיר כרטיס</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="ticketPriceTxt" maxWidth="500" maxHeight="300">
+                        </TextField>
+                    </children>
+                    <children>
+                        <Label>לינק לתמונה</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="moviePhotoUrl" maxWidth="500" maxHeight="300">
+                        </TextField>
+                    </children>
+                    <children>
+                        <Button onMouseClicked="#addMovie" maxWidth="100">הוסף סרט</Button>
+                    </children>
+                    <spacing>
+                    </spacing>
+                    <children>
+                        <Button onMouseClicked="#back" maxWidth="100">חזרה</Button>
+                    </children>
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</AnchorPane>

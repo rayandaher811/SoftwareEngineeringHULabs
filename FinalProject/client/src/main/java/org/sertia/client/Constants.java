@@ -6,7 +6,8 @@ public class Constants {
     public static final String CURRENTLY_AVAILABLE = "מופיע כעת";
     public static final String MOVIE_DETAILS = "פרטי הסרט";
     public static final String EDIT_PLAYING_TIME = "עריכת זמני הקרנת סרטים";
-    public static final String ADD_OR_REMOVE_MOVIES = "הוספה / הסרת סרטים מהרשת";
+    public static final String ADD_NEW_MOVIES = "הוספת סרטים לרשת";
+    public static final String REMOVE_MOVIES = "מחיקת סרטים מהרשת";
     public static final String EDIT_TICKETS_PRICE = "שינוי מחירי הכרטיסים";
     public static final String HELLO_SENTENCE = "ברוכה הבאה למערכת הסרטייה";
     public static final String BRANCH_MANAGER = "מנהלת הסניף";

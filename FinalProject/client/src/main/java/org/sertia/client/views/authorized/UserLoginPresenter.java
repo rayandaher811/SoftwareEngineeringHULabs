@@ -74,6 +74,7 @@ public class UserLoginPresenter {
 
     @FXML
     private void back() throws IOException {
+        LoggedInUser.onDisconnection();
         App.setRoot("primary");
     }
 }

@@ -9,6 +9,15 @@ public class CinemaScreeningMovie implements Serializable {
     public List<ClientScreening> screenings;
     public double ticketPrice;
 
+    public CinemaScreeningMovie() {
+    }
+
+    public CinemaScreeningMovie(ClientMovie movieDetails, List<ClientScreening> screenings, double ticketPrice) {
+        this.movieDetails = movieDetails;
+        this.screenings = screenings;
+        this.ticketPrice = ticketPrice;
+    }
+
     public ClientMovie getMovieDetails() {
         return movieDetails;
     }

@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 import static org.sertia.client.Constants.*;
 
-public class EmployeesForm implements Initializable {
+public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private VBox buttonsVbox;
@@ -38,10 +38,14 @@ public class EmployeesForm implements Initializable {
         App.setRoot("availableMoviesForEdit");
     }
 
+    @FXML
+    private void removeMovie() throws IOException {
+        App.setRoot("removeMovie");
+    }
 
     @FXML
-    private void addOrRemoveMovies() throws IOException {
-        App.setRoot("availableMoviesForEdit");
+    private void addMovie() throws IOException {
+        App.setRoot("addNewMovie");
     }
 
     @Override
@@ -78,16 +82,27 @@ public class EmployeesForm implements Initializable {
             }
         });
         editMoviesScreeningTimeBtn.setMinWidth(200.0);
-        Button addOrRemoveMoviesBtn = new Button();
-        addOrRemoveMoviesBtn.setText(ADD_OR_REMOVE_MOVIES);
-        addOrRemoveMoviesBtn.setMinWidth(200.0);
-        addOrRemoveMoviesBtn.setOnMouseClicked(mouseEvent -> {
+        Button addMovieBtn = new Button();
+        addMovieBtn.setText(ADD_NEW_MOVIES);
+        addMovieBtn.setMinWidth(200.0);
+        addMovieBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                addOrRemoveMovies();
+                addMovie();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+        Button removeMovieBtn = new Button();
+        removeMovieBtn.setText(REMOVE_MOVIES);
+        removeMovieBtn.setMinWidth(200.0);
+        removeMovieBtn.setOnMouseClicked(mouseEvent -> {
+            try {
+                removeMovie();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
         Button changeTicketsPriceBtn = new Button();
         changeTicketsPriceBtn.setText(EDIT_TICKETS_PRICE);
         changeTicketsPriceBtn.setMinWidth(200.0);
@@ -98,6 +113,6 @@ public class EmployeesForm implements Initializable {
                 e.printStackTrace();
             }
         });
-        buttonsVbox.getChildren().addAll(editMoviesScreeningTimeBtn, addOrRemoveMoviesBtn, changeTicketsPriceBtn);
+        buttonsVbox.getChildren().addAll(editMoviesScreeningTimeBtn, addMovieBtn, changeTicketsPriceBtn);
     }
 }

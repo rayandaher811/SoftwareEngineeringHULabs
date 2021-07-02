@@ -6,16 +6,17 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.sertia.client.App;
-import org.sertia.client.communication.SertiaClient;
-import org.sertia.client.communication.messages.CinemaScreeningMovie;
-import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
-import org.sertia.client.global.LoggedInUser;
+import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.ScreeningHolder;
+import org.sertia.contracts.movies.catalog.ClientMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
@@ -44,19 +45,18 @@ public class EditMovieScreeningTimePresenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
-//        if (movie != null) {
-//            mainLabel.setText(mainLabel.getText() + movie.getName());
-//            mainLabel.setMaxWidth(400);
-//            movieNameLabel.setText(movie.getName());
-//            actorNameLabel.setText(movie.getMainActorName());
-//            branchNameLabel.setText(movie.getBranchName());
-//            hallNumber.setText(String.valueOf(movie.getHallNumber()));
-//            String movieScreeningTime = movie.getScreeningTimeStampStr();
-//            DateTime dateTime = DateTime.parse(movieScreeningTime);
-//            datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
-//            screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
-//        }
+        ClientMovie movie = MovieHolder.getInstance().getMovie();
+        ClientScreening screening = ScreeningHolder.getInstance().getScreening();
+        mainLabel.setText(mainLabel.getText() + movie.getName());
+        mainLabel.setMaxWidth(400);
+        movieNameLabel.setText(movie.getName());
+        actorNameLabel.setText(movie.getMainActorName());
+        branchNameLabel.setText(screening.getCinemaName());
+        hallNumber.setText(String.valueOf(screening.getHallId()));
+        String movieScreeningTime = screening.getScreeningTime().toString();
+        DateTime dateTime = DateTime.parse(movieScreeningTime);
+        datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
+        screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
     }
 
     @FXML
@@ -69,14 +69,13 @@ public class EditMovieScreeningTimePresenter implements Initializable {
         String newHour = screeningTimeTxt.getText();
         LocalDate inputDate = datePickerComp.getValue();
 
-//        if (isCorrectHour(newHour)) {
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.set(inputDate.getYear(), inputDate.getMonth().getValue() - 1, inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
-//            LocalDateTime dateTime = LocalDateTime.fromCalendarFields(calendar);
-//            CinemaScreeningMovie movie = LoggedInUser.getInstance().getChosenMovieForUpdateTimeOperation();
-//            UpdateMovieScreeningTime updateMovieScreeningTime = new UpdateMovieScreeningTime(LoggedInUser.getInstance().getUuid(), movie, dateTime.toString());
-//            SertiaClient.getInstance().requestMovieScreeningTimeChange(updateMovieScreeningTime);
-//        }
+        if (isCorrectHour(newHour)) {
+            ClientScreening screening = ScreeningHolder.getInstance().getScreening();
+            LocalDateTime newDateTime = LocalDateTime.of(inputDate.getYear(),
+                    inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
+            screening.setScreeningTime(newDateTime);
+            ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
+        }
         App.setRoot("availableMoviesForEdit");
     }
 
