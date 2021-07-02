@@ -11,12 +11,13 @@ import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClientCatalogControl extends ClientControl {
 
     private static ClientCatalogControl instance = null;
 
-    private ClientCatalogControl(){
+    private ClientCatalogControl() {
 
     }
 
@@ -29,10 +30,6 @@ public class ClientCatalogControl extends ClientControl {
 
     public List<CinemaScreeningMovie> requestSpecificCinemaCatalog(int cinemaId) {
         return client.request(new CinemaCatalogRequest(cinemaId), CinemaCatalogResponse.class).movies;
-    }
-
-    public List<SertiaMovie> requestAllMoviesCatalog() {
-        return client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
     }
 
     public boolean tryCreateMovie(SertiaMovie movie) {
@@ -52,7 +49,7 @@ public class ClientCatalogControl extends ClientControl {
     }
 
     public boolean tryAddScreening(int movieId, LocalDateTime screeningTime, double price, int hallId) {
-        return client.request(new AddScreeningRequest(movieId,hallId, screeningTime, price), SertiaBasicResponse.class).isSuccessful;
+        return client.request(new AddScreeningRequest(movieId, hallId, screeningTime, price), SertiaBasicResponse.class).isSuccessful;
     }
 
     public boolean tryRemoveScreening(int screeningId) {
@@ -65,5 +62,27 @@ public class ClientCatalogControl extends ClientControl {
 
     public boolean tryRemoveStreaming(int movieId) {
         return client.request(new StreamingRemovalRequest(movieId), SertiaBasicResponse.class).isSuccessful;
+    }
+
+    public List<SertiaMovie> requestAllMoviesCatalog() {
+        return client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+    }
+
+    public List<SertiaMovie> getOnlineMovies() {
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+
+        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isStreamable).collect(Collectors.toList());
+    }
+
+    public List<SertiaMovie> getComingSoonMovies() {
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+
+        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isComingSoon).collect(Collectors.toList());
+    }
+
+    public List<SertiaMovie> getAvailableMovies() {
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+
+        return allMovies.stream().filter(sertiaMovie -> !sertiaMovie.isComingSoon).collect(Collectors.toList());
     }
 }

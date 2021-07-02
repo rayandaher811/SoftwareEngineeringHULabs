@@ -162,7 +162,6 @@ public class CatalogView extends BasicPresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
-
         List<SertiaMovie> moviesList = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();
 

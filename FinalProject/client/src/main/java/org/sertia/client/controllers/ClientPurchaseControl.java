@@ -5,8 +5,6 @@ import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 public class ClientPurchaseControl extends ClientControl {
 
-
-
     // TODO: fixme!
     public static int getScreeningSeatMap(int screeningId) {
         // TODO - implement ClientPurchaseControl.getScreeningSeatMap
@@ -23,7 +21,7 @@ public class ClientPurchaseControl extends ClientControl {
         throw new UnsupportedOperationException();
     }
 
-    public void purchaseStreaming(int ClientStreamingPaymentRequest) {
+    public static void purchaseStreaming(int ClientStreamingPaymentRequest) {
         // TODO - implement ClientPurchaseControl.purchaseStreaming
         throw new UnsupportedOperationException();
     }
