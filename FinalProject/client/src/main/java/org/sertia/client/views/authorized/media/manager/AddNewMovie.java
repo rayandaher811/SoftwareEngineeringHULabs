@@ -15,6 +15,7 @@ import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -58,9 +59,10 @@ public class AddNewMovie extends BasicPresenter {
     }
 
     public void addMovie(MouseEvent mouseEvent) {
+        // TODO: fix duration after put it in project
         ClientMovie clientMovie = new ClientMovie(movieHebrewNameTxt.getText(), movieNameTxt.getText(),
                 movieDescriptionTxt.getText(), mainActorsTxt.getText(),
-                producerNameTxt.getText(), moviePhotoUrl.getText());
+                producerNameTxt.getText(), moviePhotoUrl.getText(), Duration.ZERO);
 
         List<ClientScreening> screeningList = new ArrayList<>();
         double ticketPrice = Double.valueOf(ticketPriceTxt.getText());
