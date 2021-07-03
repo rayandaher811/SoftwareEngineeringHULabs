@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Table(name="vouchers_info")
 public class VouchersInfo {
     // The table is single lined table and this is it's single record Id
-    public static final int singleRecordId = 0;
+    public static final int singleRecordId = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="vouchers_info_id")
