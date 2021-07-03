@@ -97,6 +97,7 @@ public class ScreeningTicketController extends Reportable {
             TicketsVoucher voucher = new TicketsVoucher();
             voucher.setCustomerPaymentDetails(getPaymentDetails(paymentDetails));
             voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
+            voucher.setPurchaseDate(LocalDateTime.now());
             int voucherId = (int) session.save(voucher);
 
             return new VoucherPaymentResponse(false)
@@ -139,16 +140,6 @@ public class ScreeningTicketController extends Reportable {
             response.setFailReason("voucher doesn't exist");
             return response;
         });
-    }
-
-    @Override
-    public List<ClientReport> createSertiaReports() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<ClientReport> createCinemaReports(String cinemaId) {
-        return Collections.emptyList();
     }
 
     private boolean isPaymentRequestValid(BasicPaymentRequest clientPaymentRequest) {
@@ -302,5 +293,42 @@ public class ScreeningTicketController extends Reportable {
         return screeningTicketRequest;
     }
 
+    @Override
+    public List<ClientReport> createSertiaReports() {
+        List<ClientReport> reports = new ArrayList<>();
+        reports.add(ticketsByCinemaReport());
+        reports.add(screeningsAndVouchersReport());
+
+        return reports;
+    }
+
+    private ClientReport ticketsByCinemaReport() {
+        final ClientReport report = new ClientReport();
+        report.title = "כרטיסים שנמכרו בכל קולנוע";
+        List<ScreeningTicket> tickets = getDataOfThisMonth(ScreeningTicket.class, "purchaseDate");
+        Map<String, List<ScreeningTicket>> collect = tickets.stream().collect(Collectors.groupingBy(screeningTicket -> screeningTicket
+                .getScreening().getHall().getCinema().getName()));
+        collect.forEach((cinemaName, screeningTickets) -> {
+            report.addEntry(cinemaName, screeningTickets.size());
+        });
+
+        return report;
+    }
+
+    private ClientReport screeningsAndVouchersReport() {
+        final ClientReport report = new ClientReport();
+        report.title = "כרטיסיות ובחבילות צפייה שנמכרו";
+        List<TicketsVoucher> vouchers = getDataOfThisMonth(TicketsVoucher.class, "purchaseDate");
+        List<StreamingLink> streamingLinks = getDataOfThisMonth(StreamingLink.class, "purchaseDate");
+        report.addEntry("כרטיסיות", vouchers.size());
+        report.addEntry("חבילות צפייה", streamingLinks.size());
+
+        return report;
+    }
+
+    @Override
+    public List<ClientReport> createCinemaReports(int cinemaId) {
+        return Collections.emptyList();
+    }
 
 }

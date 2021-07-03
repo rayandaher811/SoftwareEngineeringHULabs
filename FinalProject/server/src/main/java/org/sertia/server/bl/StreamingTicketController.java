@@ -17,7 +17,6 @@ import org.sertia.server.dl.classes.RefundReason;
 import org.sertia.server.dl.classes.Streaming;
 import org.sertia.server.dl.classes.StreamingLink;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -106,7 +105,7 @@ public class StreamingTicketController extends Reportable {
     }
 
     @Override
-    public List<ClientReport> createCinemaReports(String cinemaId) {
+    public List<ClientReport> createCinemaReports(int cinemaId) {
         return Collections.emptyList();
     }
 }

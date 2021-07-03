@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="tickets_vouchers")
@@ -11,6 +12,7 @@ public class TicketsVoucher {
     private int id;
 
     private int ticketsBalance;
+    private LocalDateTime purchaseDate;
 
     @ManyToOne
     private CustomerPaymentDetails customerPaymentDetails;
@@ -36,5 +38,13 @@ public class TicketsVoucher {
 
     public void setCustomerPaymentDetails(CustomerPaymentDetails customerPaymentDetails) {
         this.customerPaymentDetails = customerPaymentDetails;
+    }
+
+    public LocalDateTime getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 }

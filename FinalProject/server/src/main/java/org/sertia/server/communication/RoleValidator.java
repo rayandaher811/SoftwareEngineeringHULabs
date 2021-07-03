@@ -9,6 +9,7 @@ import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
+import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.user.login.UserRole;
 
 public class RoleValidator {
@@ -61,6 +62,7 @@ public class RoleValidator {
     public boolean isBranchManagerOperation(Class<?> requestType) {
         return requestType == GetUnapprovedPriceChangeRequest.class ||
                 requestType == ApprovePriceChangeRequest.class ||
-                requestType == DissapprovePriceChangeRequest.class;
+                requestType == DissapprovePriceChangeRequest.class ||
+                requestType == GetSertiaReports.class;
     }
 }

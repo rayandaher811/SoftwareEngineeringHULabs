@@ -17,6 +17,8 @@ import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
 import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
+import org.sertia.contracts.reports.request.GetCinemaReports;
+import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
@@ -41,6 +43,7 @@ public class MessageHandler extends AbstractServer {
     private final String ManagedCinemaIdType = "ManagedCinemaId";
 
     private final ICreditCardService creditCardService;
+    private final ReportsController reportsController;
     private final MoviesCatalogController moviesCatalogController;
     private final ScreeningTicketController screeningTicketController;
     private final StreamingTicketController streamingTicketController;
@@ -71,6 +74,10 @@ public class MessageHandler extends AbstractServer {
         this.screeningTicketController = new ScreeningTicketController(covidRegulationsController, creditCardService);
         this.streamingTicketController = new StreamingTicketController(creditCardService);
         this.cinemaController = new CinemaController();
+        this.reportsController = new ReportsController(
+                complaintsController,
+                screeningTicketController
+        );
     }
 
     private void initializeHandlerMapping() {
@@ -113,6 +120,9 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(CancelCovidRegulationsRequest.class, this::handleCancelCovidRegulationsRequest);
         messageTypeToHandler.put(GetCovidRegulationsStatusRequest.class, this::handleGetCovidRegulationsStatusRequest);
         messageTypeToHandler.put(UpdateCovidCrowdingRegulationsRequest.class, this::handleUpdateCovidCrowdingRegulationsRequest);
+
+        messageTypeToHandler.put(GetSertiaReports.class, this::handleSertiaReports);
+        messageTypeToHandler.put(GetCinemaReports.class, this::handleCinemaReports);
     }
 
     @Override
@@ -707,6 +717,37 @@ public class MessageHandler extends AbstractServer {
         } catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleActiveCovidRegulationRequest.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    // endregion
+
+    // region reports
+
+    private void handleSertiaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            response = reportsController.getSertiaReports();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle get sertia reports.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleCinemaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            GetCinemaReports request = (GetCinemaReports) sertiaBasicRequest;
+            response = reportsController.getCinemaReports(request.cinemaId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle get cinema reports.");
         }
 
         sendResponseToClient(client, response);

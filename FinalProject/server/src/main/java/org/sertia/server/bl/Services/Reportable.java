@@ -14,7 +14,7 @@ public abstract class Reportable {
 
     public abstract List<ClientReport> createSertiaReports();
 
-    public abstract List<ClientReport> createCinemaReports(String cinemaId);
+    public abstract List<ClientReport> createCinemaReports(int cinemaId);
 
     protected <T> List<T> getDataOfThisMonth(Class<T> dataClass, String dateField) {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {

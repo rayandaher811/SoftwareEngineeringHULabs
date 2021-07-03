@@ -3,7 +3,6 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.reports.ClientReport;
-import org.sertia.contracts.reports.ReportEntry;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
@@ -14,12 +13,9 @@ import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
 import javax.naming.OperationNotSupportedException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.transaction.NotSupportedException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -165,7 +161,6 @@ public class ComplaintsController extends Reportable {
 		}
 	}
 
-
 	@Override
 	public List<ClientReport> createSertiaReports() {
 		ClientReport report = new ClientReport();
@@ -188,7 +183,7 @@ public class ComplaintsController extends Reportable {
 	}
 
 	@Override
-	public List<ClientReport> createCinemaReports(String cinemaId) {
+	public List<ClientReport> createCinemaReports(int cinemaId) {
 		return Collections.emptyList();
 	}
 

@@ -513,7 +513,7 @@ public class MoviesCatalogController extends Reportable {
     }
 
     @Override
-    public List<ClientReport> createCinemaReports(String cinemaId) {
+    public List<ClientReport> createCinemaReports(int cinemaId) {
         return Collections.emptyList();
     }
 }

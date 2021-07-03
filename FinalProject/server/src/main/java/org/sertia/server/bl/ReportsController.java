@@ -1,21 +1,35 @@
 package org.sertia.server.bl;
 
-import org.sertia.contracts.reports.ClientReport;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.reports.response.ClientReportsResponse;
+import org.sertia.server.bl.Services.Reportable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ReportsController {
 
-	public ClientReport[] getSertiaReports() {
-		// TODO - implement ReportsController.getSertiaReports
-		throw new UnsupportedOperationException();
-	}
+    private final List<Reportable> reportables;
 
-	/**
-	 * 
-	 * @param cinemaId
-	 */
-	public ClientReport[] getCinemaReports(String cinemaId) {
-		// TODO - implement ReportsController.getCinemaReports
-		throw new UnsupportedOperationException();
-	}
+    public ReportsController(Reportable... reportables) {
+        this.reportables = Arrays.asList(reportables);
+    }
 
+    public SertiaBasicResponse getSertiaReports() {
+        ClientReportsResponse clientReportsResponse = new ClientReportsResponse(true);
+        reportables.stream()
+                .flatMap(reportable -> reportable.createSertiaReports().stream())
+                .forEach(clientReportsResponse::addReport);
+
+        return clientReportsResponse;
+    }
+
+    public SertiaBasicResponse getCinemaReports(int cinemaId) {
+        ClientReportsResponse clientReportsResponse = new ClientReportsResponse(true);
+        reportables.stream()
+                .flatMap(reportable -> reportable.createCinemaReports(cinemaId).stream())
+                .forEach(clientReportsResponse::addReport);
+
+        return clientReportsResponse;
+    }
 }
