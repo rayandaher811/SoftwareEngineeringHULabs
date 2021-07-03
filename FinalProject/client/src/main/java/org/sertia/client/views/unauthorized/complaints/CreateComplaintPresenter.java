@@ -48,7 +48,7 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
             userMistakes.clear();
 
         if (isDataValid()){
-            ClientComplaintControl.getInstance().createComplaint(nameTxtField.getText(),
+            ClientComplaintControl.getInstance().tryCreateComplaint(nameTxtField.getText(),
                     phoneTxTextField.getText(), emailTxTextField.getText(), complaintData.getText(), Integer.parseInt(purchaseIdTextField.getText()), ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()));
         } else {
             maybeNotifyClient();

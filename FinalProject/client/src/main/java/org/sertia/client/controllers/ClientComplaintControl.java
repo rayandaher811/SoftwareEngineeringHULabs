@@ -26,12 +26,12 @@ public class ClientComplaintControl extends ClientControl {
 		return instance;
 	}
 
-	public boolean tryResolveComplaint(int complaintId, double refundAmount) {
-		return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class).isSuccessful;
+	public SertiaBasicResponse tryResolveComplaint(int complaintId, double refundAmount) {
+		return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class);
 	}
 
-	public boolean tryCloseComplaint(int complaintId) {
-		return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class).isSuccessful;
+	public SertiaBasicResponse tryCloseComplaint(int complaintId) {
+		return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class);
 	}
 
 	public List<ClientOpenComplaint> getOpenedComplaints() {
@@ -41,8 +41,8 @@ public class ClientComplaintControl extends ClientControl {
 	}
 
 	// TODO: after validations return response object with response status or somehing.. UI must know that response 200 returned
-	public void createComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
-		client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
-				SertiaBasicResponse.class);
+	public SertiaBasicResponse tryCreateComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
+		return client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
+					SertiaBasicResponse.class);
 	}
 }
