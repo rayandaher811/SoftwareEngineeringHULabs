@@ -12,7 +12,6 @@ import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 import org.sertia.server.bl.Services.CreditCardService;
-import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
@@ -204,7 +203,7 @@ public class ScreeningTicketController implements Reportable {
         ClientCovidRegulationsStatus covidRegulationsStatus = covidRegulationsController.getCovidRegulationsStatus();
         int hallCapacity = hall.getSeats().size();
 
-        if (covidRegulationsStatus.isActive) {
+        if (!covidRegulationsStatus.isActive) {
             return hallCapacity;
         }
 
