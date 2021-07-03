@@ -1,10 +1,7 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.covidRegulations.requests.*;
+import org.sertia.contracts.covidRegulations.requests.GetCovidRegulationsStatusRequest;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
-
-import java.time.LocalDateTime;
 
 public class ClientCovidRegulationsControl extends ClientControl {
 

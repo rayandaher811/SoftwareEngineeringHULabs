@@ -9,12 +9,15 @@ import javafx.scene.control.TextField;
 import org.joda.time.DateTime;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
+import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
+import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,6 +59,8 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
                 NumberOfTicketsHolder.getInstance().setNumberOfTickets(
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
+//                    ScreeningTicketWithCovidRequest request = new ScreeningTicketWithCovidRequest();
+//                    ScreeningPaymentResponse response = ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid();
                     popupAlert();
                     App.setRoot("unauthorized/paymentView");
                 } else {

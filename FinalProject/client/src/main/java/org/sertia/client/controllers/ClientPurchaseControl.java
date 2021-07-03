@@ -35,15 +35,7 @@ public class ClientPurchaseControl extends ClientControl {
         return failedScreeningPaymentResponse(response.failReason);
     }
 
-//    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
-//        ScreeningPaymentResponse response = client.request(request, ScreeningPaymentResponse.class);
-//        if (response.isSuccessful) {
-//            return response;
-//        }
-//
-//        return failedScreeningPaymentResponse(response.failReason);
-//    }
-//
+
 //    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
 //        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
 //    }
@@ -94,10 +86,10 @@ public class ClientPurchaseControl extends ClientControl {
 
         return response;
     }
-//
-//    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
-//        return client.request(request, ScreeningPaymentResponse.class);
-//    }
+
+    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
+        return client.request(request, ScreeningPaymentResponse.class);
+    }
 //
 //    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
 //        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
