@@ -380,11 +380,11 @@ public class MoviesCatalogController implements Reportable {
 
     @Override
     public List<ClientReport> createSertiaReports() {
-        return new ClientReport[0];
+        return Collections.emptyList();
     }
 
     @Override
     public List<ClientReport> createCinemaReports(String cinemaId) {
-        return new ClientReport[0];
+        return Collections.emptyList();
     }
 }
