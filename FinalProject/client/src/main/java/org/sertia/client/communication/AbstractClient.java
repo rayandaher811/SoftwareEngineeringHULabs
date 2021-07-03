@@ -397,7 +397,7 @@ public abstract class AbstractClient implements Runnable {
                 response = getResponse(requestId);
             }
             serverResponse = null;
-            if (response.getClass() == destClass) {
+            if (response.getClass() == destClass || response.getClass() == SertiaBasicResponse.class) {
                 return Optional.of((Res) response);
             }
         } catch (IOException | InterruptedException e) {

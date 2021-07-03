@@ -13,9 +13,6 @@ public class ClientCovidRegulationsControl extends ClientControl {
     public static ClientCovidRegulationsControl getInstance() {
         return instance;
     }
-    public boolean areRegulationsActive() {
-        return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class).isActive;
-    }
 
     public ClientCovidRegulationsStatus getCovidRegulationsStatus() {
         return client.request(new GetCovidRegulationsStatusRequest(), ClientCovidRegulationsStatus.class);

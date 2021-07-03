@@ -12,6 +12,7 @@ import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +33,12 @@ public class ClientCatalogControl extends ClientControl {
     }
 
     public List<CinemaScreeningMovie> requestSpecificCinemaCatalog(int cinemaId) {
-        return client.request(new CinemaCatalogRequest(cinemaId), CinemaCatalogResponse.class).movies;
+        CinemaCatalogResponse response = client.request(new CinemaCatalogRequest(cinemaId), CinemaCatalogResponse.class);
+        if (response.isSuccessful) {
+            return response.movies;
+        }
+
+        return Collections.emptyList();
     }
 
     public SertiaBasicResponse tryCreateMovie(SertiaMovie movie) {
@@ -68,7 +74,12 @@ public class ClientCatalogControl extends ClientControl {
     }
 
     public List<SertiaMovie> requestAllMoviesCatalog() {
-        return client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+        SertiaCatalogResponse response = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class);
+        if (response.isSuccessful) {
+            return response.movies;
+        }
+
+        return Collections.emptyList();
     }
 
     public List<SertiaMovie> getOnlineMovies() {
