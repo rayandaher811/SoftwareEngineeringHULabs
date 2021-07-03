@@ -25,4 +25,8 @@ public class CinemaScreeningMovie implements Serializable {
     public List<ClientScreening> getScreenings() {
         return screenings;
     }
+
+    public int getMovieId() {
+        return movieId;
+    }
 }

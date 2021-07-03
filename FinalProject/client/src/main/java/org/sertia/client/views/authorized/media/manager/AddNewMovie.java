@@ -1,4 +1,4 @@
-package org.sertia.client.views.authorized;
+package org.sertia.client.views.authorized.media.manager;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

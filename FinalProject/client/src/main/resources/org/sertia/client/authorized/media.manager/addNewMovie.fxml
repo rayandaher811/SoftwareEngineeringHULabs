@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.sertia.client.views.authorized.AddNewMovie"
+            fx:controller="org.sertia.client.views.authorized.media.manager.AddNewMovie"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <BorderPane prefHeight="368.0" prefWidth="618.0">

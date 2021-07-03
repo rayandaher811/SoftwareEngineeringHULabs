@@ -1,4 +1,4 @@
-package org.sertia.client.views.authorized;
+package org.sertia.client.views.authorized.media.manager;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,7 +45,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         MovieHolder.getInstance().setMovie(movie);
         ScreeningHolder.getInstance().setScreening(screening);
         try {
-            App.setRoot("authorized/editMovieScreeningTimePresenter");
+            App.setRoot("authorized/media.manager/editMovieScreeningTimePresenter");
         } catch (IOException e) {
             e.printStackTrace();
         }

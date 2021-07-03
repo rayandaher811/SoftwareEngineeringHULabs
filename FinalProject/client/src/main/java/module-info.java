@@ -31,4 +31,6 @@ module org.sertia {
     opens org.sertia.client.views.unauthorized.purchase.movie to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.unauthorized;
     opens org.sertia.client.views.unauthorized to com.google.gson, javafx.fxml;
+    exports org.sertia.client.views.authorized.media.manager;
+    opens org.sertia.client.views.authorized.media.manager to com.google.gson, javafx.fxml;
 }

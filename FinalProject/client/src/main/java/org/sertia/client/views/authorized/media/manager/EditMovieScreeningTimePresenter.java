@@ -1,4 +1,4 @@
-package org.sertia.client.views.authorized;
+package org.sertia.client.views.authorized.media.manager;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -61,7 +61,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
 
     @FXML
     private void backToPreviusPage() throws IOException {
-        App.setRoot("authorized/availableMoviesForEdit");
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
     @FXML
@@ -76,7 +76,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
             screening.setScreeningTime(newDateTime);
             ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
         }
-        App.setRoot("authorized/availableMoviesForEdit");
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
     private int getHour(String hour) {

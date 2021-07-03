@@ -60,7 +60,7 @@ public class AbstractMoviesPresenter {
 //                btn.setOnMouseClicked(mouseEvent -> {
 //                    try {
 //                        LoggedInUser.getInstance().setChosenMovieForUpdateTimeOperation(cinemaScreeningMovie);
-//                        App.setRoot("authorized/editMovieScreeningTimePresenter");
+//                        App.setRoot("authorized/media.manager/editMovieScreeningTimePresenter");
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }

@@ -30,22 +30,22 @@ public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private void updateMovie() throws IOException {
-        App.setRoot("authorized/availableMoviesForEdit");
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
     @FXML
     private void updateTicketsPrice() throws IOException {
-        App.setRoot("authorized/availableMoviesForEdit");
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
     @FXML
     private void removeMovie() throws IOException {
-        App.setRoot("authorized/removeMovie");
+        App.setRoot("authorized/media.manager/removeMovie");
     }
 
     @FXML
     private void addMovie() throws IOException {
-        App.setRoot("authorized/addNewMovie");
+        App.setRoot("authorized/media.manager/addNewMovie");
     }
 
     @Override
