@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.unauthorized.purchase.movie.SpecificScreeningPurchaseView">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת כרטיסים"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="6">
+                <TextField fx:id="numberOfTicketsToPurchase" minWidth="180.0" maxWidth="180.0" maxHeight="300"
+                           alignment="CENTER" promptText="מספר כרטיסים רצוי"/>
+                <Label alignment="CENTER" text="שם הסרט"/>
+                <Label fx:id="movieNameLabel" alignment="CENTER" disable="true"/>
+                <Label alignment="CENTER" text="שם סניף"/>
+                <Label fx:id="branchNameLabel" alignment="CENTER" disable="true"/>
+                <Label alignment="CENTER" text="מספר אולם"/>
+                <Label fx:id="hallNumber" alignment="CENTER" disable="true"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" text="תאריך הקרנה" textAlignment="CENTER"/>
+                <DatePicker fx:id="datePickerComp" nodeOrientation="LEFT_TO_RIGHT" disable="true"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="180" text="שעת הקרנה"
+                       textAlignment="CENTER" disable="true"/>
+                <TextField fx:id="screeningTimeTxt" alignment="CENTER" minWidth="180.0" maxWidth="180.0"
+                           disable="true"/>
+                <Button fx:id="continuePurchase" minWidth="180.0" maxWidth="180.0" text="הבא"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>

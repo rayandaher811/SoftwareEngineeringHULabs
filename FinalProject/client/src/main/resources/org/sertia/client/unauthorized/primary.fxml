@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.PrimaryController">
     <Label alignment="TOP_CENTER" text="ברוך הבא למערכת הסרטייה">
         <font>
@@ -13,13 +13,11 @@
         </font>
     </Label>
     <Group>
-        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="10">
             <Button onAction="#toLoginView" text="התחברות עובדים" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toMoviesCatalog" text="קטלוג הסרטים ברשת" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toAddComplaintView" text="הגשת תלונה" minWidth="180.0" maxWidth="180.0"/>
-            <Button onAction="#toMovieTicketsPurchase" text="רכישת כרטיס/י קולנוע" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toPrepaidPurchaseView" text="רכישת כרטיסייה" minWidth="180.0" maxWidth="180.0"/>
-            <Button onAction="#toHomeLinkView" text="רכישת לינק לצפיה ביתית" minWidth="180.0" maxWidth="180.0"/>
         </VBox>
     </Group>
 </VBox>

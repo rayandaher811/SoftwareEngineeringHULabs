@@ -46,10 +46,10 @@ public class MovieDetails extends BasicPresenter implements Initializable {
 
     private ImageView getImageView(ClientMovie movie) {
         String path;
-        if (movie.getPosterImageUrl() == null)
+//        if (movie.getPosterImageUrl() == null)
             path = "https://assets2.rockpapershotgun.com/shrek-again.jpg/BROK/resize/880%3E/format/jpg/quality/80/shrek-again.jpg";
-        else
-            path = movie.getPosterImageUrl();
+//        else
+//            path = movie.getPosterImageUrl();
         Image image = new Image(path);
         ImageView imageView = new ImageView(image);//movieposter
         imageView.setFitHeight(111.1);

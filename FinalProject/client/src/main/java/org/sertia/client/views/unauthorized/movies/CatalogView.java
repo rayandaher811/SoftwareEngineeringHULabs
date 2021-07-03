@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
@@ -70,8 +71,15 @@ public class CatalogView extends BasicPresenter implements Initializable {
                     btn.setText(cinemaScreeningMovie.screeningTime.toString());
                     buttonObservableList.add(btn);
                     btn.setOnMouseClicked(mouseEvent -> {
-                        System.out.println("currently available movie");
+                        try {
+                            ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
+                            MovieHolder.getInstance().setMovie(moviesInBranch.getKey());
+                            App.setRoot("unauthorized/specificScreeningPurchaseView");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     });
+
                 });
                 allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
                 Accordion specificCinema = new Accordion();
