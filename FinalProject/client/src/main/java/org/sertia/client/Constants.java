@@ -14,4 +14,5 @@ public class Constants {
     public static final String CINEMA_MANAGER = "מנהלת הרשת";
     public static final String MEDIA_MANAGER = "מנהלת המדיה";
     public static final String CUSTOMER_SUPPORT = "מנהלת שירות הלקוחות";
+    public static final String BUY_STREAMING_LINK = "רכישת קישור";
 }

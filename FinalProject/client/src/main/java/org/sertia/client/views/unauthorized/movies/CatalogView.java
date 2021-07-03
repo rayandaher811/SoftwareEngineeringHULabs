@@ -73,7 +73,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
                     btn.setOnMouseClicked(mouseEvent -> {
                         try {
                             ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
-                            MovieHolder.getInstance().setMovie(moviesInBranch.getKey());
+                            MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
                             App.setRoot("unauthorized/specificScreeningPurchaseView");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -95,7 +95,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             bgBtn.setText(MOVIE_DETAILS);
             bgBtn.setOnMouseClicked(mouseEvent -> {
                 try {
-                    MovieHolder.getInstance().setMovie(moviesInBranch.getKey());
+                    MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -124,7 +124,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             p.setText(sertiaMovie.getMovieDetails().getName());
             p.setOnMouseClicked(mouseEvent -> {
                 try {
-                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails());
+                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), false);
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -144,17 +144,41 @@ public class CatalogView extends BasicPresenter implements Initializable {
         Accordion streamableAccordion = new Accordion();
         ArrayList<TitledPane> values = new ArrayList<>();
         for (SertiaMovie sertiaMovie : streamableMovies.getValue()) {
-            TitledPane p = new TitledPane();
-            p.setText(sertiaMovie.getMovieDetails().getName());
-            p.setOnMouseClicked(mouseEvent -> {
+            ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
+            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+            Button moreInfoBtn = new Button();
+            moreInfoBtn.setText(MOVIE_DETAILS);
+            moreInfoBtn.setOnMouseClicked(mouseEvent -> {
+                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
                 try {
-                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails());
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-            values.add(p);
+            Button buyLinkBtn = new Button();
+            buyLinkBtn.setText(BUY_STREAMING_LINK);
+            buyLinkBtn.setOnMouseClicked(mouseEvent -> {
+                try {
+                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                    App.setRoot("unauthorized/onlineWatchLinkForm");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            HBox horizontalView = new HBox();
+            horizontalView.getChildren().addAll(moreInfoBtn, buyLinkBtn);
+
+            buttonObservableList.addAll(moreInfoBtn, buyLinkBtn);
+
+            allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
+            Accordion specificCinema = new Accordion();
+            TitledPane tiledPane = new TitledPane(sertiaMovie.getMovieDetails().getName(), specificCinema);
+            tiledPane.setAnimated(true);
+            tiledPane.setText(sertiaMovie.getMovieDetails().getName());
+            tiledPane.setContent(horizontalView);
+            specificCinema.getPanes().add(tiledPane);
+            values.add(tiledPane);
         }
         streamableAccordion.getPanes().addAll(values);
 

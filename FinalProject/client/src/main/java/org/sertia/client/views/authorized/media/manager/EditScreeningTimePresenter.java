@@ -42,7 +42,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
     }
 
     private void updateMovie(ClientScreening screening, ClientMovie movie) {
-        MovieHolder.getInstance().setMovie(movie);
+        MovieHolder.getInstance().setMovie(movie, false);
         ScreeningHolder.getInstance().setScreening(screening);
         try {
             App.setRoot("authorized/media.manager/editMovieScreeningTimePresenter");

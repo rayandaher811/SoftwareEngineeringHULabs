@@ -1,62 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.purchase.OnlineMovieLinkPresenter">
-    <children>
-        <BorderPane prefHeight="368.0" prefWidth="618.0">
-            <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת לינק לצפיה ביתית"
-                       BorderPane.alignment="CENTER">
-                    <font>
-                        <Font size="26.0"/>
-                    </font>
-                </Label>
-            </top>
-            <center>
-                <VBox alignment="CENTER">
-                    <children>
-                        <Label>שם הלקוח</Label>
-                    </children>
-                    <children>
-                        <TextField fx:id="nameTxtField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
-                    </children>
-                    <children>
-                        <Label>טלפון</Label>
-                    </children>
-                    <children>
-                        <TextField fx:id="phoneTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
-                    </children>
-                    <children>
-                        <Label>דוא"ל</Label>
-                    </children>
-                    <children>
-                        <TextField fx:id="emailTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
-                    </children>
-                    <children>
-                        <Label>אופן תשלום</Label>
-                    </children>
-                    <children>
-                        <TextField fx:id="complaintData" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
-                    </children>
-                    <children>
-                        <Label>סוג הכרטיס</Label>
-                    </children>
-                    <children>
-                        <ComboBox fx:id="movieToWatch" maxWidth="500" maxHeight="300">
-                        </ComboBox>
-                    </children>
-                    <children>
-                        <Button onMouseClicked="#buyLink">שליחת תלונה</Button>
-                    </children>
-                </VBox>
-            </center>
-        </BorderPane>
-        <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#toMainMenu"
-                text="חזרה"/>
-    </children>
-</AnchorPane>
+<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.unauthorized.purchase.OnlineMovieLinkPresenter">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת לינק לצפיה ביתית"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" spacing="5">
+                <Label text="שם הסרט"/>
+                <TextField fx:id="movieName" maxWidth="180" disable="true" alignment="CENTER"/>
+                <Label text="שם הלקוח"/>
+                <TextField fx:id="nameTxtField" maxWidth="180" maxHeight="300" alignment="CENTER"/>
+                <Label>טלפון</Label>
+                <TextField fx:id="phoneTxTextField" maxWidth="180" maxHeight="300" alignment="CENTER"/>
+                <Label>דוא"ל</Label>
+                <TextField fx:id="emailTxTextField" maxWidth="180" maxHeight="300" alignment="CENTER"/>
+                <Button onMouseClicked="#buyLink" text="הבא" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0" maxHeight="26.0"
+                        minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>

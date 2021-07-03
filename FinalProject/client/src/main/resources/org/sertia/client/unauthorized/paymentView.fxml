@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.unauthorized.purchase.PaymentViewPresenter">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="פרטי תשלום"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+<!--            <VBox alignment="CENTER" spacing="5">-->
+<!--                <Label text="שם הסרט"/>-->
+<!--                <TextField fx:id="movieName" maxWidth="180" disable="true" alignment="CENTER"/>-->
+<!--                <Label text="שם הלקוח"/>-->
+<!--                <TextField fx:id="nameTxtField" maxWidth="180" maxHeight="300" alignment="CENTER"/>-->
+<!--                <Label>טלפון</Label>-->
+<!--                <TextField fx:id="phoneTxTextField" maxWidth="180" maxHeight="300" alignment="CENTER"/>-->
+<!--                <Label>דוא"ל</Label>-->
+<!--                <TextField fx:id="emailTxTextField" maxWidth="180" maxHeight="300" alignment="CENTER"/>-->
+<!--&lt;!&ndash;                <Button onMouseClicked="#buyLink" text="הבא" minWidth="180.0" maxWidth="180.0"/>&ndash;&gt;-->
+<!--            </VBox>-->
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0" maxHeight="26.0"
+                        minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>
