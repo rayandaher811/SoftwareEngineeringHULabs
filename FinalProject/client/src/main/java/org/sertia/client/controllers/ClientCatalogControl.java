@@ -53,8 +53,8 @@ public class ClientCatalogControl extends ClientControl {
         return client.request(new ScreeningTimeUpdateRequest(screening), SertiaBasicResponse.class);
     }
 
-    public SertiaBasicResponse tryAddScreening(int movieId, LocalDateTime screeningTime, double price, int hallNumber, int cinemaId) {
-        return client.request(new AddScreeningRequest(movieId, hallNumber, screeningTime, price, cinemaId), SertiaBasicResponse.class);
+    public SertiaBasicResponse tryAddScreening(int movieId, LocalDateTime screeningTime, int hallNumber, int cinemaId) {
+        return client.request(new AddScreeningRequest(movieId, hallNumber, screeningTime, cinemaId), SertiaBasicResponse.class);
     }
 
     public SertiaBasicResponse tryRemoveScreening(int screeningId) {

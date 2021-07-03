@@ -5,17 +5,20 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
+@IdClass(PaymentDetailsId.class)
 @Table(name = "customers_payment_details")
 public class CustomerPaymentDetails {
     @Id
     @Column(name = "payer_id")
     private String payerId;
 
+    @Id
+    private String creditNumber;
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
     private String fullName;
-    private String creditNumber;
     private LocalDateTime experationDate;
     private String cvv;
     private String email;

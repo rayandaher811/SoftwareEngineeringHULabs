@@ -14,6 +14,7 @@ public class ClientPurchaseControl extends ClientControl {
     public static ClientPurchaseControl getInstance() {
         return instance;
     }
+
     public ClientSeatMapResponse getScreeningSeatMap(int screeningId) {
         ClientSeatMapResponse response = client.request(new GetScreeningSeatMap(screeningId), ClientSeatMapResponse.class);
         if (response.isSuccessful) {
@@ -35,27 +36,35 @@ public class ClientPurchaseControl extends ClientControl {
         return failedScreeningPaymentResponse(response.failReason);
     }
 
+    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
+        ScreeningPaymentResponse response = client.request(request, ScreeningPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
 
-//    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
-//        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
-//    }
-//
-//    public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
-//        StreamingPaymentResponse response = client.request(request, StreamingPaymentResponse.class);
-//        if (response.isSuccessful) {
-//            return response;
-//        }
-//
-//        StreamingPaymentResponse failedResponse = new StreamingPaymentResponse(false);
-//        failedResponse.failReason = response.failReason;
-//
-//        return failedResponse;
-//    }
-//
-//    public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
-//        return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
-//    }
-//
+        return failedScreeningPaymentResponse(response.failReason);
+    }
+
+    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
+        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
+    }
+
+    public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
+        StreamingPaymentResponse response = client.request(request, StreamingPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        StreamingPaymentResponse failedResponse = new StreamingPaymentResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
+    }
+
+    public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
+        return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
+    }
+
     public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {
         VoucherPaymentResponse response = client.request(request, VoucherPaymentResponse.class);
         if (response.isSuccessful) {
@@ -87,9 +96,6 @@ public class ClientPurchaseControl extends ClientControl {
         return response;
     }
 
-    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
-        return client.request(request, ScreeningPaymentResponse.class);
-    }
 //
 //    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
 //        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);

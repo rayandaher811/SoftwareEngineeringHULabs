@@ -2,12 +2,12 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.joda.time.DateTime;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketRequest;
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
-import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
@@ -24,11 +24,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class StreamingTicketController extends Reportable {
     private final ICreditCardService creditCardService;
+    private final ScheduledExecutorService streamingNotifier;
+
     public StreamingTicketController(ICreditCardService creditCardService) {
         this.creditCardService = creditCardService;
+        streamingNotifier = Executors.newSingleThreadScheduledExecutor();
+        streamingNotifier.scheduleAtFixedRate(
+                this::notifyClientsRegardingStreamingLinks,
+                0,
+                1,
+                TimeUnit.MINUTES);
     }
 
     public StreamingPaymentResponse purchaseStreamingTicket(StreamingPaymentRequest request) {
@@ -51,6 +62,7 @@ public class StreamingTicketController extends Reportable {
         streamingLink.setMovie(streaming);
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            session.saveOrUpdate(streamingLink.getCustomerPaymentDetails());
             int purchaseId = (int) session.save(streamingLink);
             response.purchaseId = purchaseId;
             response.startTime = streamingLink.getActivationStart();
@@ -102,15 +114,24 @@ public class StreamingTicketController extends Reportable {
     }
 
     private void notifyClientsRegardingStreamingLinks() {
-
+        System.out.println("notifying links " + LocalDateTime.now());
+        DbUtils.getAll(StreamingLink.class).forEach(streamingLink -> {
+            if(ChronoUnit.MINUTES.between(LocalDateTime.now().withSecond(0), streamingLink.getActivationStart().withSecond(0)) == 60) {
+                CustomerNotifier.getInstance().notify(
+                        streamingLink.getCustomerPaymentDetails().getEmail(),
+                        "הלינק לחבילת הצפייה שלך  זמין בעוד שעה");
+            }
+        });
     }
 
     private String getStreamingMail(StreamingPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(" :מזהה רכישה").append(response.purchaseId).append("\n")
-        .append(" :שעת התחלה").append(response.startTime).append("\n")
-        .append(" :תשלום סופי").append(response.price).append("\n")
-        .append(" :לינק").append(response.streamingLink);
+
+        stringBuilder
+                .append(response.purchaseId).append(" :מזהה רכישה").append("\n")
+                .append(response.startTime).append(" :שעת התחלה").append("\n")
+                .append(response.price).append(" :תשלום סופי").append("\n")
+                .append(response.streamingLink).append(" :לינק");
 
         return stringBuilder.toString();
     }

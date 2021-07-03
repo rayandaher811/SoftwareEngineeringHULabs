@@ -112,7 +112,7 @@ public class ScreeningTicketController extends Reportable {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             TicketsVoucher voucher = new TicketsVoucher();
             CustomerPaymentDetails customerPaymentDetails = getPaymentDetails(paymentDetails);
-            session.save(customerPaymentDetails);
+            session.saveOrUpdate(customerPaymentDetails);
             voucher.setCustomerPaymentDetails(customerPaymentDetails);
 
             voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
@@ -193,7 +193,7 @@ public class ScreeningTicketController extends Reportable {
                     .orElse(Collections.emptySet());
 
             CustomerPaymentDetails paymentDetails = getPaymentDetails(request);
-            session.save(paymentDetails);
+            session.saveOrUpdate(paymentDetails);
             for (ScreeningTicket screeningTicket : screeningTickets) {
                 screeningTicket.setPaymentInfo(paymentDetails);
                 int ticketId = (int) session.save(screeningTicket);
