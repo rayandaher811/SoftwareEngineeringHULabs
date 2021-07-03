@@ -27,4 +27,12 @@ public class Refund {
         this.price = price;
         this.refundReason = refundReason;
     }
+
+    public RefundReason getRefundReason() {
+        return refundReason;
+    }
+
+    public double getPrice() {
+        return price;
+    }
 }

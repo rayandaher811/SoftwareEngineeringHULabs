@@ -13,7 +13,7 @@ public class ClientReport implements Serializable {
         reportEntries = new ArrayList<>();
     }
 
-    public void addEntry(String fieldName, int value) {
+    public void addEntry(String fieldName, double value) {
         reportEntries.add(new ReportEntry(fieldName, value));
     }
 }

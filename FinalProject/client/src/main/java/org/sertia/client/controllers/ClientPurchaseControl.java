@@ -5,20 +5,38 @@ import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.screening.ticket.response.*;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 
 public class ClientPurchaseControl extends ClientControl {
 
     public ClientSeatMapResponse getScreeningSeatMap(int screeningId) {
-        return client.request(new GetScreeningSeatMap(screeningId), ClientSeatMapResponse.class);
+        ClientSeatMapResponse response = client.request(new GetScreeningSeatMap(screeningId), ClientSeatMapResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        ClientSeatMapResponse failedResponse = new ClientSeatMapResponse(false, Collections.emptyList());
+        failedResponse.failReason = "קבלת תמונת מושבים נכשלה";
+
+        return failedResponse;
     }
 
     public ScreeningPaymentResponse purchaseScreeningTicketsWithSeats(ScreeningTicketWithSeatsRequest request) {
-        return client.request(request, ScreeningPaymentResponse.class);
+        ScreeningPaymentResponse response = client.request(request, ScreeningPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        return failedScreeningPaymentResponse(response.failReason);
     }
 
     public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
-        return client.request(request, ScreeningPaymentResponse.class);
+        ScreeningPaymentResponse response = client.request(request, ScreeningPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        return failedScreeningPaymentResponse(response.failReason);
     }
 
     public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
@@ -26,18 +44,49 @@ public class ClientPurchaseControl extends ClientControl {
     }
 
     public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
-        return client.request(request, StreamingPaymentResponse.class);
+        StreamingPaymentResponse response = client.request(request, StreamingPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        StreamingPaymentResponse failedResponse = new StreamingPaymentResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
     }
 
     public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
         return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
     }
 
-    public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {
-        return client.request(request, VoucherPaymentResponse.class);
+    public VoucherPaymentResponse purchaseVoucher(BasicPriceChangeRequest request) {
+        VoucherPaymentResponse response = client.request(request, VoucherPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        VoucherPaymentResponse failedResponse = new VoucherPaymentResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
     }
 
     public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
-        return client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
+        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        VoucherBalanceResponse failedResponse = new VoucherBalanceResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
+    }
+
+    private ScreeningPaymentResponse failedScreeningPaymentResponse(String reason) {
+        ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
+        response.failReason = reason;
+
+        return response;
     }
 }

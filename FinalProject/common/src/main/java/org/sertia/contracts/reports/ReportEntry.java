@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class ReportEntry implements Serializable {
     public String fieldName;
-    public int value;
+    public double value;
 
-    public ReportEntry(String fieldName, int value) {
+    public ReportEntry(String fieldName, double value) {
         this.fieldName = fieldName;
         this.value = value;
     }

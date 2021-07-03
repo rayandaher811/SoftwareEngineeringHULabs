@@ -41,5 +41,4 @@ public abstract class Reportable {
         LocalDateTime firstDayOfMonth = firstDayOfMonth();
         return firstDayOfMonth.withDayOfMonth(firstDayOfMonth.toLocalDate().lengthOfMonth());
     }
-
 }

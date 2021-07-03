@@ -3,12 +3,16 @@ package org.sertia.server.communication;
 import org.sertia.contracts.complaints.requests.CloseComplaintRequest;
 import org.sertia.contracts.complaints.requests.GetAllUnhandledComplaintsRequest;
 import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplaintRequest;
-import org.sertia.contracts.covidRegulations.requests.*;
+import org.sertia.contracts.covidRegulations.requests.ActiveCovidRegulationsRequest;
+import org.sertia.contracts.covidRegulations.requests.CancelAllScreeningsDueCovidRequest;
+import org.sertia.contracts.covidRegulations.requests.CancelCovidRegulationsRequest;
+import org.sertia.contracts.covidRegulations.requests.UpdateCovidCrowdingRegulationsRequest;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest;
+import org.sertia.contracts.reports.request.GetCinemaReports;
 import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.user.login.UserRole;
 
@@ -56,7 +60,7 @@ public class RoleValidator {
     }
 
     public boolean isCinemaManagerOperation(Class<?> requestType) {
-        return false;
+        return requestType == GetCinemaReports.class;
     }
 
     public boolean isBranchManagerOperation(Class<?> requestType) {

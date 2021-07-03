@@ -11,7 +11,6 @@ import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
-import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
@@ -45,15 +44,18 @@ public class ScreeningTicketController extends Reportable {
 
             int numberOfTakenSeats = optionalScreening.get().getTickets().size();
             if (numberOfTakenSeats + numberOfWantedSeats > getMaxTicketsForHall(optionalScreening.get().getHall())) {
-                return new SertiaBasicResponse(false).setFailReason("not enough free seats");
+                ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
+                response.setFailReason("אין מספיק מושבים פנויים");
+                return response;
             }
 
             Set<HallSeat> seats = automaticChoseSeats(seatMapForScreening, numberOfWantedSeats);
             return purchaseTicketsForScreening(createScreeningTicketWithSeatsRequest(request, seats));
         } catch (IllegalArgumentException exception) {
             System.out.println("Failed to buy tickets with regulations");
-            return new ScreeningPaymentResponse(false)
-                    .setFailReason("automatic seats choosing failed");
+            ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
+            response.setFailReason("תהליך רכישה נכשל");
+            return response;
         }
     }
 
@@ -306,11 +308,16 @@ public class ScreeningTicketController extends Reportable {
         final ClientReport report = new ClientReport();
         report.title = "כרטיסים שנמכרו בכל קולנוע";
         List<ScreeningTicket> tickets = getDataOfThisMonth(ScreeningTicket.class, "purchaseDate");
-        Map<String, List<ScreeningTicket>> collect = tickets.stream().collect(Collectors.groupingBy(screeningTicket -> screeningTicket
+        Map<String, List<ScreeningTicket>> cinemaToTickets = tickets.stream().collect(Collectors.groupingBy(screeningTicket -> screeningTicket
                 .getScreening().getHall().getCinema().getName()));
-        collect.forEach((cinemaName, screeningTickets) -> {
-            report.addEntry(cinemaName, screeningTickets.size());
-        });
+
+        for (Cinema cinema : DbUtils.getAll(Cinema.class)) {
+            if(!cinemaToTickets.containsKey(cinema.getName())) {
+                cinemaToTickets.put(cinema.getName(), Collections.emptyList());
+            }
+        }
+
+        cinemaToTickets.forEach((cinemaName, screeningTickets) -> report.addEntry(cinemaName, screeningTickets.size()));
 
         return report;
     }
@@ -328,7 +335,12 @@ public class ScreeningTicketController extends Reportable {
 
     @Override
     public List<ClientReport> createCinemaReports(int cinemaId) {
-        return Collections.emptyList();
-    }
+        ClientReport clientReport = new ClientReport();
+        clientReport.title = "מספר כרטיסים שנמכרו בקולנוע שלך";
+        List<ScreeningTicket> tickets = getDataOfThisMonth(ScreeningTicket.class, "purchaseDate");
+        int numberOfTickets = (int) tickets.stream().filter(screeningTicket -> screeningTicket.getScreening().getHall().getCinema().getId() == cinemaId).count();
+        clientReport.addEntry("מספר כרטיסים", numberOfTickets);
 
+        return Collections.singletonList(clientReport);
+    }
 }

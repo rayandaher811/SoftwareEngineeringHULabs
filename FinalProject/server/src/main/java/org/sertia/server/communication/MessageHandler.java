@@ -76,7 +76,8 @@ public class MessageHandler extends AbstractServer {
         this.cinemaController = new CinemaController();
         this.reportsController = new ReportsController(
                 complaintsController,
-                screeningTicketController
+                screeningTicketController,
+                covidRegulationsController
         );
     }
 
@@ -741,9 +742,15 @@ public class MessageHandler extends AbstractServer {
     private void handleCinemaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
         SertiaBasicResponse response = new SertiaBasicResponse(false);
 
+
         try {
             GetCinemaReports request = (GetCinemaReports) sertiaBasicRequest;
-            response = reportsController.getCinemaReports(request.cinemaId);
+            if(Integer.getInteger((String) client.getInfo(ManagedCinemaIdType)) != request.cinemaId) {
+                response.setFailReason("not you're cinema!");
+                response.setSuccessful(false);
+            } else {
+                response = reportsController.getCinemaReports(request.cinemaId);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handle get cinema reports.");
