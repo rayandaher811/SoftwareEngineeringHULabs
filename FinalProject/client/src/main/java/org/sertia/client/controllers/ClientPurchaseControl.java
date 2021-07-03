@@ -64,17 +64,17 @@ public class ClientPurchaseControl extends ClientControl {
 //        return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
 //    }
 //
-//    public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {
-//        VoucherPaymentResponse response = client.request(request, VoucherPaymentResponse.class);
-//        if (response.isSuccessful) {
-//            return response;
-//        }
-//
-//        VoucherPaymentResponse failedResponse = new VoucherPaymentResponse(false);
-//        failedResponse.failReason = response.failReason;
-//
-//        return failedResponse;
-//    }
+    public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {
+        VoucherPaymentResponse response = client.request(request, VoucherPaymentResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        VoucherPaymentResponse failedResponse = new VoucherPaymentResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
+    }
 //
 //    public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
 //        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);

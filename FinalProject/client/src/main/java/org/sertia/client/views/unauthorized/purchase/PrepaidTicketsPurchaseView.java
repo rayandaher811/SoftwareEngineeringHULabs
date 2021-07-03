@@ -2,15 +2,20 @@ package org.sertia.client.views.unauthorized.purchase;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
+import org.sertia.contracts.screening.ticket.request.VoucherPurchaseRequest;
+import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +33,7 @@ public class PrepaidTicketsPurchaseView extends PaymentViewPresenter{
     public ComboBox creditCardProviderCombo;
     public ComboBox expirationMonthCombo;
     public ComboBox expirationYearCombo;
+    public Label topLabel;
 
     @FXML
     public void toMain() throws IOException {
@@ -37,21 +43,34 @@ public class PrepaidTicketsPurchaseView extends PaymentViewPresenter{
     @FXML
     public void pay() {
         if (isInputValid()) {
-            List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
-
-            ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
-                    new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
-                            cardHolderName.getText(),
-                            creditCardNumber.getText(),
-                            cardHolderEmailTxt.getText(),
-                            cardHolderPhoneTxt.getText(),
-                            cvv.getText(),
-                            LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                    1, 0, 0),
-                            selectedSeats,
-                            ScreeningHolder.getInstance().getScreening().getScreeningId());
-//            ClientPurchaseControl.getInstance().purchaseVoucher()
+            VoucherPurchaseRequest request = new VoucherPurchaseRequest(cardHolderId.getText(),
+                    cardHolderName.getText(),
+                    creditCardNumber.getText(),
+                    cardHolderEmailTxt.getText(),
+                    cardHolderPhoneTxt.getText(),
+                    cvv.getText(),
+                    LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                            Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                            1, 0, 0));
+            SertiaBasicResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "Prepaid tickets bought successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying prepaid tickets from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+            try {
+                App.setRoot("unauthorized/primary");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

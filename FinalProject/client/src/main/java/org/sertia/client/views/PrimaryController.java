@@ -23,17 +23,7 @@ public class PrimaryController {
     }
 
     @FXML
-    private void toMovieTicketsPurchase() throws IOException {
-        App.setRoot("unauthorized/purchaseMovieTickets");
-    }
-
-    @FXML
     private void toPrepaidPurchaseView() throws IOException {
         App.setRoot("unauthorized/prepaidTicketsPurchaseForm");
-    }
-
-    @FXML
-    private void toHomeLinkView() throws IOException {
-        App.setRoot("unauthorized/onlineWatchLinkForm");
     }
 }
