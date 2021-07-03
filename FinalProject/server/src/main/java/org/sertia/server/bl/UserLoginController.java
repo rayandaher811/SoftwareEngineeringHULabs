@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.contracts.user.login.UserRole;
+import org.sertia.server.SertiaException;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.User;
 
@@ -24,7 +25,11 @@ public class UserLoginController {
 		connectedUsers = new HashMap<Integer, User>();
 	}
 
-	public LoginResult login(LoginCredentials credentials){
+	public LoginResult login(LoginCredentials credentials) throws SertiaException {
+		if(credentials.username == null || credentials.username.length() == 0 ||
+				credentials.password == null || credentials.password.length() == 0)
+			throw new SertiaException("Username/password cannot be empty or null");
+
 		List<User> users = getAllUsers();
 		LoginResult result = new LoginResult();
 

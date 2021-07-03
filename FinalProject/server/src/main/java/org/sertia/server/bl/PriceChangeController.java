@@ -2,6 +2,7 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
+import org.sertia.server.SertiaException;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
@@ -37,6 +38,9 @@ public class PriceChangeController {
 	}
 
 	public void requestPriceChange(BasicPriceChangeRequest priceChangeRequest, String username) throws Exception {
+		if(priceChangeRequest.newPrice < 0)
+			throw new SertiaException("Price cannot be negative number.");
+
 		Session session = null;
 
 		try {
@@ -45,7 +49,7 @@ public class PriceChangeController {
 			PriceChangeRequest request = new PriceChangeRequest();
 			request.setRequester(DbUtils.getUserByUsername(username));
 			request.setAccepted(false);
-			request.setMovie(session.get(Movie.class, priceChangeRequest.movieId));
+			request.setMovie(MoviesCatalogController.getMovieById(priceChangeRequest.movieId, session));
 			request.setTicketType(Utils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
 			request.setNewPrice(priceChangeRequest.newPrice);
 
@@ -82,17 +86,13 @@ public class PriceChangeController {
 		}
 	}
 
-	/**
-	 * 
-	 * @param priceChangeRequestId
-	 */
 	public void approveRequest(int priceChangeRequestId, String handlingUsername) throws Exception{
 		Session session = null;
 
 		try {
 			session = HibernateSessionFactory.getInstance().openSession();
 
-			PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
+			PriceChangeRequest request = getPriceChangeRequest(priceChangeRequestId, session);
 
 			// Updating
 			request.setAccepted(true);
@@ -104,18 +104,24 @@ public class PriceChangeController {
 				case Streaming :
 					// Updating the streaming properly
 					Streaming streaming = session.get(Streaming.class, request.getMovie().getId());
+					if(streaming == null)
+						throw new SertiaException("There are no such streaming with the id " + request.getMovie().getId());
+
 					streaming.setExtraDayPrice(request.getNewPrice());
 					session.update(streaming);
 					break;
 				case Screening:
 					// Updating the screenable movie properly
 					ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, request.getMovie().getId());
+					if(screenableMovie == null)
+						throw new SertiaException("There are no such screenable movie with the id " + request.getMovie().getId());
+
 					screenableMovie.setTicketPrice(request.getNewPrice());
 					session.update(screenableMovie);
 					break;
 				case Voucher:
 					// Updating the voucher info
-					VouchersInfo vouchersInfo = session.get(VouchersInfo.class, 0);
+					VouchersInfo vouchersInfo = session.get(VouchersInfo.class, VouchersInfo.singleRecordId);
 					vouchersInfo.setPrice(request.getNewPrice());
 					session.update(vouchersInfo);
 					break;
@@ -135,13 +141,13 @@ public class PriceChangeController {
 		}
 	}
 
-	public void disapprovePriceChangeRequest(int priceChangeRequestId, String handlingUsername) {
+	public void disapprovePriceChangeRequest(int priceChangeRequestId, String handlingUsername) throws SertiaException {
 		Session session = null;
 
 		try {
 			session = HibernateSessionFactory.getInstance().openSession();
 
-			PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
+			PriceChangeRequest request = getPriceChangeRequest(priceChangeRequestId, session);
 
 			// Updating
 			request.setAccepted(false);
@@ -158,6 +164,14 @@ public class PriceChangeController {
 		} finally {
 			session.close();
 		}
+	}
+
+	private PriceChangeRequest getPriceChangeRequest(int priceChangeRequestId, Session session) throws SertiaException {
+		PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
+
+		if(request == null)
+			throw new SertiaException("THere are no such requests with the " + priceChangeRequestId + " Id");
+		return request;
 	}
 
 	private List<PriceChangeRequest> getAllPriceChangeRequests(Session session) {

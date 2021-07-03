@@ -22,6 +22,7 @@ import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
 import org.sertia.contracts.user.login.response.LoginResult;
+import org.sertia.server.SertiaException;
 import org.sertia.server.bl.*;
 import org.sertia.server.bl.Services.CreditCardService;
 
@@ -274,7 +275,10 @@ public class MessageHandler extends AbstractServer {
         try {
             response.unapprovedRequests = priceChangeController.getUnapprovedRequests();
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleAllUnapprovedPriceChangeRequests.");
         }
@@ -289,7 +293,10 @@ public class MessageHandler extends AbstractServer {
             int priceChangeRequestId = ((DissapprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleDisapprovePriceChangeRequest.");
         }
@@ -304,7 +311,10 @@ public class MessageHandler extends AbstractServer {
             int priceChangeRequestId = ((ApprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleApprovePriceChangeRequest.");
         }
@@ -319,7 +329,10 @@ public class MessageHandler extends AbstractServer {
             BasicPriceChangeRequest priceChangeRequest = (BasicPriceChangeRequest) request;
             priceChangeController.requestPriceChange(priceChangeRequest, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handlePriceChangeRequest.");
         }
@@ -338,7 +351,10 @@ public class MessageHandler extends AbstractServer {
             int movieId = ((RemoveMovieRequest) request).movieId;
             moviesCatalogController.removeMovie(movieId);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleMovieRemoval.");
         }
@@ -385,7 +401,10 @@ public class MessageHandler extends AbstractServer {
             AddScreeningRequest addScreeningRequest = (AddScreeningRequest) request;
             moviesCatalogController.addMovieScreenings(addScreeningRequest);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleScreeningAddition.");
         }
@@ -400,7 +419,10 @@ public class MessageHandler extends AbstractServer {
             int screeningId = ((RemoveScreeningRequest) request).screeningId;
             moviesCatalogController.removeMovieScreening(screeningId);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleScreeningRemoval.");
         }
@@ -415,7 +437,10 @@ public class MessageHandler extends AbstractServer {
             ClientScreening screeningToUpdate = ((ScreeningTimeUpdateRequest) request).screening;
             moviesCatalogController.updateScreeningTime(screeningToUpdate);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleMovieScreeningTimeUpdate.");
         }
@@ -434,7 +459,10 @@ public class MessageHandler extends AbstractServer {
             StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
             moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleStreamingAddition.");
         }
@@ -477,7 +505,11 @@ public class MessageHandler extends AbstractServer {
             if (result.userRole != UserRole.None) {
                 client.setInfo(ClientUsernameType, loginCredentials.username);
             }
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            result.setFailReason(e.getMessage());
+            result.setSuccessful(false);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             result.setSuccessful(false);
             result.setFailReason("We couldn't handleLoginRequest.");
@@ -497,7 +529,10 @@ public class MessageHandler extends AbstractServer {
                     (String) client.getInfo(ClientUsernameType),
                     cancellationFromComplaintRequest.refundAmount);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handlePurchaseCancellationFromComplaintRequest.");
         }
@@ -512,7 +547,10 @@ public class MessageHandler extends AbstractServer {
             CloseComplaintRequest closeComplaintRequest = (CloseComplaintRequest) request;
             complaintsController.closeComplaint(closeComplaintRequest.complaintId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleCloseComplaintRequest.");
         }
@@ -526,7 +564,10 @@ public class MessageHandler extends AbstractServer {
         try {
             complaintsController.createNewComplaint(((CreateNewComplaintRequest) request).complaint);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleNewComplaintCreationRequest.");
         }
@@ -540,7 +581,10 @@ public class MessageHandler extends AbstractServer {
         try {
             response.openComplaints = complaintsController.getAllUnhandledComplaints();
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleAllUnhandledComplaintsRequest.");
         }
@@ -560,7 +604,10 @@ public class MessageHandler extends AbstractServer {
             covidRegulationsController.cancelAllScreeningsDueCovid(cancellationRequest.cancellationStartDate,
                     cancellationRequest.cancellationEndDate);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleCancelAllScreeningsDueCovidRequest.");
         }
@@ -575,7 +622,10 @@ public class MessageHandler extends AbstractServer {
             UpdateCovidCrowdingRegulationsRequest updateRequest = (UpdateCovidCrowdingRegulationsRequest) request;
             covidRegulationsController.updateCovidCrowdingRegulations(updateRequest.newMaxNumberOfPeople);
             response.setSuccessful(true);
-        } catch (Exception e) {
+        } catch (SertiaException e){
+            response.setFailReason(e.getMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handleUpdateCovidCrowdingRegulationsRequest.");
         }

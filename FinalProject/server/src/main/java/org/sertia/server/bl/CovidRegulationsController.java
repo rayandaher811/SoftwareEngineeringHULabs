@@ -2,6 +2,7 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
+import org.sertia.server.SertiaException;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.CovidRegulationsInfo;
@@ -38,9 +39,9 @@ public class CovidRegulationsController {
 		}
 	}
 
-	public void updateCovidCrowdingRegulations(int maxNumberOfPeople) {
+	public void updateCovidCrowdingRegulations(int maxNumberOfPeople) throws SertiaException {
 		if(maxNumberOfPeople <= 0)
-			throw new IllegalArgumentException("max number of people cannot be less or equal to 0.");
+			throw new SertiaException("max number of people cannot be less or equal to 0.");
 		Session session = null;
 
 		try {
@@ -81,9 +82,9 @@ public class CovidRegulationsController {
 		}
 	}
 
-	public void cancelAllScreeningsDueCovid(LocalDateTime startDate, LocalDateTime endDate) {
+	public void cancelAllScreeningsDueCovid(LocalDateTime startDate, LocalDateTime endDate) throws SertiaException {
 		if(startDate.isBefore(LocalDateTime.now()) || startDate.isAfter(endDate))
-			throw new IllegalArgumentException("Screenings cancellation request dateTime ranges aren't valid");
+			throw new SertiaException("Screenings cancellation request dateTime ranges aren't valid");
 
 		Session session = null;
 

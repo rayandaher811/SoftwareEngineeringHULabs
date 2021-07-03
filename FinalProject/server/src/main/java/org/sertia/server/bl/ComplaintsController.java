@@ -3,6 +3,7 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.reports.ClientReport;
+import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.Reportable;
@@ -42,13 +43,13 @@ public class ComplaintsController implements Reportable {
 			// Extracting and adding the right ticket type in the right place
 			switch (complaint.getTicketType()) {
 				case Streaming:
-					complaint.setStreamingLink(session.get(StreamingLink.class, clientComplaint.ticketId));
+					complaint.setStreamingLink(getTicketById(clientComplaint.ticketId, session, StreamingLink.class));
 					break;
 				case Screening:
-					complaint.setScreeningTicket(session.get(ScreeningTicket.class, clientComplaint.ticketId));
+					complaint.setScreeningTicket(getTicketById(clientComplaint.ticketId, session, ScreeningTicket.class));
 					break;
 				case Voucher:
-					complaint.setTicketsVoucher(session.get(TicketsVoucher.class, clientComplaint.ticketId));
+					complaint.setTicketsVoucher(getTicketById(clientComplaint.ticketId, session, TicketsVoucher.class));
 					break;
 			}
 
@@ -68,7 +69,7 @@ public class ComplaintsController implements Reportable {
 		}
 	}
 
-	public List<ClientOpenComplaint> getAllUnhandledComplaints() throws Exception{
+	public List<ClientOpenComplaint> getAllUnhandledComplaints() throws Exception {
 		try(Session session = HibernateSessionFactory.getInstance().openSession()) {
 			List<ClientOpenComplaint> complaintsToReturn = new LinkedList<>();
 
@@ -89,7 +90,7 @@ public class ComplaintsController implements Reportable {
 		try {
 			session = HibernateSessionFactory.getInstance().openSession();
 
-			CostumerComplaint complaint = session.get(CostumerComplaint.class, complaintId);
+			CostumerComplaint complaint = getCostumerComplaint(complaintId, session);
 
 			// Closing the complaint
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
@@ -101,8 +102,9 @@ public class ComplaintsController implements Reportable {
 						"Your complaint in sertia cinema has been closed.");
 			}
 			else {
-				throw new OperationNotSupportedException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
+				throw new SertiaException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
 			}
+
 			session.beginTransaction();
 			session.update(complaint);
 			session.flush();
@@ -122,7 +124,7 @@ public class ComplaintsController implements Reportable {
 		try {
 			session = HibernateSessionFactory.getInstance().openSession();
 
-			CostumerComplaint complaint = session.get(CostumerComplaint.class, complaintId);
+			CostumerComplaint complaint = getCostumerComplaint(complaintId, session);
 
 			// Closing the complaint with a refund
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
@@ -157,7 +159,7 @@ public class ComplaintsController implements Reportable {
 		return Collections.emptyList();
 	}
 
-	private ClientOpenComplaint parseDlComplaintToClientComplaint(CostumerComplaint complaint) throws NotSupportedException {
+	private ClientOpenComplaint parseDlComplaintToClientComplaint(CostumerComplaint complaint) throws SertiaException {
 		CustomerPaymentDetails customerDetails = extractCustomerPaymentDetails(complaint);
 		return new ClientOpenComplaint(complaint.getId(),
 				customerDetails.getFullName(),
@@ -169,7 +171,7 @@ public class ComplaintsController implements Reportable {
 				Utils.dlTicketTypeToClient(complaint.getTicketType()));
 	}
 
-	private CustomerPaymentDetails extractCustomerPaymentDetails(CostumerComplaint complaint) throws NotSupportedException {
+	private CustomerPaymentDetails extractCustomerPaymentDetails(CostumerComplaint complaint) throws SertiaException {
 		switch (complaint.getTicketType()) {
 			case Screening:
 				return complaint.getScreeningTicket().getPaymentInfo();
@@ -178,11 +180,29 @@ public class ComplaintsController implements Reportable {
 			case Voucher:
 				return complaint.getTicketsVoucher().getCustomerPaymentDetails();
 			default:
-				throw new NotSupportedException("There are no such ticket");
+				throw new SertiaException("There are no such ticket");
 		}
 	}
 
-	private int extractTicketId(CostumerComplaint complaint) throws NotSupportedException {
+	private <T> T getTicketById(int ticketId, Session session, Class<T> ticketType) throws SertiaException {
+		T ticket = session.get(ticketType, ticketId);
+
+		if(ticket == null)
+			throw new SertiaException("There are no such streaming/Ticket/Voucher with the id " + ticketId);
+
+		return ticket;
+	}
+
+	private CostumerComplaint getCostumerComplaint(int complaintId, Session session) throws SertiaException {
+		CostumerComplaint complaint = session.get(CostumerComplaint.class, complaintId);
+
+		if(complaint == null)
+			throw new SertiaException("There are no such complaint with the Id " + complaintId);
+
+		return complaint;
+	}
+
+	private int extractTicketId(CostumerComplaint complaint) throws SertiaException {
 		switch (complaint.getTicketType()) {
 			case Screening:
 				return complaint.getScreeningTicket().getId();
@@ -191,7 +211,7 @@ public class ComplaintsController implements Reportable {
 			case Voucher:
 				return complaint.getTicketsVoucher().getId();
 			default:
-				throw new NotSupportedException("There are no such ticket");
+				throw new SertiaException("There are no such ticket");
 		}
 	}
 }

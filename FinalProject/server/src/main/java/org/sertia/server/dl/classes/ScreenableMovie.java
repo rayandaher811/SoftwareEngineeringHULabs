@@ -42,6 +42,10 @@ public class ScreenableMovie {
         return movie;
     }
 
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
     public int getId() {
         return id;
     }

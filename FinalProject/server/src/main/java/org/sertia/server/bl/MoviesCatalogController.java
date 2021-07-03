@@ -9,6 +9,7 @@ import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
+import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICustomerNotifier;
@@ -126,7 +127,10 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    public void updateScreeningTime(ClientScreening screening) {
+    public void updateScreeningTime(ClientScreening screening) throws SertiaException {
+        if(screening.screeningTime.isBefore(LocalDateTime.now()))
+            throw new SertiaException("The new screening time is before the current time");
+
         Session session = null;
 
         try {
@@ -156,14 +160,24 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    public void addMovieScreenings(AddScreeningRequest addScreeningRequest) {
-        Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
+    public void addMovieScreenings(AddScreeningRequest addScreeningRequest) throws SertiaException {
+        if(addScreeningRequest.screeningTime.isBefore(LocalDateTime.now()))
+            throw new SertiaException("The new screening time is before the current time");
+
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-            if (!screenableMovieOptional.isPresent()) {
+            Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
+
+            if(hall == null)
+                throw new SertiaException(addScreeningRequest.hallId + " Hall Id is not found.");
+
+            Movie movie = getMovieById(addScreeningRequest.movieId, session);
+
+            Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
+            if(!screenableMovieOptional.isPresent()) {
                 ScreenableMovie screenableMovie = new ScreenableMovie();
                 screenableMovie.setTicketPrice(addScreeningRequest.price);
-                screenableMovie.setId(addScreeningRequest.movieId);
+                screenableMovie.setMovie(movie);
                 session.save(screenableMovie);
             }
 
@@ -171,18 +185,21 @@ public class MoviesCatalogController implements Reportable {
             Screening screening = new Screening();
             screening.setMovie(screenableMovie);
             screening.setScreeningTime(addScreeningRequest.screeningTime);
-            Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
+
             screening.setHall(hall);
             session.save(screening);
         }
     }
 
-    public void removeMovieScreening(int screeningId) {
+    public void removeMovieScreening(int screeningId) throws SertiaException{
         Session session = null;
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
             Screening screening = session.get(Screening.class, screeningId);
+            if(screening == null)
+                throw new SertiaException("There are no such screening.");
+
             List<ScreeningTicket> screeningTickets = screening.getTickets();
 
             session.beginTransaction();
@@ -207,30 +224,39 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    public void removeMovie(int movieId) {
+    public void removeMovie(int movieId) throws SertiaException {
         Session session = null;
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
-            List<Screening> screenings = DbUtils.getAll(Screening.class);
-            LocalDateTime currentTime = LocalDateTime.now();
+            Movie movie = getMovieById(movieId, session);
+            ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, movieId);
 
-            session.beginTransaction();
+            if(movie == null)
+                throw new SertiaException("There are no such movie with the " + movieId + " Id.");
 
-            // Refunding all canceled screenings customers
-            for (Screening screening : screenings) {
-                if (screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)) {
-                    RefundAndRemoveAllScreeningTickets(session, screening);
+            if(screenableMovie != null){
+                List<Screening> screenings = DbUtils.getAll(Screening.class);
+                LocalDateTime currentTime = LocalDateTime.now();
 
-                    // Deleting the canceled screening
-                    session.remove(session.get(Screening.class, screening.getId()));
+                session.beginTransaction();
+
+                // Refunding all canceled screenings customers
+                for (Screening screening : screenings) {
+                    if (screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)) {
+                        RefundAndRemoveAllScreeningTickets(session, screening);
+
+                        // Deleting the canceled screening
+                        session.remove(session.get(Screening.class, screening.getId()));
+                    }
+
                 }
 
+                session.remove(session.get(ScreenableMovie.class, movieId));
             }
 
             removeStreamingViaFoundSession(movieId, session);
 
-            session.remove(session.get(ScreenableMovie.class, movieId));
             session.remove(session.get(Movie.class, movieId));
             session.flush();
             session.clear();
@@ -243,12 +269,14 @@ public class MoviesCatalogController implements Reportable {
         }
     }
 
-    public void addStreaming(int movieId, double pricePerStream) {
+    public void addStreaming(int movieId, double pricePerStream) throws SertiaException {
+        if(pricePerStream < 0)
+            throw new SertiaException("Price cannot be negative number.");
         Session session = null;
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
-            Movie movie = session.get(Movie.class, movieId);
+            Movie movie = getMovieById(movieId, session);
             Streaming newStreaming = new Streaming(movie, pricePerStream);
 
             // Saving the streaming movie
@@ -383,6 +411,16 @@ public class MoviesCatalogController implements Reportable {
         clientScreening.hallId = screening.getHall().getId();
 
         return clientScreening;
+    }
+
+    public static Movie getMovieById(int movieId, Session session) throws SertiaException {
+        Movie movie = session.get(Movie.class, movieId);
+        ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, movieId);
+
+        if(movie == null)
+            throw new SertiaException("There are no such movie with the " + movieId + " Id.");
+
+        return movie;
     }
 
     @Override
