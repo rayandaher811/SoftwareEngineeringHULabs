@@ -3,6 +3,7 @@ package org.sertia.client.views.unauthorized.purchase;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,6 +15,7 @@ import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
+import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -67,7 +69,21 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
                                     1, 0, 0),
                             selectedSeats,
                             ScreeningHolder.getInstance().getScreening().getScreeningId());
-            ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
+            ScreeningPaymentResponse response =
+                    ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "operation ended successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
         }
 
     }

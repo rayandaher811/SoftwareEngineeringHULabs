@@ -2,6 +2,7 @@ package org.sertia.client.views.authorized.media.manager;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +11,8 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.contracts.SertiaBasicRequest;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 
@@ -74,7 +77,20 @@ public class EditMovieScreeningTimePresenter implements Initializable {
             LocalDateTime newDateTime = LocalDateTime.of(inputDate.getYear(),
                     inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
             screening.setScreeningTime(newDateTime);
-            ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
+            SertiaBasicResponse response = ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "operation ended successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
         }
         App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }

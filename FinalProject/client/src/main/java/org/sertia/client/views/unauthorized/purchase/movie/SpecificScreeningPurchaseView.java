@@ -55,11 +55,10 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
             try {
                 NumberOfTicketsHolder.getInstance().setNumberOfTickets(
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
-                if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()) {
+                if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
                     popupAlert();
                     App.setRoot("unauthorized/paymentView");
                 } else {
-
                     App.setRoot("unauthorized/seatMapView");
                 }
             } catch (Exception e) {

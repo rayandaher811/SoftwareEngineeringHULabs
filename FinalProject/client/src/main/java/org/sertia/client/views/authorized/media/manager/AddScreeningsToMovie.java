@@ -4,10 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.SertiaMovieHolder;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
@@ -22,7 +24,20 @@ public class AddScreeningsToMovie implements Initializable {
         SertiaMovie currentMovie = SertiaMovieHolder.getInstance().getSertiaMovie();
 
         // add screenings to currentMovie
-        ClientCatalogControl.getInstance().tryCreateMovie(currentMovie);
+        SertiaBasicResponse response = ClientCatalogControl.getInstance().tryCreateMovie(currentMovie);
+        Alert.AlertType type;
+        String msg = "";
+        if (response.isSuccessful){
+            type = Alert.AlertType.INFORMATION;
+            msg = "operation ended successfully!";
+        } else {
+            type = Alert.AlertType.ERROR;
+            msg = response.failReason;
+        }
+        Alert errorAlert = new Alert(type);
+        errorAlert.setTitle("Buying from sertia system");
+        errorAlert.setContentText(msg);
+        errorAlert.showAndWait();
     }
 
     public void back() {

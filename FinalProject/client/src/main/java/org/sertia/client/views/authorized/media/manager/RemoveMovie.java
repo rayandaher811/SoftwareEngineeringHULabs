@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
@@ -30,8 +31,20 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
     public void requestRemove() {
         if (isDataValid()) {
             int movieId = movieNameToId.get(movieToRemove.getSelectionModel().getSelectedItem()).getMovieId();
-            ClientCatalogControl.getInstance().tryRemoveMovie(movieId);
-            // TODO: response??
+            SertiaBasicResponse response = ClientCatalogControl.getInstance().tryRemoveMovie(movieId);
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "operation ended successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
             try {
                 App.setRoot("authorized/employeesForm");
             } catch (IOException e) {

@@ -4,11 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
@@ -46,14 +48,32 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
             userMistakes.clear();
 
         if (isDataValid()){
-            ClientComplaintControl.getInstance().tryCreateComplaint(nameTxtField.getText(),
+            SertiaBasicResponse response = ClientComplaintControl.getInstance().tryCreateComplaint(nameTxtField.getText(),
                     phoneTxTextField.getText(), emailTxTextField.getText(), complaintData.getText(), Integer.parseInt(purchaseIdTextField.getText()), ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()));
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "operation ended successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+            try {
+                App.setRoot("unauthorized/primary");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     protected boolean isDataValid() {
-        boolean isNameValid = isNameValid(nameTxtField.getText());
+        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "Customer name is missing");
         boolean isPhoneValid = isPhoneValid(phoneTxTextField.getText());
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         boolean isPurchaseIdValid = isPurchaseIdValid(purchaseIdTextField.getText());

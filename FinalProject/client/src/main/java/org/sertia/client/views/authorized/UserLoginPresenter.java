@@ -78,6 +78,7 @@ public class UserLoginPresenter {
 
     @FXML
     private void back() throws IOException {
+        ClientUserLoginController.getInstance().logout();
         LoggedInUser.onDisconnection();
         App.setRoot("unauthorized/primary");
     }

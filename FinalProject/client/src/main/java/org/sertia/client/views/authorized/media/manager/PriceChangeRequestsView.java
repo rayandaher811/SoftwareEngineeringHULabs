@@ -14,6 +14,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.controllers.ClientPriceChangeControl;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.price.change.ClientTicketType;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-
+// TODO: use infra
 public class PriceChangeRequestsView extends BasicPresenterWithValidations implements Initializable {
 
     @FXML
@@ -42,8 +43,21 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             int movieId = sertiaMovie.getMovieId();
             // TODO: how can we know that???
             ClientTicketType ticketType = ClientTicketType.Screening;
-            ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
-            // TODO: wait for response??
+            SertiaBasicResponse response =
+                    ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "operation ended successfully!";
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+            }
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
             try {
                 App.setRoot("authorized/employeesForm");
             } catch (IOException e) {
