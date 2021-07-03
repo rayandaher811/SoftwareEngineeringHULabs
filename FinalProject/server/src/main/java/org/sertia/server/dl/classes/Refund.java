@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,7 +12,7 @@ public class Refund {
     @Column(name ="refund_id")
     private int id;
 
-    private Date refundDate;
+    private LocalDateTime refundDate;
 
     private double price;
 
@@ -19,5 +20,11 @@ public class Refund {
     private RefundReason refundReason;
 
     public Refund() {
+    }
+
+    public Refund(LocalDateTime refundDate, double price, RefundReason refundReason) {
+        this.refundDate = refundDate;
+        this.price = price;
+        this.refundReason = refundReason;
     }
 }

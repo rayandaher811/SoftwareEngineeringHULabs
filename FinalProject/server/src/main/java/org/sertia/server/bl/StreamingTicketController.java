@@ -8,10 +8,12 @@ import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketReques
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
 import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.CustomerPaymentDetails;
+import org.sertia.server.dl.classes.RefundReason;
 import org.sertia.server.dl.classes.Streaming;
 import org.sertia.server.dl.classes.StreamingLink;
 
@@ -23,9 +25,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class StreamingTicketController implements Reportable {
-    private final CreditCardService creditCardService;
+    private final ICreditCardService creditCardService;
 
-    public StreamingTicketController(CreditCardService creditCardService) {
+    public StreamingTicketController(ICreditCardService creditCardService) {
         this.creditCardService = creditCardService;
     }
 
@@ -81,7 +83,7 @@ public class StreamingTicketController implements Reportable {
 
             try (Session session = HibernateSessionFactory.getInstance().openSession()) {
                 session.delete(streamingTicket);
-                creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), streamingTicket.getPaidPrice() / 2);
+                creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), streamingTicket.getPaidPrice() / 2, RefundReason.StreamingService);
                 return new SertiaBasicResponse(true);
             } catch (RuntimeException exception) {
                 return new SertiaBasicResponse(false)

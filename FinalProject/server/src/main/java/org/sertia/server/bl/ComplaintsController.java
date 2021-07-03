@@ -6,6 +6,7 @@ import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
+import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
@@ -22,11 +23,11 @@ import java.util.List;
 public class ComplaintsController implements Reportable {
 
 	private CustomerNotifier notifier;
-	private CreditCardService creditCardService;
+	private ICreditCardService creditCardService;
 
-	public ComplaintsController() {
+	public ComplaintsController(ICreditCardService creditCardService) {
 		notifier = CustomerNotifier.getInstance();
-		creditCardService = new CreditCardService();
+		this.creditCardService = creditCardService;
 	}
 
 	public void createNewComplaint(ClientOpenComplaint clientComplaint) throws Exception {
@@ -130,7 +131,18 @@ public class ComplaintsController implements Reportable {
 			if(Duration.between(LocalDateTime.now(), complaint.getOpenedDate()).toHours() <= 24){
 				complaint.setClosedDate(LocalDateTime.now());
 				complaint.setHandler(DbUtils.getUserByUsername(handlerUsername));
-				creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund);
+
+				switch (complaint.getTicketType()) {
+					case Voucher:
+						creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund, RefundReason.ScreeningVouchersService);
+						break;
+					case Screening:
+						creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund, RefundReason.ScreeningService);
+						break;
+					case Streaming:
+						creditCardService.refund(extractCustomerPaymentDetails(complaint), refundAmund, RefundReason.StreamingService);
+						break;
+				}
 			}
 			else {
 				throw new OperationNotSupportedException("More than 24 hours passed since the complaint had been opened, we cannot close it.");

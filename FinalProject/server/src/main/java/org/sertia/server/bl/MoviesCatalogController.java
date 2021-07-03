@@ -11,10 +11,7 @@ import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.SertiaException;
-import org.sertia.server.bl.Services.CreditCardService;
-import org.sertia.server.bl.Services.CustomerNotifier;
-import org.sertia.server.bl.Services.ICustomerNotifier;
-import org.sertia.server.bl.Services.Reportable;
+import org.sertia.server.bl.Services.*;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
@@ -32,12 +29,12 @@ import java.util.stream.Collectors;
 
 public class MoviesCatalogController implements Reportable {
 
-    private final CreditCardService creditCardService;
+    private final ICreditCardService creditCardService;
     private final ICustomerNotifier notifier;
     private final ScheduledExecutorService firstScreeningsExecutor;
 
-    public MoviesCatalogController() {
-        creditCardService = new CreditCardService();
+    public MoviesCatalogController(ICreditCardService creditCardService) {
+        this.creditCardService = creditCardService;
         notifier = CustomerNotifier.getInstance();
         firstScreeningsExecutor = Executors.newSingleThreadScheduledExecutor();
         firstScreeningsExecutor.scheduleAtFixedRate(
@@ -246,11 +243,7 @@ public class MoviesCatalogController implements Reportable {
             session.beginTransaction();
 
             // Refunding all relevant costumers and deleting the tickets
-            for (ScreeningTicket ticket : screeningTickets) {
-                notifier.notify(ticket.getPaymentInfo().getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
-                creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
-                session.remove(ticket);
-            }
+            RefundAndRemoveAllScreeningTickets(session, screening);
 
             session.remove(screening);
 
@@ -375,7 +368,7 @@ public class MoviesCatalogController implements Reportable {
         // Refunding all relevant canceled link + deleting them
         for (StreamingLink link : streaming.getLinks()) {
             if (link.getActivationEnd().isAfter(currentTime)) {
-                creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice());
+                creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice(), RefundReason.StreamingService);
             }
 
             // Deleting the canceled screening
@@ -391,7 +384,9 @@ public class MoviesCatalogController implements Reportable {
 
     private void RefundAndRemoveAllScreeningTickets(Session session, Screening screening) {
         for (ScreeningTicket ticket : screening.getTickets()) {
-            creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice());
+            // Notify and refund
+            notifier.notify(ticket.getPaymentInfo().getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
+            creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice(), RefundReason.ScreeningService);
             session.remove(ticket);
         }
     }

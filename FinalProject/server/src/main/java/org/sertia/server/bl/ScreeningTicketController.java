@@ -12,6 +12,7 @@ import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
@@ -26,9 +27,9 @@ import static org.sertia.server.bl.Utils.getPaymentDetails;
 
 public class ScreeningTicketController implements Reportable {
     private final CovidRegulationsController covidRegulationsController;
-    private final CreditCardService creditCardService;
+    private final ICreditCardService creditCardService;
 
-    public ScreeningTicketController(CovidRegulationsController covidRegulationsController, CreditCardService creditDetails) {
+    public ScreeningTicketController(CovidRegulationsController covidRegulationsController, ICreditCardService creditDetails) {
         this.covidRegulationsController = covidRegulationsController;
         this.creditCardService = creditDetails;
     }
@@ -158,9 +159,9 @@ public class ScreeningTicketController implements Reportable {
         LocalDateTime screeningTime = screening.getScreeningTime();
         long hoursToScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
         if (hoursToScreening >= 3) {
-            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice());
+            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice(), RefundReason.ScreeningService);
         } else if (hoursToScreening <= 1) {
-            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice() / 2);
+            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice() / 2, RefundReason.ScreeningService);
         }
     }
 

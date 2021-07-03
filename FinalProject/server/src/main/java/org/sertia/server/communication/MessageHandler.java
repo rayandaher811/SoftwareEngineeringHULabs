@@ -25,6 +25,8 @@ import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.*;
 import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.CreditCardServiceRefundsRecorderDecorator;
+import org.sertia.server.bl.Services.ICreditCardService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class MessageHandler extends AbstractServer {
     private final String ClientSessionIdType = "Session";
     private final String ClientUsernameType = "Username";
 
-    private final CreditCardService creditCardService;
+    private final ICreditCardService creditCardService;
     private final MoviesCatalogController moviesCatalogController;
     private final ScreeningTicketController screeningTicketController;
     private final StreamingTicketController streamingTicketController;
@@ -54,12 +56,14 @@ public class MessageHandler extends AbstractServer {
         this.roleValidator = new RoleValidator();
         this.messageTypeToHandler = new HashMap<>();
         initializeHandlerMapping();
-        creditCardService = new CreditCardService();
+
+        // Decorating the credit card service in order to record all the refunds
+        creditCardService = new CreditCardServiceRefundsRecorderDecorator(new CreditCardService());
 
         this.userLoginController = new UserLoginController();
         this.priceChangeController = new PriceChangeController();
-        this.complaintsController = new ComplaintsController();
-        this.moviesCatalogController = new MoviesCatalogController();
+        this.complaintsController = new ComplaintsController(creditCardService);
+        this.moviesCatalogController = new MoviesCatalogController(creditCardService);
         this.covidRegulationsController = new CovidRegulationsController(moviesCatalogController);
         this.screeningTicketController = new ScreeningTicketController(covidRegulationsController, creditCardService);
         this.streamingTicketController = new StreamingTicketController(creditCardService);
