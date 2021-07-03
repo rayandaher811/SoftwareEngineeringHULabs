@@ -1,6 +1,7 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
@@ -18,18 +19,32 @@ import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MoviesCatalogController implements Reportable {
 
     private final CreditCardService creditCardService;
     private final ICustomerNotifier notifier;
+    private final ScheduledExecutorService firstScreeningsExecutor;
 
     public MoviesCatalogController() {
         creditCardService = new CreditCardService();
         notifier = CustomerNotifier.getInstance();
+        firstScreeningsExecutor = Executors.newSingleThreadScheduledExecutor();
+        firstScreeningsExecutor.scheduleAtFixedRate(
+                this::checkForFirstScreenings,
+                0,
+                1,
+                TimeUnit.DAYS);
     }
 
     public CinemaCatalogResponse getCinemaCatalog(CinemaCatalogRequest request) {
@@ -84,8 +99,11 @@ public class MoviesCatalogController implements Reportable {
         return new SertiaCatalogResponse(true, sertiaMovieList);
     }
 
-    public void addMovie(SertiaMovie movieData) {
+    public SertiaBasicResponse addMovie(SertiaMovie movieData) {
         Session session = null;
+        if (!isMovieValid(movieData)) {
+            return new SertiaBasicResponse(false).setFailReason("movie is invalid");
+        }
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
@@ -126,6 +144,8 @@ public class MoviesCatalogController implements Reportable {
         } finally {
             session.close();
         }
+
+        return new SertiaBasicResponse(true);
     }
 
     public void updateScreeningTime(ClientScreening screening) throws SertiaException {
@@ -315,8 +335,8 @@ public class MoviesCatalogController implements Reportable {
         Map<String, List<ClientHall>> cinemaToHalls = new HashMap<>();
         DbUtils.getAll(Cinema.class).forEach(cinema -> cinemaToHalls.put(cinema.getName(),
                 cinema.getHalls().stream()
-                .map(hall -> new ClientHall(hall.getId(), hall.getHallNumber()))
-                .collect(Collectors.toList())));
+                        .map(hall -> new ClientHall(hall.getId(), hall.getHallNumber()))
+                        .collect(Collectors.toList())));
         return new CinemaAndHallsResponse(true, cinemaToHalls);
     }
 
@@ -354,8 +374,15 @@ public class MoviesCatalogController implements Reportable {
     }
 
     private boolean isMovieValid(SertiaMovie movie) {
-        // TODO - implement MoviesCatalogController.isMovieValid
-        throw new UnsupportedOperationException();
+        return isMovieDetailsValid(movie.movieDetails);
+    }
+
+    private boolean isMovieDetailsValid(ClientMovie movie) {
+        return movie.getDescription() != null &&
+                movie.getHebrewName() != null &&
+                movie.getName() != null &&
+                movie.getMainActorName() != null &&
+                movie.getProducerName() != null;
     }
 
     private boolean isScreeningValid(ClientScreening screening) {
@@ -363,9 +390,46 @@ public class MoviesCatalogController implements Reportable {
         throw new UnsupportedOperationException();
     }
 
-    private void notifyVoucherOwners(ClientMovie newMovie) {
-        // TODO - implement MoviesCatalogController.notifyVoucherOwners
-        throw new UnsupportedOperationException();
+    private void notifyVoucherOwners(ClientMovie newMovie, List<String> emails) {
+        emails.forEach(email -> {
+            notifier.notify(email, "movie " + newMovie.name +" " +
+                    "is screening today for the first time!");
+        });
+    }
+
+    private void checkForFirstScreenings() {
+        List<TicketsVoucher> vouchers = DbUtils.getAll(TicketsVoucher.class);
+        try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            Query comingSoonQuery = session
+                    .createQuery("from movies where isComingSoon = :isComingSoon");
+            comingSoonQuery.setParameter("isComingSoon", true);
+            List<Movie> movies = comingSoonQuery.list();
+
+            movies.forEach(movie -> {
+                CriteriaBuilder builder = session.getCriteriaBuilder();
+                CriteriaQuery<Screening> criteriaQuery = builder.createQuery(Screening.class);
+                Root<Screening> screeningRoot = criteriaQuery.from(Screening.class);
+                criteriaQuery.select(screeningRoot);
+                criteriaQuery.orderBy(builder.asc(screeningRoot.get("screeningTime")));
+                Screening earliestScreening = session.createQuery(criteriaQuery).getResultList().get(0);
+
+                if (isDateToday(earliestScreening.getScreeningTime())) {
+                    Movie comingSoonMovie = earliestScreening.getScreenableMovie().getMovie();
+                    comingSoonMovie.setComingSoon(false);
+                    session.saveOrUpdate(comingSoonMovie);
+
+                    notifyVoucherOwners(
+                            movieToClientMovie(earliestScreening.getScreenableMovie().getMovie()),
+                            vouchers.stream()
+                                    .map(ticketsVoucher -> ticketsVoucher.getCustomerPaymentDetails().getEmail())
+                                    .collect(Collectors.toList()));
+                }
+            });
+        }
+    }
+
+    private boolean isDateToday(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().equals(LocalDate.now());
     }
 
     private Map<Integer, Streaming> getStreamings() {

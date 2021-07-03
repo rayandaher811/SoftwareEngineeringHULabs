@@ -59,6 +59,10 @@ public class Movie {
         return isComingSoon;
     }
 
+    public void setComingSoon(boolean comingSoon) {
+        isComingSoon = comingSoon;
+    }
+
     public String getDescription() {
         return description;
     }
