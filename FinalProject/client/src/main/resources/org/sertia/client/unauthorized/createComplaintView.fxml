@@ -24,31 +24,31 @@
                         <Label>שם הלקוח</Label>
                     </children>
                     <children>
-                        <TextField fx:id="nameTxtField" maxWidth="500" maxHeight="300"></TextField>
+                        <TextField fx:id="nameTxtField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
                     </children>
                     <children>
                         <Label>טלפון</Label>
                     </children>
                     <children>
-                        <TextField fx:id="phoneTxTextField" maxWidth="500" maxHeight="300"></TextField>
+                        <TextField fx:id="phoneTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
                     </children>
                     <children>
                         <Label>דוא"ל</Label>
                     </children>
                     <children>
-                        <TextField fx:id="emailTxTextField" maxWidth="500" maxHeight="300"></TextField>
+                        <TextField fx:id="emailTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
                     </children>
                     <children>
                         <Label>פרט בבקשה על המקרה שקרה</Label>
                     </children>
                     <children>
-                        <TextField fx:id="complaintData" maxWidth="500" maxHeight="300"></TextField>
+                        <TextField fx:id="complaintData" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
                     </children>
                     <children>
                         <Label>מספר חשבונית</Label>
                     </children>
                     <children>
-                        <TextField fx:id="purchaseIdTextField" maxWidth="500" maxHeight="300"></TextField>
+                        <TextField fx:id="purchaseIdTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
                     </children>
                     <children>
                         <Label>סוג הכרטיס</Label>

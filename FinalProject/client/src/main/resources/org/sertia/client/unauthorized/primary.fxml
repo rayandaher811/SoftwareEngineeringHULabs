@@ -1,43 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.PrimaryController">
-    <children>
-        <BorderPane prefHeight="368.0" prefWidth="618.0">
-            <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="ברוך הבא למערכת הסרטייה"
-                       BorderPane.alignment="CENTER">
-                    <font>
-                        <Font size="26.0"/>
-                    </font>
-                </Label>
-            </top>
-            <center>
-                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Button fx:id="logInButton" onAction="#toLoginView" prefHeight="25.0" prefWidth="170.0"
-                                text="התחברות עובדים"/>
-                        <Separator prefWidth="200.0"/>
-                        <Button mnemonicParsing="false" onAction="#toMoviesCatalog" prefHeight="26.0"
-                                prefWidth="179.0" text="קטלוג הסרטים ברשת"/>
-                        <Button mnemonicParsing="false" onAction="#toAddComplaintView" prefHeight="26.0" prefWidth="179.0"
-                                text="הגשת תלונה"/>
-                        <Button mnemonicParsing="false" onAction="#toMovieTicketsPurchase" prefHeight="26.0"
-                                prefWidth="179.0" text="רכישת כרטיס/י קולנוע"/>
-                        <Button mnemonicParsing="false" onAction="#toPrepaidPurchaseView" prefHeight="26.0"
-                                prefWidth="179.0" text="רכישת כרטיסייה"/>
-                        <Button mnemonicParsing="false" onAction="#toHomeLinkView" prefHeight="26.0" prefWidth="179.0"
-                                text="רכישת לינק לצפיה ביתית"/>
-                    </children>
-                </VBox>
-            </center>
-        </BorderPane>
-    </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+    <Label alignment="TOP_CENTER" text="ברוך הבא למערכת הסרטייה">
+        <font>
+            <Font size="26.0"/>
+        </font>
+    </Label>
+    <Group>
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+            <Button onAction="#toLoginView" text="התחברות עובדים" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toMoviesCatalog" text="קטלוג הסרטים ברשת" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toAddComplaintView" text="הגשת תלונה" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toMovieTicketsPurchase" text="רכישת כרטיס/י קולנוע" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toPrepaidPurchaseView" text="רכישת כרטיסייה" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toHomeLinkView" text="רכישת לינק לצפיה ביתית" minWidth="180.0" maxWidth="180.0"/>
+        </VBox>
+    </Group>
 </VBox>

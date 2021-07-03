@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.sertia.client.views.authorized.media.manager.RemoveMovie"
-            prefHeight="400.0" prefWidth="600.0">
-    <children>
+<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.authorized.media.manager.RemoveMovie">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
             <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="מחיקת סרט מהסרטיה"
@@ -22,17 +18,16 @@
             </Label>
         </top>
         <center>
-            <VBox alignment="CENTER">
-                <children>
-                    <ComboBox fx:id="movieToRemove" maxWidth="500" maxHeight="300">
-                    </ComboBox>
-                </children>
-                <children>
-                    <Button onMouseClicked="#requestRemove">שליחת תלונה</Button>
-                </children>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <ComboBox fx:id="movieToRemove" minWidth="180" maxWidth="180" maxHeight="300"/>
+                <Button onMouseClicked="#requestRemove" text="שליחת בקשת מחיקה"/>
             </VBox>
         </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="logOutBtn" alignment="CENTER" onAction="#backToMenu" text="חזרה" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
     </BorderPane>
-    </children>
-    <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#backToMenu" text="חזרה"/>
-</AnchorPane>
+</VBox>

@@ -35,7 +35,7 @@ public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private void updateTicketsPrice() throws IOException {
-        App.setRoot("authorized/media.manager/availableMoviesForEdit");
+        App.setRoot("authorized/media.manager/changeMovieTicketPrice");
     }
 
     @FXML
@@ -45,7 +45,7 @@ public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private void addMovie() throws IOException {
-        App.setRoot("authorized/media.manager/addNewMovie");
+        App.setRoot("authorized/media.manager/addNewMovieData");
     }
 
     @Override

@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.global.SertiaMovieHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
@@ -66,7 +67,12 @@ public class AddNewMovie extends BasicPresenter {
         boolean isStreamable = availableOnline.isSelected();
         boolean isComingSoon = isComingSoonCb.isSelected();
         SertiaMovie movie = new SertiaMovie(clientMovie, screeningList, ticketPrice, isStreamable, isComingSoon);
-        ClientCatalogControl.getInstance().tryCreateMovie(movie);
+        SertiaMovieHolder.getInstance().setSertiaMovie(movie);
+        try {
+            App.setRoot("authorized/media.manager/addNewMovieScreenings");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

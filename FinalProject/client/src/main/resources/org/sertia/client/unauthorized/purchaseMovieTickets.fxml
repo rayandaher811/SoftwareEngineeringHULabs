@@ -20,11 +20,11 @@
                 </Label>
             </top>
             <center>
-                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                <VBox prefHeight="200.0" prefWidth="100.0" alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
                     <children>
                         <HBox alignment="CENTER">
                             <children>
-                                <TextField fx:id="amountOfTicketsTxt"/>
+                                <TextField fx:id="amountOfTicketsTxt" alignment="CENTER"/>
                             </children>
                             <children>
                                 <Text text="כמות כרטיסים לרכישה"/>

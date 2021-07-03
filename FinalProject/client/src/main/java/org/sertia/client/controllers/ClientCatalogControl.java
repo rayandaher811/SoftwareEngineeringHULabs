@@ -11,6 +11,8 @@ import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,5 +91,19 @@ public class ClientCatalogControl extends ClientControl {
         List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
 
         return allMovies.stream().filter(sertiaMovie -> !sertiaMovie.isComingSoon).collect(Collectors.toList());
+    }
+
+    // TODO: might need getAllBranches endpoint.. I implement it here since i must use it NOW
+
+    public List<String> getAllBranchesName() {
+        HashSet<String> branches = new HashSet<>();
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+        allMovies.stream().forEach(sertiaMovie -> {
+            sertiaMovie.getScreenings().forEach(screening -> {
+                branches.add(screening.getCinemaName());
+            });
+        });
+        ArrayList<String> values = new ArrayList<>(branches);
+        return values;
     }
 }

@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.Group?>
-<?import javafx.scene.layout.VBox?>
-<VBox alignment="CENTER" prefHeight="190.0" prefWidth="291.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.UserLoginPresenter">
-    <children>
-        <Label text="אנא הזן שם משתמש וסיסמא"/>
-        <Group>
-            <children>
-                <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="53.0" prefWidth="160.0">
-                    <items>
-                        <TextField fx:id="userNameTextField" alignment="CENTER" promptText="שם משתמש"/>
-                        <PasswordField fx:id="passwordField" alignment="CENTER" promptText="סיסמא"/>
-                    </items>
-                </SplitPane>
-            </children>
-        </Group>
-        <Button fx:id="loginBtn" onAction="#login" text="התחבר!"/>
-        <Button fx:id="backBtn" onAction="#back" text="חזור"/>
-    </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="התחברות משתמשים"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Label text="אנא הזן שם משתמש וסיסמא"/>
+                <TextField fx:id="userNameTextField" alignment="CENTER" promptText="שם משתמש" minHeight="26.0"
+                           maxHeight="26.0"
+                           minWidth="180.0" maxWidth="180.0"/>
+                <PasswordField fx:id="passwordField" alignment="CENTER" promptText="סיסמא" minHeight="26.0"
+                               maxHeight="26.0"
+                               minWidth="180.0" maxWidth="180.0"/>
+                <Button fx:id="loginBtn" onAction="#login" text="התחבר!" minHeight="26.0" maxHeight="26.0"
+                        minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0" maxHeight="26.0"
+                        minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
 </VBox>

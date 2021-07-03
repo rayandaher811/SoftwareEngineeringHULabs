@@ -29,4 +29,8 @@ public class CinemaScreeningMovie implements Serializable {
     public int getMovieId() {
         return movieId;
     }
+
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
 }

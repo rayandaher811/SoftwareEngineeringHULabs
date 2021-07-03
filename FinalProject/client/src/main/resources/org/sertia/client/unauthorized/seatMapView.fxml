@@ -18,9 +18,7 @@
                 </Label>
             </top>
             <center>
-                <!--                <GridPane fx:id="movietheater" alignment="CENTER" >-->
-                <!--                </GridPane>-->
-                <VBox alignment="CENTER">
+                <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
                     <GridPane fx:id="movietheater" alignment="CENTER">
                     </GridPane>
                     <Button fx:id="resetSelection" onAction="#resetOrderSelection">איפוס בחירה</Button>

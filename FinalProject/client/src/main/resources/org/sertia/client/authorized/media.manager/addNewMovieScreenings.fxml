@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.authorized.media.manager.AddScreeningsToMovie">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="שלב 2 - הוספת הקרנות לסרט"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7" maxHeight="300">
+                <ComboBox fx:id="branchName" minWidth="250" maxWidth="250" promptText="שם הסניף"
+                          BorderPane.alignment="CENTER"/>
+                <TextField fx:id="hallNumberTxt" minWidth="250" maxWidth="250" promptText="מספר אולם"
+                           alignment="CENTER"/>
+                <DatePicker fx:id="datePickerComp" minWidth="250" maxWidth="250" promptText="תאריך הקרנה"/>
+                <TextField fx:id="screeningTimeTxt" minWidth="250" maxWidth="250" alignment="CENTER"
+                           promptText="שעת הקרנה"/>
+                <Button onMouseClicked="#addScreenings" minWidth="250" maxWidth="250" text="סיום"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>

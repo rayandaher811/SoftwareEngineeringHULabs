@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.media.manager.AddNewMovie">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="שלב 1 - הוספת פרטי סרט חדש"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <TextField fx:id="movieNameTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="שם הסרט באנגלית"/>
+                <TextField fx:id="movieHebrewNameTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="שם הסרט בעברית"/>
+                <TextField fx:id="producerNameTxt" maxWidth="500" maxHeight="300" promptText="מפיק"
+                           alignment="CENTER"/>
+                <TextField fx:id="mainActorsTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="שחקנים ראשיים"/>
+                <TextField fx:id="movieDescriptionTxt" maxWidth="500" minHeight="40" maxHeight="150" alignment="CENTER"
+                           promptText="תקציר"/>
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                    <Group>
+                        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                            <Label>זמין בצפיה ביתית?</Label>
+                            <CheckBox fx:id="availableOnline"/>
+                        </VBox>
+                    </Group>
+                    <Group>
+                        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                            <Label>בקרוב?</Label>
+                            <CheckBox fx:id="isComingSoonCb"/>
+                        </VBox>
+                    </Group>
+                </HBox>
+                <TextField fx:id="ticketPriceTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="מחיר כרטיס"/>
+                <TextField fx:id="moviePhotoUrl" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="לינק לתמונה"/>
+                <Button onMouseClicked="#addMovie" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0" text="הוסף סרט" textAlignment="CENTER"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>
