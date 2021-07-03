@@ -1,6 +1,8 @@
 package org.sertia.server;
 
 import org.sertia.server.dl.classes.*;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,10 +96,10 @@ public class    DBFiller {
 
     private void fillMovies() {
         movies = new ArrayList<Movie>();
-        movies.add(new Movie(producers.get(0), actors.get(0), "בלתי נשכחים", "The expendables", false, "Action movie with many players", "walla.com"));
-        movies.add(new Movie(producers.get(1), actors.get(1), "אנטמםן", "Antman", false, "Action movie with many ants", "walla.com"));
-        movies.add(new Movie(producers.get(2), actors.get(2), "קפטן אמריקה", "captin America", false, "Action movie with many americans", "walla.com"));
-        movies.add(new Movie(producers.get(3), actors.get(3), "עלי באבא", "Ali baba", true, "Action movie with many thieves", "walla.com"));
+        movies.add(new Movie(producers.get(0), actors.get(0), "בלתי נשכחים", "The expendables", false, "Action movie with many players", "walla.com", Duration.ofHours(1)));
+        movies.add(new Movie(producers.get(1), actors.get(1), "אנטמםן", "Antman", false, "Action movie with many ants", "walla.com", Duration.ofHours(1)));
+        movies.add(new Movie(producers.get(2), actors.get(2), "קפטן אמריקה", "captin America", false, "Action movie with many americans", "walla.com", Duration.ofHours(1)));
+        movies.add(new Movie(producers.get(3), actors.get(3), "עלי באבא", "Ali baba", true, "Action movie with many thieves", "walla.com", Duration.ofHours(1)));
     }
 
     private void fillScreenableMovies() {

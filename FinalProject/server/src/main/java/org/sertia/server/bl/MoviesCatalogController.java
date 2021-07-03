@@ -103,7 +103,8 @@ public class MoviesCatalogController implements Reportable {
                     movieData.movieDetails.name,
                     movieData.isComingSoon,
                     movieData.movieDetails.description,
-                    movieData.movieDetails.posterImageUrl);
+                    movieData.movieDetails.posterImageUrl,
+                    movieData.movieDetails.duration);
             session.save(newMovie);
 
             // Every added movie could be screenable
@@ -399,6 +400,7 @@ public class MoviesCatalogController implements Reportable {
         clientMovie.producerName = movie.getProducer().getFullName();
         clientMovie.description = movie.getDescription();
         clientMovie.posterImageUrl = movie.getImageUrl();
+        clientMovie.duration = movie.getDuration();
 
         return clientMovie;
     }

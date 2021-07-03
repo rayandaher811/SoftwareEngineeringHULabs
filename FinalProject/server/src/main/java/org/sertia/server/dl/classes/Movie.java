@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.util.Objects;
 
 @Entity(name = "movies")
@@ -22,11 +23,12 @@ public class Movie {
     private boolean isComingSoon;
     private String description;
     private String imageUrl;
+    private Duration duration;
 
     public Movie() {
     }
 
-    public Movie(Producer producer, Actor mainActor, String hebrewName, String name, boolean isComingSoon, String description, String imageUrl) {
+    public Movie(Producer producer, Actor mainActor, String hebrewName, String name, boolean isComingSoon, String description, String imageUrl, Duration duration) {
         this.producer = producer;
         this.mainActor = mainActor;
         this.hebrewName = hebrewName;
@@ -34,6 +36,7 @@ public class Movie {
         this.isComingSoon = isComingSoon;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.duration = duration;
     }
 
     public Producer getProducer() {
@@ -66,6 +69,14 @@ public class Movie {
 
     public int getId() {
         return id;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     @Override
