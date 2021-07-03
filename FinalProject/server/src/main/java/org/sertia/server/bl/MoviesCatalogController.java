@@ -229,7 +229,15 @@ public class MoviesCatalogController extends Reportable {
         }
     }
 
-    public void removeMovieScreening(int screeningId) throws SertiaException{
+    public void removeMovieScreening(int screeningId) throws SertiaException {
+        removeMovieScreening(screeningId, RefundReason.ScreeningService);
+    }
+
+    public void removeMovieScreeningDueCovid(int screeningId) throws SertiaException {
+        removeMovieScreening(screeningId, RefundReason.RegulationChange);
+    }
+
+    public void removeMovieScreening(int screeningId, RefundReason refundReason) throws SertiaException{
         Session session = null;
 
         try {
@@ -243,7 +251,7 @@ public class MoviesCatalogController extends Reportable {
             session.beginTransaction();
 
             // Refunding all relevant costumers and deleting the tickets
-            RefundAndRemoveAllScreeningTickets(session, screening);
+            RefundAndRemoveAllScreeningTickets(session, screening, refundReason);
 
             session.remove(screening);
 
@@ -278,7 +286,7 @@ public class MoviesCatalogController extends Reportable {
                 // Refunding all canceled screenings customers
                 for (Screening screening : screenings) {
                     if (screening.getScreenableMovie().getId() == movieId && screening.getScreeningTime().isAfter(currentTime)) {
-                        RefundAndRemoveAllScreeningTickets(session, screening);
+                        RefundAndRemoveAllScreeningTickets(session, screening, RefundReason.ScreeningService);
 
                         // Deleting the canceled screening
                         session.remove(session.get(Screening.class, screening.getId()));
@@ -382,11 +390,11 @@ public class MoviesCatalogController extends Reportable {
         return session.get(Streaming.class, movieId);
     }
 
-    private void RefundAndRemoveAllScreeningTickets(Session session, Screening screening) {
+    private void RefundAndRemoveAllScreeningTickets(Session session, Screening screening, RefundReason refundReason) {
         for (ScreeningTicket ticket : screening.getTickets()) {
             // Notify and refund
             notifier.notify(ticket.getPaymentInfo().getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
-            creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice(), RefundReason.ScreeningService);
+            creditCardService.refund(ticket.getPaymentInfo(), ticket.getPaidPrice(), refundReason);
             session.remove(ticket);
         }
     }

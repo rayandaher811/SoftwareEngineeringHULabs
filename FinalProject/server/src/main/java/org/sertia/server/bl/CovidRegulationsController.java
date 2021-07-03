@@ -99,7 +99,7 @@ public class CovidRegulationsController {
 				// Canceling all screenings in the inserted DateTime range
 				if(screening.getScreeningTime().isBefore(endDate) &&
 						screening.getScreeningTime().isAfter(startDate))
-					moviesCatalogController.removeMovieScreening(screening.getId());
+					moviesCatalogController.removeMovieScreeningDueCovid(screening.getId());
 			}
 
 			session.flush();
