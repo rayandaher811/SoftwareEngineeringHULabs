@@ -8,6 +8,7 @@ import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketReques
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
 import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
@@ -56,6 +57,7 @@ public class StreamingTicketController extends Reportable {
             response.endTime = streamingLink.getActivationEnd();
             response.price = streamingLink.getPaidPrice();
             response.streamingLink = streamingLink.getLink();
+            CustomerNotifier.getInstance().notify(request.cardHolderEmail, getStreamingMail(response));
 
             return response;
         } catch (RuntimeException exception) {
@@ -101,6 +103,16 @@ public class StreamingTicketController extends Reportable {
 
     private void notifyClientsRegardingStreamingLinks() {
 
+    }
+
+    private String getStreamingMail(StreamingPaymentResponse response) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" :מזהה רכישה").append(response.purchaseId).append("\n")
+        .append(" :שעת התחלה").append(response.startTime).append("\n")
+        .append(" :תשלום סופי").append(response.price).append("\n")
+        .append(" :לינק").append(response.streamingLink);
+
+        return stringBuilder.toString();
     }
 
     @Override

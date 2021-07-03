@@ -111,11 +111,13 @@ public class ScreeningTicketController extends Reportable {
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             TicketsVoucher voucher = new TicketsVoucher();
-            voucher.setCustomerPaymentDetails(getPaymentDetails(paymentDetails));
+            CustomerPaymentDetails customerPaymentDetails = getPaymentDetails(paymentDetails);
+            session.save(customerPaymentDetails);
+            voucher.setCustomerPaymentDetails(customerPaymentDetails);
+
             voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
             voucher.setPurchaseDate(LocalDateTime.now());
-            int voucherId = (int) session.save(voucher);
-            response.voucherId = voucherId;
+            response.voucherId = (int) session.save(voucher);
             CustomerNotifier.getInstance().notify(paymentDetails.cardHolderEmail, getVoucherMail(response));
 
             return response;
