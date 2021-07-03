@@ -190,18 +190,10 @@ public class MoviesCatalogController extends Reportable {
 
             validateScreeningTime(addScreeningRequest.screeningTime, movie, selectedHall);
 
-            Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
-            if(!screenableMovieOptional.isPresent()) {
-                ScreenableMovie screenableMovie = new ScreenableMovie();
-                screenableMovie.setTicketPrice(addScreeningRequest.price);
-                screenableMovie.setMovie(movie);
-                session.save(screenableMovie);
-            }
-
-
+            ScreenableMovie screenableMovie = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId).get();
 
             Screening screening = new Screening();
-            screening.setMovie(screenableMovieOptional.get());
+            screening.setMovie(screenableMovie);
             screening.setScreeningTime(addScreeningRequest.screeningTime);
 
             screening.setHall(selectedHall);
