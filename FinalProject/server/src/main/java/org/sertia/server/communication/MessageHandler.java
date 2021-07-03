@@ -24,7 +24,6 @@ import org.sertia.contracts.user.login.request.LoginRequest;
 import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.server.bl.*;
 import org.sertia.server.bl.Services.CreditCardService;
-import org.sertia.server.bl.Services.CustomerNotifier;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -73,6 +72,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(ScreeningTimeUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
         messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
         messageTypeToHandler.put(RemoveMovieRequest.class, this::handleMovieRemoval);
+        messageTypeToHandler.put(RequestCinemasAndHalls.class, this::handleRequestCinemasAndHalls);
         messageTypeToHandler.put(AddScreeningRequest.class, this::handleScreeningAddition);
         messageTypeToHandler.put(RemoveScreeningRequest.class, this::handleScreeningRemoval);
         messageTypeToHandler.put(StreamingAdditionRequest.class, this::handleStreamingAddition);
@@ -365,6 +365,19 @@ public class MessageHandler extends AbstractServer {
 
     // region Screening Addition/Removal/Update handlers
 
+    private void handleRequestCinemasAndHalls(SertiaBasicRequest request, ConnectionToClient client) {
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+            response = moviesCatalogController.getCinemaAndHalls();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle cinema and halls request.");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
     private void handleScreeningAddition(SertiaBasicRequest request, ConnectionToClient client) {
         SertiaBasicResponse response = new SertiaBasicResponse(false);
 
@@ -545,7 +558,7 @@ public class MessageHandler extends AbstractServer {
         try {
             CancelAllScreeningsDueCovidRequest cancellationRequest = (CancelAllScreeningsDueCovidRequest) request;
             covidRegulationsController.cancelAllScreeningsDueCovid(cancellationRequest.cancellationStartDate,
-                                                                    cancellationRequest.cancellationEndDate);
+                    cancellationRequest.cancellationEndDate);
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,12 +2,10 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientMovie;
-import org.sertia.contracts.movies.catalog.ClientScreening;
-import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.*;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
 import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
+import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
@@ -162,7 +160,7 @@ public class MoviesCatalogController implements Reportable {
         Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-            if(!screenableMovieOptional.isPresent()) {
+            if (!screenableMovieOptional.isPresent()) {
                 ScreenableMovie screenableMovie = new ScreenableMovie();
                 screenableMovie.setTicketPrice(addScreeningRequest.price);
                 screenableMovie.setId(addScreeningRequest.movieId);
@@ -282,6 +280,15 @@ public class MoviesCatalogController implements Reportable {
         } finally {
             session.close();
         }
+    }
+
+    public SertiaBasicResponse getCinemaAndHalls() {
+        Map<String, List<ClientHall>> cinemaToHalls = new HashMap<>();
+        DbUtils.getAll(Cinema.class).forEach(cinema -> cinemaToHalls.put(cinema.getName(),
+                cinema.getHalls().stream()
+                .map(hall -> new ClientHall(hall.getId(), hall.getHallNumber()))
+                .collect(Collectors.toList())));
+        return new CinemaAndHallsResponse(true, cinemaToHalls);
     }
 
     private void removeStreamingViaFoundSession(int movieId, Session session) {
