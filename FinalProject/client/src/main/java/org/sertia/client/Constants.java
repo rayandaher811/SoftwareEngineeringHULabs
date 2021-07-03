@@ -15,4 +15,6 @@ public class Constants {
     public static final String MEDIA_MANAGER = "מנהלת המדיה";
     public static final String CUSTOMER_SUPPORT = "מנהלת שירות הלקוחות";
     public static final String BUY_STREAMING_LINK = "רכישת קישור";
+    public static final String PRICE_CHANGE_APPROVAL = "אישור בקשות שינוי מחירים";
+    public static final String STATISTICS_VIEW = "צפיה בדוחות";
 }

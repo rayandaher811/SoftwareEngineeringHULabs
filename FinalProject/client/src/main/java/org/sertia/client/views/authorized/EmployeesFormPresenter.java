@@ -34,6 +34,16 @@ public class EmployeesFormPresenter implements Initializable {
     }
 
     @FXML
+    private void priceChangeRequestsApprovals() throws IOException {
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
+    }
+
+    @FXML
+    private void statisticsView() throws IOException {
+        App.setRoot("authorized/media.manager/availableMoviesForEdit");
+    }
+
+    @FXML
     private void updateTicketsPrice() throws IOException {
         App.setRoot("authorized/media.manager/changeMovieTicketPrice");
     }
@@ -51,8 +61,9 @@ public class EmployeesFormPresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         UserRole userRole = LoggedInUser.getInstance().getUserRole();
-        if (userRole.equals(UserRole.MediaManager)) {
-            initializeMediaManagerView();
+        switch (userRole) {
+            case MediaManager -> initializeMediaManagerView();
+            case BranchManager -> initializeSertiaManagerView();
         }
         topLabel.setText(getHelloSentenceByRole(userRole) + ", " + HELLO_SENTENCE);
     }
@@ -71,6 +82,31 @@ public class EmployeesFormPresenter implements Initializable {
                 return "";
         }
     }
+
+    private void initializeSertiaManagerView() {
+        Button priceChangeRequestsApproval = new Button();
+        priceChangeRequestsApproval.setText(PRICE_CHANGE_APPROVAL);
+        priceChangeRequestsApproval.setOnMouseClicked(mouseEvent -> {
+            try {
+                priceChangeRequestsApprovals();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        priceChangeRequestsApproval.setMinWidth(200.0);
+        Button statisticsView = new Button();
+        statisticsView.setText(STATISTICS_VIEW);
+        statisticsView.setMinWidth(200.0);
+        statisticsView.setOnMouseClicked(mouseEvent -> {
+            try {
+                statisticsView();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        buttonsVbox.getChildren().addAll(priceChangeRequestsApproval, statisticsView);
+    }
+
     private void initializeMediaManagerView() {
         Button editMoviesScreeningTimeBtn = new Button();
         editMoviesScreeningTimeBtn.setText(EDIT_PLAYING_TIME);
