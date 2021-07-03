@@ -6,6 +6,7 @@ import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
+import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
@@ -72,6 +73,10 @@ public class ClientCatalogControl extends ClientControl {
         List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
 
         return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isStreamable).collect(Collectors.toList());
+    }
+
+    public CinemaAndHallsResponse getCinemasAndHalls() {
+        return client.request(new RequestCinemasAndHalls(), CinemaAndHallsResponse.class);
     }
 
     public List<SertiaMovie> getComingSoonMovies() {

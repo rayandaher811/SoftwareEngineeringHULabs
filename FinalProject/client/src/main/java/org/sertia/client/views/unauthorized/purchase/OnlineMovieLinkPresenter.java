@@ -36,6 +36,6 @@ public class OnlineMovieLinkPresenter implements Initializable {
     @FXML
     public void buyLink(){
         // TODO: FIXME
-        ClientPurchaseControl.purchaseStreaming(1);
+        //ClientPurchaseControl.purchaseStreaming(1);
     }
 }

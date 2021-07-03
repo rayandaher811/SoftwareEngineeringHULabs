@@ -4,4 +4,8 @@ import org.sertia.contracts.SertiaBasicRequest;
 
 public class CancelStreamingTicketRequest extends SertiaBasicRequest {
     public int streamingId;
+
+    public CancelStreamingTicketRequest(int streamingId) {
+        this.streamingId = streamingId;
+    }
 }

@@ -1,48 +1,43 @@
 package org.sertia.client.controllers;
 
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
-import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
+import org.sertia.contracts.screening.ticket.request.*;
+import org.sertia.contracts.screening.ticket.response.*;
+
+import java.time.LocalDateTime;
 
 public class ClientPurchaseControl extends ClientControl {
 
-    // TODO: fixme!
-    public static int getScreeningSeatMap(int screeningId) {
-        // TODO - implement ClientPurchaseControl.getScreeningSeatMap
-        throw new UnsupportedOperationException();
+    public ClientSeatMapResponse getScreeningSeatMap(int screeningId) {
+        return client.request(new GetScreeningSeatMap(screeningId), ClientSeatMapResponse.class);
     }
 
-    public void onPaymentResponse(int ClientPaymentResponse) {
-        // TODO - implement ClientPurchaseControl.onPaymentResponse
-        throw new UnsupportedOperationException();
+    public ScreeningPaymentResponse purchaseScreeningTicketsWithSeats(ScreeningTicketWithSeatsRequest request) {
+        return client.request(request, ScreeningPaymentResponse.class);
     }
 
-    public void cancelScreeningTicket(int purcahseId) {
-        // TODO - implement ClientPurchaseControl.cancelScreeningTicket
-        throw new UnsupportedOperationException();
+    public ScreeningPaymentResponse purchaseScreeningTicketsWithCovid(ScreeningTicketWithCovidRequest request) {
+        return client.request(request, ScreeningPaymentResponse.class);
     }
 
-    public static void purchaseStreaming(int ClientStreamingPaymentRequest) {
-        // TODO - implement ClientPurchaseControl.purchaseStreaming
-        throw new UnsupportedOperationException();
+    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
+        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
     }
 
-    public void cancelStreamingTicket(int purchaseId) {
-        // TODO - implement ClientPurchaseControl.cancelStreamingTicket
-        throw new UnsupportedOperationException();
+    public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
+        return client.request(request, StreamingPaymentResponse.class);
     }
 
-    public void purchaseVoucher(BasicPriceChangeRequest payment) {
-        // TODO - implement ClientPurchaseControl.purchaseVoucher
-        throw new UnsupportedOperationException();
+    public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
+        return client.request(new CancelStreamingTicketRequest(purchaseId), StreamingPaymentResponse.class);
     }
 
-    public void requestVoucherBalance(String voucherId) {
-        // TODO - implement ClientPurchaseControl.requestVoucherBalance
-        throw new UnsupportedOperationException();
+    public VoucherPaymentResponse purchaseVoucher(BasicPriceChangeRequest request) {
+        return client.request(request, VoucherPaymentResponse.class);
     }
 
-    public void useVoucher(String voucherId) {
-        // TODO - implement ClientPurchaseControl.useVoucher
-        throw new UnsupportedOperationException();
+    public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
+        return client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
     }
 }

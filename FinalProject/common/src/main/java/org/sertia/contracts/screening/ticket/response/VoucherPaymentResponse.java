@@ -4,6 +4,8 @@ import org.sertia.contracts.SertiaBasicResponse;
 
 public class VoucherPaymentResponse extends SertiaBasicResponse {
 
+    public int voucherId;
+
     public VoucherPaymentResponse(boolean isSuccessful) {
         super(isSuccessful);
     }
@@ -13,5 +15,5 @@ public class VoucherPaymentResponse extends SertiaBasicResponse {
         return this;
     }
 
-    public int voucherId;
+
 }
