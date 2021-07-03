@@ -26,4 +26,9 @@ public class PrimaryController {
     private void toPrepaidPurchaseView() throws IOException {
         App.setRoot("unauthorized/prepaidTicketsPurchaseForm");
     }
+
+    @FXML
+    private void toPrepaidBalance() throws IOException {
+        App.setRoot("unauthorized/prepaidBalance");
+    }
 }

@@ -67,19 +67,19 @@ public class ClientPurchaseControl extends ClientControl {
 
         return failedResponse;
     }
-//
-//    public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
-//        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
-//        if (response.isSuccessful) {
-//            return response;
-//        }
-//
-//        VoucherBalanceResponse failedResponse = new VoucherBalanceResponse(false);
-//        failedResponse.failReason = response.failReason;
-//
-//        return failedResponse;
-//    }
-//
+
+    public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
+        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
+        if (response.isSuccessful) {
+            return response;
+        }
+
+        VoucherBalanceResponse failedResponse = new VoucherBalanceResponse(false);
+        failedResponse.failReason = response.failReason;
+
+        return failedResponse;
+    }
+
     private ScreeningPaymentResponse failedScreeningPaymentResponse(String reason) {
         ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
         response.failReason = reason;
@@ -107,7 +107,4 @@ public class ClientPurchaseControl extends ClientControl {
 //        return client.request(request, VoucherPaymentResponse.class);
 //    }
 //
-//    public VoucherBalanceResponse requestVoucherBalance(int voucherId) {
-//        return client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
-//    }
 }
