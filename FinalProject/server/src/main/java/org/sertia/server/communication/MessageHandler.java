@@ -21,6 +21,7 @@ import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
+import org.sertia.contracts.user.login.request.LogoutRequest;
 import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.*;
@@ -37,6 +38,7 @@ public class MessageHandler extends AbstractServer {
     private final String ClientRoleType = "Role";
     private final String ClientSessionIdType = "Session";
     private final String ClientUsernameType = "Username";
+    private final String ManagedCinemaIdType = "ManagedCinemaId";
 
     private final ICreditCardService creditCardService;
     private final MoviesCatalogController moviesCatalogController;
@@ -46,6 +48,7 @@ public class MessageHandler extends AbstractServer {
     private final UserLoginController userLoginController;
     private final ComplaintsController complaintsController;
     private final CovidRegulationsController covidRegulationsController;
+    private final CinemaController cinemaController;
 
     private final Map<Class<? extends SertiaBasicRequest>, BiConsumer<SertiaBasicRequest, ConnectionToClient>> messageTypeToHandler;
 
@@ -67,10 +70,12 @@ public class MessageHandler extends AbstractServer {
         this.covidRegulationsController = new CovidRegulationsController(moviesCatalogController);
         this.screeningTicketController = new ScreeningTicketController(covidRegulationsController, creditCardService);
         this.streamingTicketController = new StreamingTicketController(creditCardService);
+        this.cinemaController = new CinemaController();
     }
 
     private void initializeHandlerMapping() {
         messageTypeToHandler.put(LoginRequest.class, this::handleLoginRequest);
+        messageTypeToHandler.put(LogoutRequest.class, this::handleLogoutRequest);
 
         messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
         messageTypeToHandler.put(CinemaCatalogRequest.class, this::handleCinemaCatalog);
@@ -508,6 +513,11 @@ public class MessageHandler extends AbstractServer {
             // Saving the username if the client has special role
             if (result.userRole != UserRole.None) {
                 client.setInfo(ClientUsernameType, loginCredentials.username);
+
+                // Saving the manager's cinema
+                if(result.userRole == UserRole.CinemaManager)
+                    client.setInfo(ManagedCinemaIdType, cinemaController.getCinemaIdByManagerUsername(loginCredentials.username));
+
             }
         } catch (SertiaException e){
             result.setFailReason(e.getMessage());
@@ -520,6 +530,27 @@ public class MessageHandler extends AbstractServer {
         }
 
         sendResponseToClient(client, result);
+    }
+
+    private void handleLogoutRequest(SertiaBasicRequest request, ConnectionToClient client) {
+
+        SertiaBasicResponse response = new SertiaBasicResponse(false);
+
+        try {
+
+            // Clearing up client's saved info
+            client.setInfo(ClientRoleType, null);
+            client.setInfo(ClientSessionIdType, null);
+            client.setInfo(ClientUsernameType, null);
+            client.setInfo(ManagedCinemaIdType, null);
+
+            response.setSuccessful(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handleLogoutRequest.");
+        }
+
+        sendResponseToClient(client, response);
     }
 
     // region Complaints handlers

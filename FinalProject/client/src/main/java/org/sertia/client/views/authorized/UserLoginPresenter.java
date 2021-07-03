@@ -9,6 +9,7 @@ import org.sertia.client.controllers.ClientUserLoginController;
 import org.sertia.client.global.LoggedInUser;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
+import org.sertia.contracts.user.login.response.LoginResult;
 
 import java.io.IOException;
 
@@ -64,9 +65,12 @@ public class UserLoginPresenter {
     }
 
     private boolean isUserAuthorized(String userName, String password) {
-        UserRole role = ClientUserLoginController.getInstance().login(new LoginCredentials(userName, password));
-        if (role != UserRole.None) {
-            LoggedInUser.setConnectionStatus(userName, role);
+        LoginResult result = ClientUserLoginController.getInstance().login(new LoginCredentials(userName, password));
+        if(!result.isSuccessful){
+            return false;
+        }
+        if (result.userRole != UserRole.None) {
+            LoggedInUser.setConnectionStatus(userName, result.userRole);
             return true;
         }
         return false;

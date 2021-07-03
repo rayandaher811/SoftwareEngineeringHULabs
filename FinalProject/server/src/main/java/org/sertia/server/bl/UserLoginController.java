@@ -56,7 +56,8 @@ public class UserLoginController {
 					case CinemaManager:
 						result.userRole = UserRole.CinemaManager;
 						break;
-					default: result.userRole = UserRole.None;
+					default:
+						result.userRole = UserRole.None;
 				}
 
 				break;

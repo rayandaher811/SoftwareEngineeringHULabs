@@ -32,6 +32,10 @@ public class Cinema {
         Manager = manager;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
