@@ -143,6 +143,7 @@ public class MessageHandler extends AbstractServer {
             e.printStackTrace();
             response.setFailReason("We couldn't handle get Sertia catalog.");
         }
+        complaintsController.createSertiaReports();
 
         sendResponseToClient(client, response);
     }

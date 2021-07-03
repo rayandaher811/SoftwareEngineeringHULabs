@@ -3,6 +3,7 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.reports.ClientReport;
+import org.sertia.contracts.reports.ReportEntry;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CustomerNotifier;
@@ -13,14 +14,17 @@ import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
 import javax.naming.OperationNotSupportedException;
-import javax.transaction.NotSupportedException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ComplaintsController implements Reportable {
+public class ComplaintsController extends Reportable {
 
 	private CustomerNotifier notifier;
 	private ICreditCardService creditCardService;
@@ -161,9 +165,26 @@ public class ComplaintsController implements Reportable {
 		}
 	}
 
+
 	@Override
 	public List<ClientReport> createSertiaReports() {
-		return Collections.emptyList();
+		ClientReport report = new ClientReport();
+		List<CostumerComplaint> complaints = getDataOfThisMonth(CostumerComplaint.class, "openedDate");
+		int openedComplaints = 0;
+		int closedComplaints = 0;
+		for (CostumerComplaint customerComplaint : complaints) {
+			if (customerComplaint.getClosedDate() != null) {
+				closedComplaints++;
+			} else {
+				openedComplaints++;
+			}
+		}
+
+		report.title = "מצב תלונות בחודש האחרון";
+		report.addEntry("תלונות פתוחות", openedComplaints);
+		report.addEntry("תלונות סגורות", closedComplaints);
+
+		return Collections.singletonList(report);
 	}
 
 	@Override

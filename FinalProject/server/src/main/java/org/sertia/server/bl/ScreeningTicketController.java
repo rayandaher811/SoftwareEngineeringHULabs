@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.sertia.server.bl.Utils.getPaymentDetails;
 
-public class ScreeningTicketController implements Reportable {
+public class ScreeningTicketController extends Reportable {
     private final CovidRegulationsController covidRegulationsController;
     private final ICreditCardService creditCardService;
 

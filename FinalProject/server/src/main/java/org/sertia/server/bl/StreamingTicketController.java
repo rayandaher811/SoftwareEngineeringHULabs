@@ -17,6 +17,7 @@ import org.sertia.server.dl.classes.RefundReason;
 import org.sertia.server.dl.classes.Streaming;
 import org.sertia.server.dl.classes.StreamingLink;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -24,9 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class StreamingTicketController implements Reportable {
+public class StreamingTicketController extends Reportable {
     private final ICreditCardService creditCardService;
-
     public StreamingTicketController(ICreditCardService creditCardService) {
         this.creditCardService = creditCardService;
     }
@@ -48,9 +48,11 @@ public class StreamingTicketController implements Reportable {
         streamingLink.setPaidPrice(streaming.getExtraDayPrice() * availabilityDays);
         streamingLink.setLink("http://Sertia/link=" + UUID.randomUUID());
         streamingLink.setPurchaseDate(LocalDateTime.now());
+        streamingLink.setMovie(streaming);
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-            session.save(streamingLink);
+            int purchaseId = (int) session.save(streamingLink);
+            response.purchaseId = purchaseId;
             response.startTime = streamingLink.getActivationStart();
             response.endTime = streamingLink.getActivationEnd();
             response.price = streamingLink.getPaidPrice();
@@ -65,7 +67,7 @@ public class StreamingTicketController implements Reportable {
     private Optional<Streaming> getStreaming(int movieId) {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Query query = session
-                    .createQuery("from Screening where movie_id = :movieId");
+                    .createQuery("from Streaming where movie_id = :movieId");
             query.setParameter("movieId", movieId);
             return Optional.ofNullable((Streaming) query.list().get(0));
         } catch (RuntimeException exception) {

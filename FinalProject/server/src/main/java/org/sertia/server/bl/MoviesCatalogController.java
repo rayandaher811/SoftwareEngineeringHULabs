@@ -27,7 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class MoviesCatalogController implements Reportable {
+public class MoviesCatalogController extends Reportable {
 
     private final ICreditCardService creditCardService;
     private final ICustomerNotifier notifier;
