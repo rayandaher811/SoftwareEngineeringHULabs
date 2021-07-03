@@ -5,24 +5,18 @@ import org.sertia.server.dl.classes.CustomerPaymentDetails;
 
 public class CreditCardService {
 
-	ICustomerNotifier notifier;
+    ICustomerNotifier notifier;
 
-	public CreditCardService() {
-		this.notifier = CustomerNotifier.getInstance();
-	}
+    public CreditCardService() {
+        this.notifier = CustomerNotifier.getInstance();
+    }
 
-	/**
-	 * 
-	 * @param creditDetails
-	 * @param amount
-	 */
-	public void chargeCredit(ClientCreditDetails creditDetails, int amount) {
-		// TODO - implement CreditCardService.chargeCredit
-		throw new UnsupportedOperationException();
-	}
+    public void chargeCredit(CustomerPaymentDetails customerPaymentDetails, int amount) {
+        notifier.notify(customerPaymentDetails.getEmail(), "You have been charged by sertia cinema with " + amount + " shekels.");
+    }
 
-	public void refund(CustomerPaymentDetails customerPaymentDetails, double amound) {
-		notifier.notify(customerPaymentDetails.getEmail(), "You have been refunded by sertia cinema in " + amound + " shekels.");
-	}
+    public void refund(CustomerPaymentDetails customerPaymentDetails, double amount) {
+        notifier.notify(customerPaymentDetails.getEmail(), "You have been refunded by sertia cinema in " + amount + " shekels.");
+    }
 
 }

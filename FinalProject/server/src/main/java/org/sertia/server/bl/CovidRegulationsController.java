@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CovidRegulationsController {
-	private MoviesCatalogController moviesCatalogController;
+	private final MoviesCatalogController moviesCatalogController;
 
 	public CovidRegulationsController(MoviesCatalogController moviesCatalogController) {
 		this.moviesCatalogController = moviesCatalogController;

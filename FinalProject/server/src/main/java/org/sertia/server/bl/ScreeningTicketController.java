@@ -3,7 +3,7 @@ package org.sertia.server.bl;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.screening.ticket.request.CancelScreeningTicketRequest;
+import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.*;
@@ -11,25 +11,44 @@ import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
+import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.sertia.server.bl.Utils.getPaymentDetails;
 
 public class ScreeningTicketController implements Reportable {
-    public ScreeningTicketController() {
+    private final CovidRegulationsController covidRegulationsController;
+    private final CreditCardService creditCardService;
+
+    public ScreeningTicketController(CovidRegulationsController covidRegulationsController, CreditCardService creditDetails) {
+        this.covidRegulationsController = covidRegulationsController;
+        this.creditCardService = creditDetails;
     }
 
     public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
         ClientSeatMapResponse seatMapForScreening = getSeatMapForScreening(request.screeningId);
         try {
-            Set<HallSeat> seats = automaticChoseSeats(seatMapForScreening, request.numberOfSeats);
+            int numberOfWantedSeats = request.numberOfSeats;
+            Optional<Screening> optionalScreening = DbUtils.getById(Screening.class, request.screeningId);
+            if (!optionalScreening.isPresent()) {
+                return new SertiaBasicResponse(false).setFailReason("screening doesn't exist");
+            }
+
+            int numberOfTakenSeats = optionalScreening.get().getTickets().size();
+            if (numberOfTakenSeats + numberOfWantedSeats > getMaxTicketsForHall(optionalScreening.get().getHall())) {
+                return new SertiaBasicResponse(false).setFailReason("not enough free seats");
+            }
+
+            Set<HallSeat> seats = automaticChoseSeats(seatMapForScreening, numberOfWantedSeats);
             return purchaseTicketsForScreening(createScreeningTicketWithSeatsRequest(request, seats));
         } catch (IllegalArgumentException exception) {
             System.out.println("Failed to buy tickets with regulations");
@@ -52,6 +71,7 @@ public class ScreeningTicketController implements Reportable {
                 .map(screeningTicket -> {
                     try (Session session = HibernateSessionFactory.getInstance().openSession()) {
                         session.delete(screeningTicket);
+                        refundCreditForScreening(screeningTicket.getScreening(), screeningTicket.getPaymentInfo());
                     } catch (RuntimeException e) {
                         System.out.println("couldn't delete ticket " + request.ticketId);
                         return new SertiaBasicResponse(false)
@@ -135,6 +155,16 @@ public class ScreeningTicketController implements Reportable {
         return true;
     }
 
+    private void refundCreditForScreening(Screening screening, CustomerPaymentDetails paymentDetails) {
+        LocalDateTime screeningTime = screening.getScreeningTime();
+        long hoursToScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
+        if (hoursToScreening >= 3) {
+            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice());
+        } else if (hoursToScreening <= 1) {
+            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice() / 2);
+        }
+    }
+
     private SertiaBasicResponse purchaseTicketsForScreening(ScreeningTicketWithSeatsRequest request) {
         ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(true);
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -168,6 +198,25 @@ public class ScreeningTicketController implements Reportable {
         }
 
         return paymentResponse;
+    }
+
+    private int getMaxTicketsForHall(Hall hall) {
+        ClientCovidRegulationsStatus covidRegulationsStatus = covidRegulationsController.getCovidRegulationsStatus();
+        int hallCapacity = hall.getSeats().size();
+
+        if (covidRegulationsStatus.isActive) {
+            return hallCapacity;
+        }
+
+        if (hallCapacity > 1.2 * covidRegulationsStatus.maxNumberOfPeople) {
+            return covidRegulationsStatus.maxNumberOfPeople;
+        }
+
+        if (hallCapacity > 0.8 * covidRegulationsStatus.maxNumberOfPeople) {
+            return (int) Math.floor(0.8 * covidRegulationsStatus.maxNumberOfPeople);
+        }
+
+        return (int) Math.floorDiv(hallCapacity, 2);
     }
 
     private ClientSeatMapResponse getSeatMapForScreening(int screeningId) {

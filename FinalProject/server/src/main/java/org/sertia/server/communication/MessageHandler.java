@@ -23,6 +23,8 @@ import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
 import org.sertia.contracts.user.login.response.LoginResult;
 import org.sertia.server.bl.*;
+import org.sertia.server.bl.Services.CreditCardService;
+import org.sertia.server.bl.Services.CustomerNotifier;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ public class MessageHandler extends AbstractServer {
     private final String ClientSessionIdType = "Session";
     private final String ClientUsernameType = "Username";
 
+    private final CreditCardService creditCardService;
     private final MoviesCatalogController moviesCatalogController;
     private final ScreeningTicketController screeningTicketController;
     private final StreamingTicketController streamingTicketController;
@@ -51,14 +54,15 @@ public class MessageHandler extends AbstractServer {
         this.roleValidator = new RoleValidator();
         this.messageTypeToHandler = new HashMap<>();
         initializeHandlerMapping();
+        creditCardService = new CreditCardService();
 
-        this.screeningTicketController = new ScreeningTicketController();
-        this.streamingTicketController = new StreamingTicketController();
         this.userLoginController = new UserLoginController();
         this.priceChangeController = new PriceChangeController();
         this.complaintsController = new ComplaintsController();
         this.moviesCatalogController = new MoviesCatalogController();
         this.covidRegulationsController = new CovidRegulationsController(moviesCatalogController);
+        this.screeningTicketController = new ScreeningTicketController(covidRegulationsController, creditCardService);
+        this.streamingTicketController = new StreamingTicketController(creditCardService);
     }
 
     private void initializeHandlerMapping() {
