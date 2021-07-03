@@ -61,7 +61,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
 
     @FXML
     private void backToPreviusPage() throws IOException {
-        App.setRoot("availableMoviesForEdit");
+        App.setRoot("authorized/availableMoviesForEdit");
     }
 
     @FXML
@@ -76,7 +76,7 @@ public class EditMovieScreeningTimePresenter implements Initializable {
             screening.setScreeningTime(newDateTime);
             ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
         }
-        App.setRoot("availableMoviesForEdit");
+        App.setRoot("authorized/availableMoviesForEdit");
     }
 
     private int getHour(String hour) {

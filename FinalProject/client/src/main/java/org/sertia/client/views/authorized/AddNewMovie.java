@@ -72,7 +72,7 @@ public class AddNewMovie extends BasicPresenter {
     @FXML
     public void back(){
         try {
-            App.setRoot("employeesForm");
+            App.setRoot("authorized/employeesForm");
         } catch (IOException e) {
             e.printStackTrace();
         }

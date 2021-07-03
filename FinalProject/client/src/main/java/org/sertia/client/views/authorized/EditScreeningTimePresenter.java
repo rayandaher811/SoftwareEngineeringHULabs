@@ -38,14 +38,14 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
 
     @FXML
     private void back() throws IOException {
-        App.setRoot("employeesForm");
+        App.setRoot("authorized/employeesForm");
     }
 
     private void updateMovie(ClientScreening screening, ClientMovie movie) {
         MovieHolder.getInstance().setMovie(movie);
         ScreeningHolder.getInstance().setScreening(screening);
         try {
-            App.setRoot("editMovieScreeningTimePresenter");
+            App.setRoot("authorized/editMovieScreeningTimePresenter");
         } catch (IOException e) {
             e.printStackTrace();
         }

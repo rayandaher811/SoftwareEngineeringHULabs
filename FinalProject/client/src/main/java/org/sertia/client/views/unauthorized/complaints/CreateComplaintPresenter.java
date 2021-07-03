@@ -39,7 +39,7 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
     protected ArrayList<String> userMistakes;
     @FXML
     public void toMainMenu() throws IOException {
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 
     @FXML

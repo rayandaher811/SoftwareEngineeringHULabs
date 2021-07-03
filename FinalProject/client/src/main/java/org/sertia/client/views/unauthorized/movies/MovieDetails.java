@@ -23,7 +23,7 @@ public class MovieDetails extends BasicPresenter implements Initializable {
     @FXML
     private void back() {
         try {
-            App.setRoot("moviesCatalogPresenter");
+            App.setRoot("unauthorized/moviesCatalogPresenter");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -25,27 +25,27 @@ public class EmployeesFormPresenter implements Initializable {
     @FXML
     private void logOut() throws IOException {
         LoggedInUser.onDisconnection();
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 
     @FXML
     private void updateMovie() throws IOException {
-        App.setRoot("availableMoviesForEdit");
+        App.setRoot("authorized/availableMoviesForEdit");
     }
 
     @FXML
     private void updateTicketsPrice() throws IOException {
-        App.setRoot("availableMoviesForEdit");
+        App.setRoot("authorized/availableMoviesForEdit");
     }
 
     @FXML
     private void removeMovie() throws IOException {
-        App.setRoot("removeMovie");
+        App.setRoot("authorized/removeMovie");
     }
 
     @FXML
     private void addMovie() throws IOException {
-        App.setRoot("addNewMovie");
+        App.setRoot("authorized/addNewMovie");
     }
 
     @Override
@@ -113,6 +113,6 @@ public class EmployeesFormPresenter implements Initializable {
                 e.printStackTrace();
             }
         });
-        buttonsVbox.getChildren().addAll(editMoviesScreeningTimeBtn, addMovieBtn, changeTicketsPriceBtn);
+        buttonsVbox.getChildren().addAll(editMoviesScreeningTimeBtn, addMovieBtn, removeMovieBtn, changeTicketsPriceBtn);
     }
 }

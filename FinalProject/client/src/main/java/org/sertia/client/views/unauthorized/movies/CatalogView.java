@@ -88,7 +88,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             bgBtn.setOnMouseClicked(mouseEvent -> {
                 try {
                     MovieHolder.getInstance().setMovie(moviesInBranch.getKey());
-                    App.setRoot("movieDetails");
+                    App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -117,7 +117,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             p.setOnMouseClicked(mouseEvent -> {
                 try {
                     MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails());
-                    App.setRoot("movieDetails");
+                    App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -141,7 +141,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             p.setOnMouseClicked(mouseEvent -> {
                 try {
                     MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails());
-                    App.setRoot("movieDetails");
+                    App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -202,11 +202,10 @@ public class CatalogView extends BasicPresenter implements Initializable {
             }
         });
         moviesKindAndDataAccordion.getPanes().addAll(list);
-        System.out.println("BVG");
     }
 
     @FXML
     private void backToClientsView() throws IOException {
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 }

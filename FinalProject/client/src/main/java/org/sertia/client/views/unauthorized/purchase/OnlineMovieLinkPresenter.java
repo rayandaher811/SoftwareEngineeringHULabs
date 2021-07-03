@@ -22,7 +22,7 @@ public class OnlineMovieLinkPresenter implements Initializable {
 
     @FXML
     public void toMainMenu() throws IOException {
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 
     @Override

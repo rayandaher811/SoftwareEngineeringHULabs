@@ -9,31 +9,31 @@ public class PrimaryController {
 
     @FXML
     private void toLoginView() throws IOException {
-        App.setRoot("userLoginForm");
+        App.setRoot("authorized/userLoginForm");
     }
 
     @FXML
     private void toMoviesCatalog() throws IOException {
-        App.setRoot("moviesCatalogPresenter");
+        App.setRoot("unauthorized/moviesCatalogPresenter");
     }
 
     @FXML
     private void toAddComplaintView() throws IOException {
-        App.setRoot("createComplaintView");
+        App.setRoot("unauthorized/createComplaintView");
     }
 
     @FXML
     private void toMovieTicketsPurchase() throws IOException {
-        App.setRoot("purchaseMovieTickets");
+        App.setRoot("unauthorized/purchaseMovieTickets");
     }
 
     @FXML
     private void toPrepaidPurchaseView() throws IOException {
-        App.setRoot("prepaidTicketsPurchaseForm");
+        App.setRoot("unauthorized/prepaidTicketsPurchaseForm");
     }
 
     @FXML
     private void toHomeLinkView() throws IOException {
-        App.setRoot("onlineWatchLinkForm");
+        App.setRoot("unauthorized/onlineWatchLinkForm");
     }
 }

@@ -67,7 +67,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
                             System.out.println("Need to go to covid view");
                         } else {
                             System.out.println("Need to show available spots");
-                            App.setRoot("seatMapView");
+                            App.setRoot("unauthorized/seatMapView");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -90,7 +90,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
 
     @FXML
     public void toMain() throws IOException {
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 
     @Override

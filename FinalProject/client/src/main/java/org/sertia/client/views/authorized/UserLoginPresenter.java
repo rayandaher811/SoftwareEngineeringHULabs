@@ -56,7 +56,7 @@ public class UserLoginPresenter {
         if (isInputValid(userName, password)) {
             System.out.println("username: " + userName + " , password: " + password);
             if (isUserAuthorized(userName, password)) {
-                App.setRoot("employeesForm");
+                App.setRoot("authorized/employeesForm");
             } else {
                 alertForWronCredentials();
             }
@@ -75,6 +75,6 @@ public class UserLoginPresenter {
     @FXML
     private void back() throws IOException {
         LoggedInUser.onDisconnection();
-        App.setRoot("primary");
+        App.setRoot("unauthorized/primary");
     }
 }
