@@ -6,7 +6,9 @@ public class ScreeningTicketWithCovidRequest extends BasicPaymentRequest {
     public int screeningId;
     public int numberOfSeats;
 
-    public ScreeningTicketWithCovidRequest(String cardHolderId, String cardHolderName, String creditCardNumber, String cardHolderEmail, String cardHolderPhone, String cvv, LocalDateTime expirationDate) {
+    public ScreeningTicketWithCovidRequest(String cardHolderId, String cardHolderName, String creditCardNumber, String cardHolderEmail, String cardHolderPhone, String cvv, LocalDateTime expirationDate, int numberOfSeats, int screeningId) {
         super(cardHolderId, cardHolderName, creditCardNumber, cardHolderEmail, cardHolderPhone, cvv, expirationDate);
+        this.screeningId = screeningId;
+        this.numberOfSeats = numberOfSeats;
     }
 }

@@ -8,12 +8,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
+import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
+import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 
@@ -52,38 +55,76 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
         }
     }
 
+    private void purchaseWithCovid() {
+        ScreeningTicketWithCovidRequest request =
+                new ScreeningTicketWithCovidRequest(cardHolderId.getText(),
+                        cardHolderName.getText(),
+                        creditCardNumber.getText(),
+                        cardHolderEmailTxt.getText(),
+                        cardHolderPhoneTxt.getText(),
+                        cvv.getText(),
+                        LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                1, 0, 0),
+                        NumberOfTicketsHolder.getInstance().getNumberOfTickets(),
+                        ScreeningHolder.getInstance().getScreening().getScreeningId());
+        ScreeningPaymentResponse response =
+                ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
+        Alert.AlertType type;
+        String msg = "";
+        if (response.isSuccessful){
+            type = Alert.AlertType.INFORMATION;
+            msg = "operation ended successfully!";
+        } else {
+            type = Alert.AlertType.ERROR;
+            msg = response.failReason;
+        }
+        Alert errorAlert = new Alert(type);
+        errorAlert.setTitle("Buying from sertia system");
+        errorAlert.setContentText(msg);
+        errorAlert.showAndWait();
+    }
+
+    private void purchaseInNormalTime(){
+        List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
+        ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
+                new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
+                        cardHolderName.getText(),
+                        creditCardNumber.getText(),
+                        cardHolderEmailTxt.getText(),
+                        cardHolderPhoneTxt.getText(),
+                        cvv.getText(),
+                        LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                1, 0, 0),
+                        selectedSeats,
+                        ScreeningHolder.getInstance().getScreening().getScreeningId());
+        ScreeningPaymentResponse response =
+                ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
+        Alert.AlertType type;
+        String msg = "";
+        if (response.isSuccessful){
+            type = Alert.AlertType.INFORMATION;
+            msg = "operation ended successfully!";
+        } else {
+            type = Alert.AlertType.ERROR;
+            msg = response.failReason;
+        }
+        Alert errorAlert = new Alert(type);
+        errorAlert.setTitle("Buying from sertia system");
+        errorAlert.setContentText(msg);
+        errorAlert.showAndWait();
+
+    }
+
     @FXML
     public void pay() {
         if (isInputValid()) {
-            List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
-
-            ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
-                    new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
-                            cardHolderName.getText(),
-                            creditCardNumber.getText(),
-                            cardHolderEmailTxt.getText(),
-                            cardHolderPhoneTxt.getText(),
-                            cvv.getText(),
-                            LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                    1, 0, 0),
-                            selectedSeats,
-                            ScreeningHolder.getInstance().getScreening().getScreeningId());
-            ScreeningPaymentResponse response =
-                    ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful){
-                type = Alert.AlertType.INFORMATION;
-                msg = "operation ended successfully!";
+            if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
+                purchaseWithCovid();
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
+                purchaseInNormalTime();
             }
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
         }
 
     }

@@ -59,8 +59,6 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
                 NumberOfTicketsHolder.getInstance().setNumberOfTickets(
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
-//                    ScreeningTicketWithCovidRequest request = new ScreeningTicketWithCovidRequest();
-//                    ScreeningPaymentResponse response = ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid();
                     popupAlert();
                     App.setRoot("unauthorized/paymentView");
                 } else {
