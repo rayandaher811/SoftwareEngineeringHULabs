@@ -11,6 +11,7 @@ import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
+import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
@@ -35,17 +36,23 @@ public class ScreeningTicketController extends Reportable {
 
     public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
         ClientSeatMapResponse seatMapForScreening = getSeatMapForScreening(request.screeningId);
+        ScreeningPaymentResponse response = new ScreeningPaymentResponse(true);
+
         try {
             int numberOfWantedSeats = request.numberOfSeats;
             Optional<Screening> optionalScreening = DbUtils.getById(Screening.class, request.screeningId);
             if (!optionalScreening.isPresent()) {
-                return new SertiaBasicResponse(false).setFailReason("screening doesn't exist");
+                response.isSuccessful = false;
+                response.failReason = "screening doesn't exist";
+
+                return response;
             }
 
             int numberOfTakenSeats = optionalScreening.get().getTickets().size();
             if (numberOfTakenSeats + numberOfWantedSeats > getMaxTicketsForHall(optionalScreening.get().getHall())) {
-                ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
+                response.isSuccessful = false;
                 response.setFailReason("אין מספיק מושבים פנויים");
+
                 return response;
             }
 
@@ -53,16 +60,19 @@ public class ScreeningTicketController extends Reportable {
             return purchaseTicketsForScreening(createScreeningTicketWithSeatsRequest(request, seats));
         } catch (IllegalArgumentException exception) {
             System.out.println("Failed to buy tickets with regulations");
-            ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
+            response.isSuccessful = false;
             response.setFailReason("תהליך רכישה נכשל");
+
             return response;
         }
     }
 
     public SertiaBasicResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
         if (!isPaymentRequestValid(request)) {
-            return new ScreeningPaymentResponse(false)
-                    .setFailReason("Payment details are invalid");
+            ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(false);
+            paymentResponse.failReason = "Payment details are invalid";
+
+            return paymentResponse;
         }
 
         return purchaseTicketsForScreening(request);
@@ -91,8 +101,12 @@ public class ScreeningTicketController extends Reportable {
 
     public SertiaBasicResponse buyVoucher(BasicPaymentRequest paymentDetails) {
         VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, VouchersInfo.singleRecordId).orElse(null);
+        VoucherPaymentResponse response = new VoucherPaymentResponse(true);
         if (vouchersInfo == null) {
-            return new SertiaBasicResponse(false).setFailReason("no voucher info in system");
+            response.isSuccessful = false;
+            response.failReason = "sertia has no voucher info, contact support";
+
+            return response;
         }
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -101,23 +115,26 @@ public class ScreeningTicketController extends Reportable {
             voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
             voucher.setPurchaseDate(LocalDateTime.now());
             int voucherId = (int) session.save(voucher);
+            response.voucherId = voucherId;
+            CustomerNotifier.getInstance().notify(paymentDetails.cardHolderEmail, getVoucherMail(response));
 
-            return new VoucherPaymentResponse(false)
-                    .setVoucherId(voucherId);
+            return response;
         } catch (RuntimeException exception) {
-            return new VoucherPaymentResponse(false)
-                    .setFailReason("couldn't purchase voucher");
+            response.isSuccessful = false;
+            response.failReason = "couldn't purchase voucher, contact support";
+
+            return response;
         }
     }
 
     public SertiaBasicResponse getVoucherBalance(VoucherBalanceRequest request) {
+        VoucherBalanceResponse response = new VoucherBalanceResponse(true);
         return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
-            VoucherBalanceResponse response = new VoucherBalanceResponse(true);
             response.balance = ticketsVoucher.getTicketsBalance();
 
             return response;
         }).orElseGet(() -> {
-            VoucherBalanceResponse response = new VoucherBalanceResponse(false);
+            response.isSuccessful = false;
             response.setFailReason("voucher doesn't exist");
 
             return response;
@@ -186,11 +203,32 @@ public class ScreeningTicketController extends Reportable {
                 paymentResponse.addTicket(ticketId, purchasedSeat);
             }
         } catch (RuntimeException exception) {
-            return new ScreeningPaymentResponse(false)
-                    .setFailReason("Problem during purchase process");
+            paymentResponse.isSuccessful = false;
+            paymentResponse.failReason = "Problem during purchase process";
+
+            return paymentResponse;
         }
 
+        CustomerNotifier.getInstance().notify(request.cardHolderEmail, getScreeningMail(paymentResponse));
         return paymentResponse;
+    }
+
+    private String getScreeningMail(ScreeningPaymentResponse response) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\nסרט:").append(response.movieName)
+        .append("\nקולנוע:").append(response.cinemaName)
+        .append("\nאולם:").append(response.hallNumber)
+        .append("\nכרטיסים:");
+        response.ticketIdToSeat.forEach((integer, hallSeat) ->
+                stringBuilder.append(hallSeat.row).append(", ").append(hallSeat.numberInRow).append(" כיסא ").append(" :מספר הזמנה ,").append(integer.toString()));
+
+        return stringBuilder.toString();
+    }
+
+    private String getVoucherMail(VoucherPaymentResponse response) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\nמזהה כרטיסיה:").append(response.voucherId);
+        return stringBuilder.toString();
     }
 
     private int getMaxTicketsForHall(Hall hall) {

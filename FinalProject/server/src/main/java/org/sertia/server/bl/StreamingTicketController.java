@@ -99,6 +99,10 @@ public class StreamingTicketController extends Reportable {
         return ChronoUnit.HOURS.between(LocalDateTime.now(), streamingLink.getActivationStart());
     }
 
+    private void notifyClientsRegardingStreamingLinks() {
+
+    }
+
     @Override
     public List<ClientReport> createSertiaReports() {
         return Collections.emptyList();

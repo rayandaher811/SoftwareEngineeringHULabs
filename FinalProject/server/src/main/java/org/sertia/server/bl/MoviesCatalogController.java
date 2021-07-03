@@ -225,7 +225,6 @@ public class MoviesCatalogController extends Reportable {
                  (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
                     movieEndTime.isBefore(hallScreeningEndTime) && movieEndTime.isBefore(hallScreeningStartTime))))
                 throw new SertiaException("The screening time conflict an other screening's time in the current hall.");
-
         }
     }
 
