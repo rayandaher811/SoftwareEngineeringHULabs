@@ -52,27 +52,23 @@ public class ClientCatalogControl extends ClientControl {
     public SertiaBasicResponse tryUpdateScreeningTime(ClientScreening screening) {
         return client.request(new ScreeningTimeUpdateRequest(screening), SertiaBasicResponse.class);
     }
-//
-//    public SertiaBasicResponse tryAddScreening(int movieId, LocalDateTime screeningTime, int hallId) {
-//        return tryAddScreening(movieId, screeningTime, 0, hallId);
-//    }
-//
-//    public SertiaBasicResponse tryAddScreening(int movieId, LocalDateTime screeningTime, double price, int hallId) {
-//        return client.request(new AddScreeningRequest(movieId, hallId, screeningTime, price), SertiaBasicResponse.class);
-//    }
-//
-//    public SertiaBasicResponse tryRemoveScreening(int screeningId) {
-//        return client.request(new RemoveScreeningRequest(screeningId), SertiaBasicResponse.class);
-//    }
-//
-//    public SertiaBasicResponse tryAddStreaming(int movieId, double pricePerStream) {
-//        return client.request(new StreamingAdditionRequest(movieId, pricePerStream), SertiaBasicResponse.class);
-//    }
-//
-//    public SertiaBasicResponse tryRemoveStreaming(int movieId) {
-//        return client.request(new StreamingRemovalRequest(movieId), SertiaBasicResponse.class);
-//    }
-//
+
+    public SertiaBasicResponse tryAddScreening(int movieId, LocalDateTime screeningTime, double price, int hallNumber, int cinemaId) {
+        return client.request(new AddScreeningRequest(movieId, hallNumber, screeningTime, price, cinemaId), SertiaBasicResponse.class);
+    }
+
+    public SertiaBasicResponse tryRemoveScreening(int screeningId) {
+        return client.request(new RemoveScreeningRequest(screeningId), SertiaBasicResponse.class);
+    }
+
+    public SertiaBasicResponse tryAddStreaming(int movieId, double pricePerStream) {
+        return client.request(new StreamingAdditionRequest(movieId, pricePerStream), SertiaBasicResponse.class);
+    }
+
+    public SertiaBasicResponse tryRemoveStreaming(int movieId) {
+        return client.request(new StreamingRemovalRequest(movieId), SertiaBasicResponse.class);
+    }
+
     public List<SertiaMovie> requestAllMoviesCatalog() {
         SertiaCatalogResponse response = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class);
         if (response.isSuccessful) {
@@ -81,23 +77,23 @@ public class ClientCatalogControl extends ClientControl {
 
         return Collections.emptyList();
     }
-//
-//    public List<SertiaMovie> getOnlineMovies() {
-//        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-//
-//        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isStreamable).collect(Collectors.toList());
-//    }
-//
-//    public CinemaAndHallsResponse getCinemasAndHalls() {
-//        return client.request(new RequestCinemasAndHalls(), CinemaAndHallsResponse.class);
-//    }
-//
-//    public List<SertiaMovie> getComingSoonMovies() {
-//        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-//
-//        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isComingSoon).collect(Collectors.toList());
-//    }
-//
+
+    public List<SertiaMovie> getOnlineMovies() {
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+
+        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isStreamable).collect(Collectors.toList());
+    }
+
+    public CinemaAndHallsResponse getCinemasAndHalls() {
+        return client.request(new RequestCinemasAndHalls(), CinemaAndHallsResponse.class);
+    }
+
+    public List<SertiaMovie> getComingSoonMovies() {
+        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
+
+        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isComingSoon).collect(Collectors.toList());
+    }
+
     public List<SertiaMovie> getAvailableMovies() {
         List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
 
