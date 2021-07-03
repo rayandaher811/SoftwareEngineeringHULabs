@@ -33,7 +33,7 @@ public class ClientPurchaseControl extends ClientControl {
         return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
     }
 
-    public VoucherPaymentResponse purchaseVoucher(BasicPriceChangeRequest request) {
+    public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {
         return client.request(request, VoucherPaymentResponse.class);
     }
 
