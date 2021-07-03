@@ -31,7 +31,7 @@
                        textAlignment="CENTER" disable="true"/>
                 <TextField fx:id="screeningTimeTxt" alignment="CENTER" minWidth="180.0" maxWidth="180.0"
                            disable="true"/>
-                <Button fx:id="continuePurchase" minWidth="180.0" maxWidth="180.0" text="הבא"/>
+                <Button fx:id="continuePurchase" onAction="#next" minWidth="180.0" maxWidth="180.0" text="הבא"/>
             </VBox>
         </center>
         <bottom>

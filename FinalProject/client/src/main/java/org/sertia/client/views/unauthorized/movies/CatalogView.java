@@ -120,17 +120,31 @@ public class CatalogView extends BasicPresenter implements Initializable {
         Accordion comingSoonAccordion = new Accordion();
         ArrayList<TitledPane> values = new ArrayList<>();
         for (SertiaMovie sertiaMovie : comingSoonMovies.getValue()) {
-            TitledPane p = new TitledPane();
-            p.setText(sertiaMovie.getMovieDetails().getName());
-            p.setOnMouseClicked(mouseEvent -> {
+            ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
+            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+            Button moreInfoBtn = new Button();
+            moreInfoBtn.setText(MOVIE_DETAILS);
+            moreInfoBtn.setOnMouseClicked(mouseEvent -> {
+                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
                 try {
-                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), false);
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-            values.add(p);
+            HBox horizontalView = new HBox();
+            horizontalView.getChildren().addAll(moreInfoBtn);
+
+            buttonObservableList.addAll(moreInfoBtn);
+
+            allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
+            Accordion specificCinema = new Accordion();
+            TitledPane tiledPane = new TitledPane(sertiaMovie.getMovieDetails().getName(), specificCinema);
+            tiledPane.setAnimated(true);
+            tiledPane.setText(sertiaMovie.getMovieDetails().getName());
+            tiledPane.setContent(horizontalView);
+            specificCinema.getPanes().add(tiledPane);
+            values.add(tiledPane);
         }
         comingSoonAccordion.getPanes().addAll(values);
         TitledPane tiledPane = new TitledPane("comingSoonMovies", comingSoonAccordion);
