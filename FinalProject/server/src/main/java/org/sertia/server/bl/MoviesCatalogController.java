@@ -187,12 +187,13 @@ public class MoviesCatalogController implements Reportable {
 
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            Movie movie = getMovieById(addScreeningRequest.movieId, session);
             Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
 
             if(hall == null)
                 throw new SertiaException(addScreeningRequest.hallId + " Hall Id is not found.");
 
-            Movie movie = getMovieById(addScreeningRequest.movieId, session);
+            validateScreeningTime(addScreeningRequest.screeningTime, movie, hall);
 
             Optional<ScreenableMovie> screenableMovieOptional = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId);
             if(!screenableMovieOptional.isPresent()) {
@@ -202,13 +203,32 @@ public class MoviesCatalogController implements Reportable {
                 session.save(screenableMovie);
             }
 
-            ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, addScreeningRequest.movieId);
+
+
             Screening screening = new Screening();
-            screening.setMovie(screenableMovie);
+            screening.setMovie(screenableMovieOptional.get());
             screening.setScreeningTime(addScreeningRequest.screeningTime);
 
             screening.setHall(hall);
             session.save(screening);
+        }
+    }
+
+    private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
+        LocalDateTime movieStartTime = screeningDateTime;
+        LocalDateTime movieEndTime = screeningDateTime.plus(movie.getDuration());
+
+        for (Screening screening : hall.getScreenings()) {
+            LocalDateTime hallScreeningStartTime = screening.getScreeningTime();
+            LocalDateTime hallScreeningEndTime = screening.getScreeningTime().plus(movie.getDuration());
+
+            // Making sure all hall screenings does not conflict the current screening
+            if(!((movieStartTime.isAfter(hallScreeningEndTime) && movieStartTime.isAfter(hallScreeningStartTime) &&
+                    movieEndTime.isAfter(hallScreeningEndTime) && movieEndTime.isAfter(hallScreeningStartTime)) ||
+                 (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
+                    movieEndTime.isBefore(hallScreeningEndTime) && movieEndTime.isBefore(hallScreeningStartTime))))
+                throw new SertiaException("The screening time conflict an other screening's time in the current hall.");
+
         }
     }
 
@@ -297,6 +317,9 @@ public class MoviesCatalogController implements Reportable {
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
+            if(getMovieStreaming(session, movieId) != null)
+                throw new SertiaException("The movie is already being streamed.");
+
             Movie movie = getMovieById(movieId, session);
             Streaming newStreaming = new Streaming(movie, pricePerStream);
 
