@@ -2,7 +2,10 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.*;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.ClientMovie;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
 import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
@@ -16,8 +19,6 @@ import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -341,7 +342,14 @@ public class MoviesCatalogController implements Reportable {
 
     private Map<ScreenableMovie, List<Screening>> getScreenings() {
         List<Screening> screenings = DbUtils.getAll(Screening.class);
-        return getScreenableMovieMap(screenings);
+        List<ScreenableMovie> movies = DbUtils.getAll(ScreenableMovie.class);
+        Map<ScreenableMovie, List<Screening>> moviesWithScreeningsMap = getScreenableMovieMap(screenings);
+
+        for (ScreenableMovie screenableMovie : movies) {
+            moviesWithScreeningsMap.putIfAbsent(screenableMovie, Collections.emptyList());
+        }
+
+        return moviesWithScreeningsMap;
     }
 
     private Map<ScreenableMovie, List<Screening>> getScreenableMovieMap(List<Screening> screenings) {
@@ -354,6 +362,8 @@ public class MoviesCatalogController implements Reportable {
         clientMovie.hebrewName = movie.getHebrewName();
         clientMovie.mainActorName = movie.getMainActor().getFullName();
         clientMovie.producerName = movie.getProducer().getFullName();
+        clientMovie.description = movie.getDescription();
+        clientMovie.posterImageUrl = movie.getImageUrl();
 
         return clientMovie;
     }
