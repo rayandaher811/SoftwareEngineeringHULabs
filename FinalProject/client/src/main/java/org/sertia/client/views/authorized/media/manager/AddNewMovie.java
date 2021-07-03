@@ -65,7 +65,7 @@ public class AddNewMovie extends BasicPresenter {
                 producerNameTxt.getText(), moviePhotoUrl.getText(), Duration.ZERO);
 
         List<ClientScreening> screeningList = new ArrayList<>();
-        double ticketPrice = Double.valueOf(ticketPriceTxt.getText());
+        double ticketPrice = Double.parseDouble(ticketPriceTxt.getText());
         boolean isStreamable = availableOnline.isSelected();
         boolean isComingSoon = isComingSoonCb.isSelected();
         SertiaMovie movie = new SertiaMovie(clientMovie, screeningList, ticketPrice, isStreamable, isComingSoon);

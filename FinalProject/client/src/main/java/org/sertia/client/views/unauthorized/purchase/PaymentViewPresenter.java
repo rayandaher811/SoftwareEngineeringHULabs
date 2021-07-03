@@ -7,16 +7,20 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
+import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
+import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 public class PaymentViewPresenter extends BasicPresenterWithValidations implements Initializable {
 
@@ -27,6 +31,9 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
     public ComboBox creditCardProviderCombo;
     public TextField cvv;
     public Label topLabel;
+    public TextField cardHolderId;
+    public TextField cardHolderEmailTxt;
+    public TextField cardHolderPhoneTxt;
 
     @FXML
     public void back() {
@@ -46,7 +53,21 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
     @FXML
     public void pay() {
         if (isInputValid()) {
-            System.out.println("BGBG request payment and book ");
+            List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
+
+            ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
+                    new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
+                            cardHolderName.getText(),
+                            creditCardNumber.getText(),
+                            cardHolderEmailTxt.getText(),
+                            cardHolderPhoneTxt.getText(),
+                            cvv.getText(),
+                            LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                    1, 0, 0),
+                            selectedSeats,
+                            ScreeningHolder.getInstance().getScreening().getScreeningId());
+            ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
         }
 
     }
@@ -69,18 +90,30 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
     protected boolean isDataValid() {
         boolean isCardHolderNameValid = isFullNameValid(cardHolderName.getText());
         boolean isCreditCardProviderValid = isCreditCardProviderCorrect();
-        boolean isCreditCardCorrect = false;
+//        boolean isCreditCardCorrect = false;
         if (isCreditCardProviderValid) {
-            isCreditCardCorrect = isCreditCardCorrect(creditCardNumber.getText(),
-                    CreditCardProvider.valueOf(creditCardProviderCombo.getSelectionModel().getSelectedItem().toString()));
+//            isCreditCardCorrect = isCreditCardCorrect(creditCardNumber.getText(),
+//                    CreditCardProvider.valueOf(creditCardProviderCombo.getSelectionModel().getSelectedItem().toString()));
         }
         boolean isCvvCorrect = isCvvCorrect();
-        return isCardHolderNameValid && isCreditCardProviderValid && isCreditCardCorrect && isCvvCorrect;
+        boolean isEmailCorrect = isEmailValid(cardHolderEmailTxt.getText());
+        boolean isPhoneCorrcet = isPhoneValid(cardHolderPhoneTxt.getText());
+        boolean isIdNumberCorrect = isIdCorrcet();
+        return isCardHolderNameValid && isCreditCardProviderValid /*&& isCreditCardCorrect*/
+                && isCvvCorrect && isEmailCorrect && isPhoneCorrcet && isIdNumberCorrect;
     }
 
     private boolean isCvvCorrect() {
         if (cvv.getText() == null || cvv.getText().isBlank() || cvv.getText().isEmpty() || cvv.getText().length() != 3) {
             userMistakes.add("Please fill your cvv, it's in size 3 exactly");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isIdCorrcet() {
+        if (cardHolderId.getText() == null || cardHolderId.getText().isBlank() || cardHolderId.getText().isEmpty() || cardHolderId.getText().length() != 9) {
+            userMistakes.add("Please fill your ID number, it should be in length of 9");
             return false;
         }
         return true;

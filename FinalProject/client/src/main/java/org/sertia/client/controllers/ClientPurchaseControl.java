@@ -9,6 +9,11 @@ import java.util.Collections;
 
 public class ClientPurchaseControl extends ClientControl {
 
+    private static final ClientPurchaseControl instance = new ClientPurchaseControl();
+
+    public static ClientPurchaseControl getInstance() {
+        return instance;
+    }
     public ClientSeatMapResponse getScreeningSeatMap(int screeningId) {
         ClientSeatMapResponse response = client.request(new GetScreeningSeatMap(screeningId), ClientSeatMapResponse.class);
         if (response.isSuccessful) {

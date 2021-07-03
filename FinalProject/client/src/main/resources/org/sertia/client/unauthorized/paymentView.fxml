@@ -18,6 +18,12 @@
         <center>
             <VBox alignment="CENTER" spacing="5">
                 <TextField fx:id="cardHolderName" maxWidth="180" alignment="CENTER" promptText="שם בעל הכרטיס"/>
+                <TextField fx:id="cardHolderId" maxWidth="180" maxHeight="300" alignment="CENTER"
+                           promptText="ת.ז."/>
+                <TextField fx:id="cardHolderEmailTxt" maxWidth="180" maxHeight="300" alignment="CENTER"
+                           promptText="דואר אלקטרוני"/>
+                <TextField fx:id="cardHolderPhoneTxt" maxWidth="180" maxHeight="300" alignment="CENTER"
+                           promptText="טלפון"/>
                 <TextField fx:id="creditCardNumber" maxWidth="180" maxHeight="300" alignment="CENTER"
                            promptText="מספר כרטיס"/>
                 <ComboBox fx:id="creditCardProviderCombo" maxWidth="180" minWidth="180"/>

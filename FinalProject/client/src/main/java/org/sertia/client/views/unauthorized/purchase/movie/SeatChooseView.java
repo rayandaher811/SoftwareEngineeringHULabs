@@ -4,11 +4,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import org.sertia.client.App;
-import org.sertia.client.boxes.SeatBox;
+import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.global.NumberOfTicketsHolder;
+import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.screening.ticket.HallSeat;
+import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,37 +24,49 @@ import java.util.ResourceBundle;
 
 public class SeatChooseView extends BasicPresenter implements Initializable {
 
-    public int hallName;
-    public int continueToPaymentButton;
     @FXML
     private GridPane movietheater;
-    private static final int num_row = 5;
-    private static final int num_seats_in_row = 5;
+    private static int num_row;
+    private static int num_seats_in_row;
     private boolean[][] seatMap;
-    private static int amoutOfTickets = 3;
+    private int amoutOfTickets;
     private List<Button> seats;
     private List<String> order;
-
-    @FXML
-    private TableView hallSeatsMap;
+    private List<HallSeat> hallSeats;
 
     @FXML
     public void toMain() throws IOException {
         App.setRoot("unauthorized/purchaseMovieTickets");
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        amoutOfTickets = NumberOfTicketsHolder.getInstance().getNumberOfTickets();
+        ClientScreening screening = ScreeningHolder.getInstance().getScreening();
+        ClientSeatMapResponse seatMapResponse =
+                ClientPurchaseControl.getInstance().getScreeningSeatMap(screening.getScreeningId());
+        hallSeats = seatMapResponse.getHallSeats();
+        num_row = 0;
+        num_seats_in_row = 0;
+
+        for (HallSeat seat : hallSeats) {
+            num_row = Math.max(num_row, seat.getRow());
+            num_seats_in_row = Math.max(num_seats_in_row, seat.getNumberInRow());
+        }
+
         try {
-            seats = new ArrayList<Button>();
-            order = new ArrayList<String>();
-            seatMap = new boolean[][]{{true, true, false, true, false}, {true, true, false, true, false}, {true, true, false, true, false}, {true, true, false, true, false}, {true, true, false, true, false}};
+            seats = new ArrayList<>();
+            order = new ArrayList<>();
+            seatMap = new boolean[num_row + 1][num_seats_in_row + 1];
+            for (HallSeat seat : hallSeats) {
+                seatMap[seat.getRow()][seat.getNumberInRow()] = !seat.isTaken;
+            }
             for (int indexRow = 0; indexRow < num_row; indexRow++) {
                 for (int indexSeat = 0; indexSeat < num_seats_in_row; indexSeat++) {
-                    Button seat = new Button("" + (indexSeat + 1));
-                    if (seatMap[indexRow][indexSeat])//available
+                    Button seat = new Button(String.valueOf(indexSeat + 1));
+                    if (seatMap[indexRow][indexSeat]) {
                         seat.setStyle("-fx-background-color: #00ff00");
-                    else {
+                    } else {
                         seat.setStyle("-fx-background-color: #FF0000");
                         seat.setDisable(true);
                     }
@@ -63,7 +81,6 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
                             amoutOfTickets--;
                             order.add(seat.getId());
                             if ((amoutOfTickets) == 0) {
-                                System.out.println("No more tickets");
                                 disableAllButtons();
                             }
                         }
@@ -76,7 +93,7 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
                 }
             }
         } catch (Exception e) {
-
+            System.out.println(e);
         }
 
     }
@@ -86,7 +103,6 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
             if (b.getStyle() == "-fx-background-color: #00ff00")
                 b.setDisable(true);
         }
-        System.out.println(order.toString());
     }
 
     private void continueSelection() {
@@ -99,19 +115,49 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
         }
     }
 
+    private int getSeatId(int row, int seatInRow) {
+        return hallSeats
+                .stream()
+                .filter(hallSeat -> hallSeat.getNumberInRow() == seatInRow && hallSeat.getRow() == row)
+                .findFirst()
+                .get().getId();
+    }
+
     @FXML
     private void resetOrderSelection() {
-        for (Button b : seats) {
-            int seatRow = Integer.parseInt(b.getId().split("_")[2]);
-            int seatCol = Integer.parseInt(b.getId().split("_")[4]);
+        for (Button btn : seats) {
+            int seatRow = getSeatRow(btn.getId());
+            int seatCol = getSeatCol(btn.getId());
             if (seatMap[seatRow][seatCol]) {
-                b.setDisable(false);
+                btn.setDisable(false);
                 if (seatMap[seatRow][seatCol]) {
-                    b.setStyle("-fx-background-color: #00ff00");
+                    btn.setStyle("-fx-background-color: #00ff00");
                 }
-                amoutOfTickets = 3;
+                amoutOfTickets = NumberOfTicketsHolder.getInstance().getNumberOfTickets();
                 order.clear();
             }
         }
     }
+
+    @FXML
+    private void proceed() {
+        List<Integer> seatsIds = new ArrayList<>();
+        order.forEach(s -> seatsIds.add(getSeatId(getSeatRow(s), getSeatCol(s))));
+
+        SeatsHolder.getInstance().setSeatsIdsList(seatsIds);
+        try {
+            App.setRoot("unauthorized/paymentView");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getSeatRow(String id) {
+        return Integer.parseInt(id.split("_")[2]);
+    }
+
+    private int getSeatCol(String id) {
+        return Integer.parseInt(id.split("_")[4]);
+    }
+
 }

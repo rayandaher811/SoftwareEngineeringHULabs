@@ -12,4 +12,8 @@ public class ClientSeatMapResponse extends SertiaBasicResponse {
         super(isSuccessful);
         this.hallSeats = hallSeats;
     }
+
+    public List<HallSeat> getHallSeats() {
+        return hallSeats;
+    }
 }

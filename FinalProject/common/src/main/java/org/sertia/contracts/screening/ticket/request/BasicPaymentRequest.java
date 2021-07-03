@@ -13,4 +13,18 @@ public class BasicPaymentRequest extends SertiaBasicRequest {
 	public String cardHolderPhone;
 	public String cvv;
 	public LocalDateTime expirationDate;
+
+	public BasicPaymentRequest() {
+	}
+
+	public BasicPaymentRequest(String cardHolderId, String cardHolderName, String creditCardNumber,
+							   String cardHolderEmail, String cardHolderPhone, String cvv, LocalDateTime expirationDate) {
+		this.cardHolderId = cardHolderId;
+		this.cardHolderName = cardHolderName;
+		this.creditCardNumber = creditCardNumber;
+		this.cardHolderEmail = cardHolderEmail;
+		this.cardHolderPhone = cardHolderPhone;
+		this.cvv = cvv;
+		this.expirationDate = expirationDate;
+	}
 }

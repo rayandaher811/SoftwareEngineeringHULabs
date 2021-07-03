@@ -1,6 +1,5 @@
 package org.sertia.client.global;
 
-import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 public class SertiaMovieHolder {

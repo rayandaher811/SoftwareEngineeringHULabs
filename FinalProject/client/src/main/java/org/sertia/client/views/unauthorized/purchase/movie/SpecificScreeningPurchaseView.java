@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.ClientMovie;
@@ -50,13 +51,15 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
     }
 
     public void next() {
-        if (isInputValid()){
+        if (isInputValid()) {
             try {
-//            if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()) {
-                if (true) {
+                NumberOfTicketsHolder.getInstance().setNumberOfTickets(
+                        Integer.parseInt(numberOfTicketsToPurchase.getText()));
+                if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()) {
                     popupAlert();
                     App.setRoot("unauthorized/paymentView");
                 } else {
+
                     App.setRoot("unauthorized/seatMapView");
                 }
             } catch (Exception e) {

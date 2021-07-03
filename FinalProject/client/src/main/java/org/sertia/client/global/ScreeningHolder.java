@@ -4,6 +4,7 @@ import org.sertia.contracts.movies.catalog.ClientScreening;
 
 public class ScreeningHolder {
     private ClientScreening screening;
+
     private final static ScreeningHolder instance = new ScreeningHolder();
 
     public static ScreeningHolder getInstance() {

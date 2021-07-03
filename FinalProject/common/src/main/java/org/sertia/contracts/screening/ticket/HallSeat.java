@@ -15,4 +15,12 @@ public class HallSeat  implements Serializable {
 	public HallSeat(int id) {
 		this.id = id;
 	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getNumberInRow() {
+		return numberInRow;
+	}
 }
