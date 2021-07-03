@@ -11,11 +11,10 @@ import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
 import javax.naming.OperationNotSupportedException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.NotSupportedException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -149,13 +148,13 @@ public class ComplaintsController implements Reportable {
 	}
 
 	@Override
-	public ClientReport[] createSertiaReports() {
-		return new ClientReport[0];
+	public List<ClientReport> createSertiaReports() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public ClientReport[] createCinemaReports(String cinemaId) {
-		return new ClientReport[0];
+	public List<ClientReport> createCinemaReports(String cinemaId) {
+		return Collections.emptyList();
 	}
 
 	private ClientOpenComplaint parseDlComplaintToClientComplaint(CostumerComplaint complaint) throws NotSupportedException {

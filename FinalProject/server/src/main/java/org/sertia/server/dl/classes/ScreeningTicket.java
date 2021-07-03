@@ -1,6 +1,7 @@
 package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="screening_tickets")
@@ -19,6 +20,8 @@ public class ScreeningTicket {
     @ManyToOne
     @JoinColumn(name="screening_screening_id", nullable=false)
     private Screening screening;
+
+    private LocalDateTime purchaseDate;
 
     public ScreeningTicket() {
     }
@@ -65,5 +68,13 @@ public class ScreeningTicket {
 
     public void setScreening(Screening screening) {
         this.screening = screening;
+    }
+    public LocalDateTime getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public ScreeningTicket setPurchaseDate(LocalDateTime purchaseDate) {
+        this.purchaseDate = purchaseDate;
+        return this;
     }
 }

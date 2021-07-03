@@ -15,6 +15,8 @@ import org.sertia.server.dl.classes.Streaming;
 import org.sertia.server.dl.classes.StreamingLink;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,6 +38,7 @@ public class StreamingTicketController implements Reportable {
         streamingLink.setActivationEnd(startTime.plusDays(availabilityDays));
         streamingLink.setPaidPrice(streaming.getExtraDayPrice() * availabilityDays);
         streamingLink.setLink("http://Sertia/link=" + UUID.randomUUID());
+        streamingLink.setPurchaseDate(LocalDateTime.now());
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             session.save(streamingLink);
@@ -75,12 +78,12 @@ public class StreamingTicketController implements Reportable {
     }
 
     @Override
-    public ClientReport[] createSertiaReports() {
-        return new ClientReport[0];
+    public List<ClientReport> createSertiaReports() {
+        return Collections.emptyList();
     }
 
     @Override
-    public ClientReport[] createCinemaReports(String cinemaId) {
-        return new ClientReport[0];
+    public List<ClientReport> createCinemaReports(String cinemaId) {
+        return Collections.emptyList();
     }
 }

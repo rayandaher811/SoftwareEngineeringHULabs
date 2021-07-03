@@ -2,14 +2,17 @@ package org.sertia.server.bl.Services;
 
 import org.sertia.contracts.reports.ClientReport;
 
+import java.util.List;
+
 public interface Reportable {
 
-	ClientReport[] createSertiaReports();
+	List<ClientReport> createSertiaReports();
 
 	/**
-	 * 
+	 *
 	 * @param cinemaId
+	 * @return
 	 */
-	ClientReport[] createCinemaReports(String cinemaId);
+	List<ClientReport> createCinemaReports(String cinemaId);
 
 }

@@ -16,6 +16,7 @@ import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
 import org.sertia.server.dl.classes.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -121,13 +122,13 @@ public class ScreeningTicketController implements Reportable {
     }
 
     @Override
-    public ClientReport[] createSertiaReports() {
-        return new ClientReport[0];
+    public List<ClientReport> createSertiaReports() {
+        return Collections.emptyList();
     }
 
     @Override
-    public ClientReport[] createCinemaReports(String cinemaId) {
-        return new ClientReport[0];
+    public List<ClientReport> createCinemaReports(String cinemaId) {
+        return Collections.emptyList();
     }
 
     private boolean isPaymentRequestValid(BasicPaymentRequest clientPaymentRequest) {
@@ -209,6 +210,7 @@ public class ScreeningTicketController implements Reportable {
         ticket.setVoucher(false);
         ticket.setPaidPrice(screening.getScreenableMovie().getTicketPrice());
         ticket.setSeat(requestedSeat);
+        ticket.setPurchaseDate(LocalDateTime.now());
         return ticket;
     }
 

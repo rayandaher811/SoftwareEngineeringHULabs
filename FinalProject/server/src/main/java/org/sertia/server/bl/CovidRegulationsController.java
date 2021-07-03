@@ -94,8 +94,7 @@ public class CovidRegulationsController {
 
 			session.beginTransaction();
 
-			for (Screening screening :
-					screenings) {
+			for (Screening screening : screenings) {
 				// Canceling all screenings in the inserted DateTime range
 				if(screening.getScreeningTime().isBefore(endDate) &&
 						screening.getScreeningTime().isAfter(startDate))

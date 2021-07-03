@@ -20,6 +20,8 @@ public class StreamingLink {
 
     private String link;
 
+    private LocalDateTime purchaseDate;
+
     @ManyToOne
     @JoinColumn(name="streaming_streaming_id", nullable=false)
     private Streaming movie;
@@ -80,6 +82,14 @@ public class StreamingLink {
 
     public void setCustomerPaymentDetails(CustomerPaymentDetails customerPaymentDetails) {
         this.customerPaymentDetails = customerPaymentDetails;
+    }
+
+    public LocalDateTime getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 }
 
