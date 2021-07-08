@@ -39,9 +39,20 @@ public class EmployeesFormPresenter implements Initializable {
     }
 
     @FXML
+    private void editTavSagolRegulations() throws IOException {
+        App.setRoot("authorized/customer.support/updateTavSagolRegulations");
+    }
+
+    @FXML
     private void statisticsView() throws IOException {
         App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
+
+    @FXML
+    private void handleComplaints() throws IOException {
+        App.setRoot("authorized/customer.support/handleComplaints");
+    }
+
 
     @FXML
     private void updateTicketsPrice() throws IOException {
@@ -64,6 +75,8 @@ public class EmployeesFormPresenter implements Initializable {
         switch (userRole) {
             case MediaManager -> initializeMediaManagerView();
             case BranchManager -> initializeSertiaManagerView();
+            case CinemaManager -> initializeCinemaManagerView();
+            case CostumerSupport -> initializeCustomerSupportView();
         }
         topLabel.setText(getHelloSentenceByRole(userRole) + ", " + HELLO_SENTENCE);
     }
@@ -81,6 +94,54 @@ public class EmployeesFormPresenter implements Initializable {
             default:
                 return "";
         }
+    }
+
+    private void initializeCinemaManagerView() {
+        Button priceChangeRequestsApproval = new Button();
+        priceChangeRequestsApproval.setText(PRICE_CHANGE_APPROVAL);
+        priceChangeRequestsApproval.setOnMouseClicked(mouseEvent -> {
+            try {
+                priceChangeRequestsApprovals();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        priceChangeRequestsApproval.setMinWidth(200.0);
+        Button statisticsView = new Button();
+        statisticsView.setText(STATISTICS_VIEW);
+        statisticsView.setMinWidth(200.0);
+        statisticsView.setOnMouseClicked(mouseEvent -> {
+            try {
+                statisticsView();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        buttonsVbox.getChildren().addAll(priceChangeRequestsApproval, statisticsView);
+    }
+
+    private void initializeCustomerSupportView() {
+        Button priceChangeRequestsApproval = new Button();
+        priceChangeRequestsApproval.setText(UPDATE_TAV_SAGOL_REGULATIONS);
+        priceChangeRequestsApproval.setOnMouseClicked(mouseEvent -> {
+            try {
+                editTavSagolRegulations();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        priceChangeRequestsApproval.setMinWidth(200.0);
+        Button statisticsView = new Button();
+        statisticsView.setText(HADNLE_COMLAINTS);
+        statisticsView.setMinWidth(200.0);
+        statisticsView.setOnMouseClicked(mouseEvent -> {
+            try {
+                handleComplaints();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        buttonsVbox.getChildren().addAll(priceChangeRequestsApproval, statisticsView);
     }
 
     private void initializeSertiaManagerView() {

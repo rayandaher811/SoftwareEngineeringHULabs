@@ -17,4 +17,9 @@ public class Constants {
     public static final String BUY_STREAMING_LINK = "רכישת קישור";
     public static final String PRICE_CHANGE_APPROVAL = "אישור בקשות שינוי מחירים";
     public static final String STATISTICS_VIEW = "צפיה בדוחות";
+    public static final String UPDATE_TAV_SAGOL_REGULATIONS = "עדכון מדיניות תו סגול";
+    public static final String HADNLE_COMLAINTS = "טיפול בתלונות";
+    public static final String REFUND_EMOUNT = "סכום לזיכוי";
+    public static final String RESOLVE_COMPLAINT_BTN_TXT = "קבל תלונה";
+    public static final String REJECT_COMPLAINT_BTN_TXT = "דחה תלונה";
 }

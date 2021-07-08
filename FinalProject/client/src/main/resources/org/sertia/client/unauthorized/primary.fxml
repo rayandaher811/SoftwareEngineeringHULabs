@@ -7,14 +7,14 @@
 <?import javafx.scene.text.Font?>
 <VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.PrimaryController">
-    <Label alignment="TOP_CENTER" text="ברוך הבא למערכת הסרטייה">
+    <Label alignment="TOP_CENTER" text="ברוכה הבאה למערכת הסרטייה">
         <font>
             <Font size="26.0"/>
         </font>
     </Label>
     <Group>
         <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="10">
-            <Button onAction="#toLoginView" text="התחברות עובדים" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toLoginView" text="התחברות עובדות" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toMoviesCatalog" text="קטלוג הסרטים ברשת" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toAddComplaintView" text="הגשת תלונה" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toPrepaidPurchaseView" text="רכישת כרטיסייה" minWidth="180.0" maxWidth="180.0"/>

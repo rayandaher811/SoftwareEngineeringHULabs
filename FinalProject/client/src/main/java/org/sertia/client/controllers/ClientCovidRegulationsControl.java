@@ -1,6 +1,10 @@
 package org.sertia.client.controllers;
 
+import java.time.LocalDateTime;
+import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.covidRegulations.requests.CancelAllScreeningsDueCovidRequest;
 import org.sertia.contracts.covidRegulations.requests.GetCovidRegulationsStatusRequest;
+import org.sertia.contracts.covidRegulations.requests.UpdateCovidCrowdingRegulationsRequest;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 
 public class ClientCovidRegulationsControl extends ClientControl {
@@ -23,11 +27,11 @@ public class ClientCovidRegulationsControl extends ClientControl {
 //        return client.request(new ActiveCovidRegulationsRequest(), SertiaBasicResponse.class);
 //    }
 //
-//    public SertiaBasicResponse cancelAllScreeningsDueCovid(LocalDateTime cancellationStartDate, LocalDateTime cancellationEndDate) {
-//        return client.request(new CancelAllScreeningsDueCovidRequest(cancellationStartDate, cancellationEndDate), SertiaBasicResponse.class);
-//    }
-//
-//    public SertiaBasicResponse UpdateCovidCrowdingRegulationsRequest(int newMaxNumberOfPeople) {
-//        return client.request(new UpdateCovidCrowdingRegulationsRequest(newMaxNumberOfPeople), SertiaBasicResponse.class);
-//    }
+    public SertiaBasicResponse cancelAllScreeningsDueCovid(LocalDateTime cancellationStartDate, LocalDateTime cancellationEndDate) {
+        return client.request(new CancelAllScreeningsDueCovidRequest(cancellationStartDate, cancellationEndDate), SertiaBasicResponse.class);
+    }
+
+    public SertiaBasicResponse updateCovidCrowdingRegulationsRequest(int newMaxNumberOfPeople) {
+        return client.request(new UpdateCovidCrowdingRegulationsRequest(newMaxNumberOfPeople), SertiaBasicResponse.class);
+    }
 }

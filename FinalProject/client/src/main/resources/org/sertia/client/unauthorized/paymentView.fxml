@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.sertia.client.views.unauthorized.purchase.PaymentViewPresenter">
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.purchase.PaymentViewPresenter">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="פרטי תשלום"
-                   BorderPane.alignment="CENTER">
+            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="פרטי תשלום" BorderPane.alignment="CENTER">
                 <font>
-                    <Font size="26.0"/>
+                    <Font size="26.0" />
                 </font>
             </Label>
         </top>
         <center>
             <VBox alignment="CENTER" spacing="5">
-                <TextField fx:id="cardHolderName" maxWidth="180" alignment="CENTER" promptText="שם בעל הכרטיס"/>
-                <TextField fx:id="cardHolderId" maxWidth="180" maxHeight="300" alignment="CENTER"
-                           promptText="ת.ז."/>
-                <TextField fx:id="cardHolderEmailTxt" maxWidth="180" maxHeight="300" alignment="CENTER"
-                           promptText="דואר אלקטרוני"/>
-                <TextField fx:id="cardHolderPhoneTxt" maxWidth="180" maxHeight="300" alignment="CENTER"
-                           promptText="טלפון"/>
-                <TextField fx:id="creditCardNumber" maxWidth="180" maxHeight="300" alignment="CENTER"
-                           promptText="מספר כרטיס"/>
-                <ComboBox fx:id="creditCardProviderCombo" maxWidth="180" minWidth="180"/>
-                <Label>תוקף</Label>
-                <HBox alignment="CENTER" spacing="5" maxWidth="180" minWidth="180">
-                    <VBox alignment="CENTER" spacing="5" maxWidth="90" minWidth="90">
-                        <Label>חודש</Label>
-                        <ComboBox fx:id="expirationMonthCombo"/>
-                    </VBox>
-                    <VBox alignment="CENTER" spacing="5" maxWidth="90" minWidth="90">
-                        <Label>שנה</Label>
-                        <ComboBox fx:id="expirationYearCombo"/>
-                    </VBox>
-                </HBox>
-                <TextField fx:id="cvv" maxWidth="180" alignment="CENTER" promptText="CVV"/>
-                <Button fx:id="payButton" onAction="#pay" text="הבא" maxWidth="180" minWidth="180"/>
+                <ChoiceBox fx:id="paymentMehod" accessibleText="שיטת תשלום" />
+                    <Group fx:id="creditCardFieldsGroup">
+                        <TextField fx:id="cardHolderName" alignment="CENTER" maxWidth="180" promptText="שם בעל הכרטיס" />
+                        <TextField fx:id="cardHolderId" alignment="CENTER" maxHeight="300" maxWidth="180" promptText="ת.ז." />
+                        <TextField fx:id="cardHolderEmailTxt" alignment="CENTER" maxHeight="300" maxWidth="180" promptText="דואר אלקטרוני" />
+                        <TextField fx:id="cardHolderPhoneTxt" alignment="CENTER" maxHeight="300" maxWidth="180" promptText="טלפון" />
+                        <TextField fx:id="creditCardNumber" alignment="CENTER" maxHeight="300" maxWidth="180" promptText="מספר כרטיס" />
+                        <ComboBox fx:id="creditCardProviderCombo" maxWidth="180" minWidth="180" />
+                        <Label fx:id="expirationLabel">תוקף</Label>
+                        <HBox fx:id="expirationHbox" alignment="CENTER" maxWidth="180" minWidth="180" spacing="5">
+                            <VBox fx:id="monthVbox" alignment="CENTER" maxWidth="90" minWidth="90" spacing="5">
+                                <Label fx:id="monthLabel">חודש</Label>
+                                <ComboBox fx:id="expirationMonthCombo" />
+                            </VBox>
+                            <VBox fx:id="yearVbox" alignment="CENTER" maxWidth="90" minWidth="90" spacing="5">
+                                <Label fx:id="yearLabel">שנה</Label>
+                                <ComboBox fx:id="expirationYearCombo" />
+                            </VBox>
+                        </HBox>
+                        <TextField fx:id="cvv" alignment="CENTER" maxWidth="180" promptText="CVV" />
+                    </Group>
+                    <Group fx:id="prepaidTicketsFieldsGroup">
+                        <TextField fx:id="voucherIdTxt" alignment="CENTER" maxWidth="180" promptText="מזהה כרטיסיה" />
+                        <TextField fx:id="balanceTxt" alignment="CENTER" editable="false" maxWidth="180" />
+                        <Button fx:id="checkBalanceBtn" maxWidth="180" minWidth="180" onAction="#checkBalance" text="ברר" />
+                    </Group>
+                <Button fx:id="payButton" maxWidth="180" minWidth="180" onAction="#pay" text="הבא" />
             </VBox>
         </center>
         <bottom>
-            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
-                <Button alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0" maxHeight="26.0"
-                        minWidth="180.0" maxWidth="180.0"/>
+            <VBox alignment="CENTER" spacing="7" BorderPane.alignment="CENTER">
+                <Button alignment="CENTER" maxHeight="26.0" maxWidth="180.0" minHeight="26.0" minWidth="180.0" onAction="#back" text="חזור" />
             </VBox>
         </bottom>
     </BorderPane>

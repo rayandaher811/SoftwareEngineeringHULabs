@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.authorized.customer.support.HandleComplaintsPresenter">
+    <BorderPane prefHeight="368.0" prefWidth="618.0">
+        <top>
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="טיפול בתלונות"
+                   BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="6">
+                <Accordion fx:id="complaintsAccordion"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" alignment="CENTER" onAction="#back" text="חזור" minHeight="26.0"
+                        maxHeight="26.0" minWidth="180.0" maxWidth="180.0"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>

@@ -33,4 +33,5 @@ module org.sertia {
     opens org.sertia.client.views.unauthorized to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.authorized.media.manager;
     opens org.sertia.client.views.authorized.media.manager to com.google.gson, javafx.fxml;
+    opens org.sertia.client.views.authorized.customer.support to com.google.gson, javafx.fxml;
 }

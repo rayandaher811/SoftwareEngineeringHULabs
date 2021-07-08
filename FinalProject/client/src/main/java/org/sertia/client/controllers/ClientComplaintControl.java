@@ -32,20 +32,20 @@ public class ClientComplaintControl extends ClientControl {
 //        return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class);
 //    }
 //
-//    public SertiaBasicResponse tryCloseComplaint(int complaintId) {
-//        return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class);
-//    }
-//
-//    public List<ClientOpenComplaint> getOpenedComplaints() {
-//        AllUnhandledComplaintsResponse response = client.request(new GetAllUnhandledComplaintsRequest(), AllUnhandledComplaintsResponse.class);
-//
-//        if (response.isSuccessful) {
-//            return response.openComplaints;
-//        }
-//
-//        return Collections.emptyList();
-//    }
-//
+    public SertiaBasicResponse tryCloseComplaint(int complaintId) {
+        return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class);
+    }
+
+    public List<ClientOpenComplaint> getOpenedComplaints() {
+        AllUnhandledComplaintsResponse response = client.request(new GetAllUnhandledComplaintsRequest(), AllUnhandledComplaintsResponse.class);
+
+        if (response.isSuccessful) {
+            return response.openComplaints;
+        }
+
+        return Collections.emptyList();
+    }
+
     public SertiaBasicResponse tryCreateComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
         return client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
                 SertiaBasicResponse.class);

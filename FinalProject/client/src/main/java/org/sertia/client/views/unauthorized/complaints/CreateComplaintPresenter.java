@@ -63,11 +63,14 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
             errorAlert.setTitle("Buying from sertia system");
             errorAlert.setContentText(msg);
             errorAlert.showAndWait();
-            try {
-                App.setRoot("unauthorized/primary");
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (response.isSuccessful) {
+                try {
+                    App.setRoot("unauthorized/primary");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
     }
 

@@ -7,7 +7,7 @@
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.UserLoginPresenter">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="התחברות משתמשים"
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="התחברות משתמשות"
                    BorderPane.alignment="CENTER">
                 <font>
                     <Font size="26.0"/>
