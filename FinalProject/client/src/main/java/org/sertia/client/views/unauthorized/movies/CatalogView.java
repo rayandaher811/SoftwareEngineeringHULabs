@@ -75,7 +75,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
                         try {
                             ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
                             MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
-                            App.setRoot("unauthorized/specificScreeningPurchaseView");
+                            App.setRoot("unauthorized/movie/screeningOrderDataSelection");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -97,7 +97,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             bgBtn.setOnMouseClicked(mouseEvent -> {
                 try {
                     MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
-                    App.setRoot("unauthorized/movieDetails");
+                    App.setRoot("unauthorized/movie/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -128,7 +128,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
                 MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
-                    App.setRoot("unauthorized/movieDetails");
+                    App.setRoot("unauthorized/movie/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -166,7 +166,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
                 MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
-                    App.setRoot("unauthorized/movieDetails");
+                    App.setRoot("unauthorized/movie/movieDetails");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -176,7 +176,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             buyLinkBtn.setOnMouseClicked(mouseEvent -> {
                 try {
                     MovieHolder.getInstance().setMovie(sertiaMovie, true);
-                    App.setRoot("unauthorized/onlineWatchLinkForm");
+                    App.setRoot("unauthorized/onlineLink/onlineWatchLinkForm");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

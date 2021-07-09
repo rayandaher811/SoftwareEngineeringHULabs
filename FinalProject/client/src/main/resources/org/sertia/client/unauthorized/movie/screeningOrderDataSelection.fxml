@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Font?>
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.sertia.client.views.unauthorized.purchase.movie.SpecificScreeningPurchaseView">
+      fx:controller="org.sertia.client.views.unauthorized.purchase.movie.ScreeningOrderDataSelection">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
             <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת כרטיסים"

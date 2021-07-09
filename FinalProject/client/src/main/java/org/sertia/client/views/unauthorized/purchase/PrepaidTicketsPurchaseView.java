@@ -9,13 +9,9 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.client.global.ScreeningHolder;
-import org.sertia.client.global.SeatsHolder;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
-import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
 import org.sertia.contracts.screening.ticket.request.VoucherPurchaseRequest;
-import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +20,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PrepaidTicketsPurchaseView extends PaymentViewPresenter{
+public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
     public TextField cardHolderPhoneTxt;
     public TextField cardHolderEmailTxt;

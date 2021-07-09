@@ -14,21 +14,21 @@ public class PrimaryController {
 
     @FXML
     private void toMoviesCatalog() throws IOException {
-        App.setRoot("unauthorized/moviesCatalogPresenter");
+        App.setRoot("unauthorized/sertiaCatalogPresenter");
     }
 
     @FXML
     private void toAddComplaintView() throws IOException {
-        App.setRoot("unauthorized/createComplaintView");
+        App.setRoot("unauthorized/complaint/createComplaintView");
     }
 
     @FXML
     private void toPrepaidPurchaseView() throws IOException {
-        App.setRoot("unauthorized/prepaidTicketsPurchaseForm");
+        App.setRoot("unauthorized/prepaid/purchaseMovieFromPrepaidBalance");
     }
 
     @FXML
     private void toPrepaidBalance() throws IOException {
-        App.setRoot("unauthorized/prepaidTicketsBalanceForm");
+        App.setRoot("unauthorized/prepaid/checkCurrentBalance");
     }
 }

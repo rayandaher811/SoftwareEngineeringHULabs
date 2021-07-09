@@ -1,13 +1,13 @@
 package org.sertia.client.views.unauthorized.purchase;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
@@ -18,22 +18,18 @@ import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
-import org.sertia.contracts.screening.ticket.request.PaymentMethod;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
-import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
-public class PaymentViewPresenter extends BasicPresenterWithValidations implements Initializable {
+public class ByCreditCardFormPresenter extends BasicPresenterWithValidations implements Initializable {
 
     public TextField creditCardNumber;
     public TextField cardHolderName;
@@ -45,18 +41,12 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
     public TextField cardHolderId;
     public TextField cardHolderEmailTxt;
     public TextField cardHolderPhoneTxt;
-    public ChoiceBox paymentMehod;
     public Label expirationLabel;
     public Label monthLabel;
     public VBox monthVbox;
     public HBox expirationHbox;
     public VBox yearVbox;
     public Label yearLabel;
-    public TextField voucherIdTxt;
-    public TextField balanceTxt;
-    public Button checkBalanceBtn;
-    public Group creditCardFieldsGroup;
-    public Group prepaidTicketsFieldsGroup;
 
     @FXML
     public void back() {
@@ -64,9 +54,9 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
 
         try {
             if (isLinkRequest) {
-                App.setRoot("unauthorized/onlineWatchLinkForm");
+                App.setRoot("unauthorized/onlineLink/onlineWatchLinkForm");
             } else {
-                App.setRoot("unauthorized/purchaseMovieTickets");
+                App.setRoot("unauthorized/payment/selectionMethodForm");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,20 +80,31 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
         Alert.AlertType type;
         String msg = "";
-        if (response.isSuccessful){
+        if (response.isSuccessful) {
             type = Alert.AlertType.INFORMATION;
             msg = "operation ended successfully!";
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+            try {
+                App.setRoot("unauthorized/primary");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         } else {
             type = Alert.AlertType.ERROR;
             msg = response.failReason;
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
         }
-        Alert errorAlert = new Alert(type);
-        errorAlert.setTitle("Buying from sertia system");
-        errorAlert.setContentText(msg);
-        errorAlert.showAndWait();
+
     }
 
-    private void purchaseInNormalTime(){
+    private void purchaseInNormalTime() {
         List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
         ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
                 new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
@@ -121,17 +122,27 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
         Alert.AlertType type;
         String msg = "";
-        if (response.isSuccessful){
+        if (response.isSuccessful) {
             type = Alert.AlertType.INFORMATION;
             msg = "operation ended successfully!";
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+            try {
+                App.setRoot("unauthorized/primary");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             type = Alert.AlertType.ERROR;
             msg = response.failReason;
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
         }
-        Alert errorAlert = new Alert(type);
-        errorAlert.setTitle("Buying from sertia system");
-        errorAlert.setContentText(msg);
-        errorAlert.showAndWait();
+
 
     }
 
@@ -158,54 +169,6 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
         } else {
             System.out.println("BG phisical ticket");
         }
-
-        paymentMehod.setFocusTraversable(false);
-        paymentMehod.getItems().addAll(Arrays.stream(PaymentMethod.values()).map(paymentMethod -> paymentMethod.label).collect(Collectors.toList()));
-
-        paymentMehod.getSelectionModel().selectedIndexProperty().addListener(this::onChange);
-        creditCardFieldsGroup.setVisible(false);
-        prepaidTicketsFieldsGroup.setVisible(false);
-
-    }
-
-    private void setPrepaidTicketsFieldsVisibility(boolean requestedVisibility) {
-        voucherIdTxt.setVisible(requestedVisibility);
-        checkBalanceBtn.setVisible(requestedVisibility);
-        checkBalanceBtn.setVisible(requestedVisibility);
-    }
-    private void setCreditCardsFieldsVisibility(boolean requestedVisibility) {
-        cardHolderName.setVisible(requestedVisibility);
-        cardHolderId.setVisible(requestedVisibility);
-        cardHolderEmailTxt.setVisible(requestedVisibility);
-        cardHolderPhoneTxt.setVisible(requestedVisibility);
-        creditCardNumber.setVisible(requestedVisibility);
-        creditCardProviderCombo.setVisible(requestedVisibility);
-        expirationLabel.setVisible(requestedVisibility);
-        monthVbox.setVisible(requestedVisibility);
-        monthLabel.setVisible(requestedVisibility);
-        expirationMonthCombo.setVisible(requestedVisibility);
-        yearVbox.setVisible(requestedVisibility);
-        yearLabel.setVisible(requestedVisibility);
-        expirationYearCombo.setVisible(requestedVisibility);
-        cvv.setVisible(requestedVisibility);
-    }
-
-    private void onChange(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-        PaymentMethod chosenPaymentMethod = PaymentMethod.values()[t1.intValue()];
-        switch (chosenPaymentMethod){
-            case CREDIT_CARD -> onCreditCardSelection();
-            case PREPAID_TICKET -> onPrepaidSelection();
-        }
-    }
-
-    private void onCreditCardSelection() {
-        creditCardFieldsGroup.setVisible(true);
-        prepaidTicketsFieldsGroup.setVisible(false);
-    }
-
-    private void onPrepaidSelection() {
-        creditCardFieldsGroup.setVisible(false);
-        prepaidTicketsFieldsGroup.setVisible(true);
     }
 
     @Override
@@ -272,30 +235,5 @@ public class PaymentViewPresenter extends BasicPresenterWithValidations implemen
             return false;
         }
         return true;
-    }
-
-    @FXML
-    private void checkBalance(){
-        if (isInputValid()) {
-            VoucherBalanceResponse response =
-                    ClientPurchaseControl.getInstance().requestVoucherBalance(Integer.parseInt(voucherIdTxt.getText()));
-            if (!response.isSuccessful) {
-                Alert.AlertType type;
-                String msg = "";
-                if (response.isSuccessful){
-                    type = Alert.AlertType.INFORMATION;
-                    msg = "Prepaid tickets bought successfully!";
-                } else {
-                    type = Alert.AlertType.ERROR;
-                    msg = response.failReason;
-                }
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying prepaid tickets from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
-            } else {
-                balanceTxt.setText(String.valueOf(response.balance));
-            }
-        }
     }
 }

@@ -22,7 +22,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
 
     @FXML
     public void back() throws IOException {
-        App.setRoot("unauthorized/moviesCatalogPresenter");
+        App.setRoot("unauthorized/sertiaCatalogPresenter");
     }
 
     @Override
@@ -35,9 +35,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
     public void buyLink() {
         if (isInputValid()) {
             try {
-                // TODO: FIXME
-                //ClientPurchaseControl.purchaseStreaming(1);
-                App.setRoot("unauthorized/PaymentView");
+                App.setRoot("unauthorized/payment/byCreditCardForm");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -46,7 +44,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
 
     @Override
     protected boolean isDataValid() {
-        boolean isNameValid = isNameValid(nameTxtField.getText());
+        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "Please insert your name");
         boolean isPhoneValid = isPhoneValid(phoneTxTextField.getText());
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         return isEmailValid && isPhoneValid && isNameValid;

@@ -22,7 +22,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations implements Initializable {
+public class ScreeningOrderDataSelection extends BasicPresenterWithValidations implements Initializable {
     @FXML
     private TextField numberOfTicketsToPurchase;
     @FXML
@@ -38,7 +38,7 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
 
     public void back() {
         try {
-            App.setRoot("unauthorized/moviesCatalogPresenter");
+            App.setRoot("unauthorized/sertiaCatalogPresenter");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,9 +58,9 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
                     popupAlert();
-                    App.setRoot("unauthorized/paymentView");
+                    App.setRoot("unauthorized/payment/selectionMethodForm");
                 } else {
-                    App.setRoot("unauthorized/seatMapView");
+                    App.setRoot("unauthorized/movie/seatMapView");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

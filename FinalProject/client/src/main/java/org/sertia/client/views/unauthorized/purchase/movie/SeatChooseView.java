@@ -36,7 +36,7 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
 
     @FXML
     public void toMain() throws IOException {
-        App.setRoot("unauthorized/purchaseMovieTickets");
+        App.setRoot("unauthorized/movie/screeningOrderDataSelection");
     }
 
     @Override
@@ -146,7 +146,7 @@ public class SeatChooseView extends BasicPresenter implements Initializable {
 
         SeatsHolder.getInstance().setSeatsIdsList(seatsIds);
         try {
-            App.setRoot("unauthorized/paymentView");
+            App.setRoot("unauthorized/payment/selectionMethodForm");
         } catch (IOException e) {
             e.printStackTrace();
         }
