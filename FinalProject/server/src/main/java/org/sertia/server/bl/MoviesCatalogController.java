@@ -190,9 +190,12 @@ public class MoviesCatalogController extends Reportable {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Movie movie = getMovieById(addScreeningRequest.movieId, session);
 
-            Hall selectedHall = getHall(addScreeningRequest.hallId);
+            Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
 
-            validateScreeningTime(addScreeningRequest.screeningTime, movie, selectedHall);
+            if (hall == null)
+                throw new SertiaException("Hall with id : " + addScreeningRequest.hallId +" not found.");
+
+            validateScreeningTime(addScreeningRequest.screeningTime, movie, hall.getScreenings());
 
             ScreenableMovie screenableMovie = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId).get();
 
@@ -200,28 +203,20 @@ public class MoviesCatalogController extends Reportable {
             screening.setMovie(screenableMovie);
             screening.setScreeningTime(addScreeningRequest.screeningTime);
 
-            screening.setHall(selectedHall);
+            screening.setHall(hall);
             session.save(screening);
         }
     }
 
-    private Hall getHall(int hallId) throws SertiaException {
-        Optional<Hall> hall = DbUtils.getById(Hall.class, hallId);
-        if (!hall.isPresent())
-            throw new SertiaException("Hall with id : " + hallId +" not found.");
-
-        return hall.get();
-    }
-
-    private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
+    private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Set<Screening> screenings) throws SertiaException {
         LocalDateTime movieStartTime = screeningDateTime;
         LocalDateTime movieEndTime = screeningDateTime.plus(movie.getDuration());
 
-        for (Screening screening : hall.getScreenings()) {
+        for (Screening screening : screenings) {
             LocalDateTime hallScreeningStartTime = screening.getScreeningTime();
             LocalDateTime hallScreeningEndTime = screening.getScreeningTime().plus(movie.getDuration());
 
-            // Making sure all hall screenings does not conflict the current screening
+            // Making sure all screenings does not conflict the current screening
             if(!((movieStartTime.isAfter(hallScreeningEndTime) && movieStartTime.isAfter(hallScreeningStartTime) &&
                     movieEndTime.isAfter(hallScreeningEndTime) && movieEndTime.isAfter(hallScreeningStartTime)) ||
                  (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
