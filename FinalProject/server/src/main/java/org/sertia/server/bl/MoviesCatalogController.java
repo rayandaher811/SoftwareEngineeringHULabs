@@ -247,13 +247,13 @@ public class MoviesCatalogController extends Reportable {
             if(screening == null)
                 throw new SertiaException("There are no such screening.");
 
-            List<ScreeningTicket> screeningTickets = screening.getTickets();
-
             session.beginTransaction();
 
             // Refunding all relevant costumers and deleting the tickets
             RefundAndRemoveAllScreeningTickets(session, screening, refundReason);
 
+            session.flush();
+            
             session.remove(screening);
 
             session.flush();
