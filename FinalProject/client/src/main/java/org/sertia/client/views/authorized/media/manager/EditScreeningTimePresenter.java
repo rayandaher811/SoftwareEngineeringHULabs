@@ -15,6 +15,7 @@ import org.sertia.client.global.LoggedInUser;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.movies.AbstractMoviesPresenter;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -41,8 +42,8 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         App.setRoot("authorized/employeesForm");
     }
 
-    private HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
-        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
+    private HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
+        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
 
         for (SertiaMovie screeningMovie : movies) {
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
@@ -53,7 +54,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                         movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});
                     }
                 } else {
-                    movieToCinemaAndScreenings.put(screeningMovie.getMovieDetails(), new HashMap(){{put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});}});
+                    movieToCinemaAndScreenings.put(screeningMovie, new HashMap(){{put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});}});
                 }
             }
         }
@@ -64,9 +65,9 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
     private TitledPane getCurrentlyPlayingMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> currentlyAvailableMovies) {
         Accordion currentlyPlayingMoviesAccordion = new Accordion();
 
-        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
+        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
         ArrayList<TitledPane> values = new ArrayList<>();
-        for (Map.Entry<ClientMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
+        for (Map.Entry<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
             Accordion moviePlayingTimeAccordion = new Accordion();
             ArrayList<TitledPane> specificCinemaList = new ArrayList<>();
             for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()){
@@ -110,7 +111,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
             hBox.getChildren().addAll(moviePlayingTimeAccordion, bgBtn);
             TitledPane tiledPane = new TitledPane();
             tiledPane.setAnimated(true);
-            tiledPane.setText(moviesInBranch.getKey().getName());
+            tiledPane.setText(moviesInBranch.getKey().getMovieDetails().getName());
             tiledPane.setContent(hBox);
             values.add(tiledPane);
 
@@ -131,7 +132,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
             Button moreInfoBtn = new Button();
             moreInfoBtn.setText(ADD_SCREENING);
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
-                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
                     App.setRoot("authorized/media.manager/addNewScreening");
                 } catch (IOException e) {
@@ -169,7 +170,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
             Button moreInfoBtn = new Button();
             moreInfoBtn.setText(ADD_SCREENING);
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
-                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
                     App.setRoot("authorized/media.manager/addNewScreening");
                 } catch (IOException e) {

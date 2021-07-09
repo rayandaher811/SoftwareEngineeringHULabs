@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class MovieDetails extends BasicPresenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ClientMovie movie = MovieHolder.getInstance().getMovie();
+        CinemaScreeningMovie cinemaScreeningMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        ClientMovie movie = cinemaScreeningMovie.getMovieDetails();
         movieNameTxt.setText(movie.getName());
         movieHebrewNameTxt.setText(movie.getHebrewName());
         producerNameTxt.setText(movie.getProducerName());

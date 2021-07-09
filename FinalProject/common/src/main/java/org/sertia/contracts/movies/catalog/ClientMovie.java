@@ -11,10 +11,9 @@ public class ClientMovie implements Serializable {
     public String producerName;
     public String posterImageUrl;
     public Duration duration;
-//    public int movieId;
 
     public ClientMovie(String hebrewName, String name, String description,
-                       String mainActorName, String producerName, String posterImageUrl, Duration duration/*, int movieId*/) {
+                       String mainActorName, String producerName, String posterImageUrl, Duration duration) {
         this.hebrewName = hebrewName;
         this.name = name;
         this.description = description;
@@ -22,7 +21,6 @@ public class ClientMovie implements Serializable {
         this.producerName = producerName;
         this.posterImageUrl = posterImageUrl;
         this.duration = duration;
-//        this.movieId = movieId;
     }
 
     public ClientMovie() {

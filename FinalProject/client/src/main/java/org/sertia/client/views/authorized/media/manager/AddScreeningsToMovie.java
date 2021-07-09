@@ -8,8 +8,8 @@ import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.client.global.SertiaMovieHolder;
 import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientHall;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -18,7 +18,6 @@ import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.time.LocalDateTime;
@@ -33,7 +32,7 @@ public class AddScreeningsToMovie implements Initializable {
 
     //  error in add screenings, getting error from server
     public void addScreenings() {
-        ClientMovie currentMovie = MovieHolder.getInstance().getMovie();
+        CinemaScreeningMovie currentMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
         CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
         LocalDate inputDate = datePickerComp.getValue();
         String screeningHour = screeningTimeTxt.getText();
@@ -41,13 +40,11 @@ public class AddScreeningsToMovie implements Initializable {
                 inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(screeningHour), getMin(screeningHour));
         List<ClientHall> clientHallsInCinema = response.cinemaToHalls.get(branchName.getSelectionModel().getSelectedItem());
         // TODO: use hall number from client hall
-        // TODO: there is no mapping between hall name which client knows to it's ID, must make one.. or create an endpoint
-        SertiaMovie movie = ClientCatalogControl.getInstance().requestAllMoviesCatalog().stream().filter(sertiaMovie -> sertiaMovie.getMovieDetails().getName().equals(currentMovie.getName())).findFirst().get();
-
+        // TODO: there is no mapping between hall name which client knows to it's ID, must make one.. or create an endpoint RYAN
         int cinemaId = 2;
 
         SertiaBasicResponse addScreeningResponse =
-                ClientCatalogControl.getInstance().tryAddScreening(movie.getMovieId(), screeningTime, Integer.parseInt(hallNumberTxt.getText()), cinemaId);
+                ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, Integer.parseInt(hallNumberTxt.getText()), cinemaId);
         Alert.AlertType type;
         String msg = "";
         if (addScreeningResponse.isSuccessful){
@@ -77,8 +74,8 @@ public class AddScreeningsToMovie implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<String> ticketTypes = FXCollections.observableList(ClientCatalogControl.getInstance().getAllBranchesName());
         branchName.setItems(ticketTypes);
-        ClientMovie currentMovie =  MovieHolder.getInstance().getMovie();
-        movieNameLabel.setText(movieNameLabel.getText() + " " + currentMovie.getHebrewName());
+        CinemaScreeningMovie currentMovie =  MovieHolder.getInstance().getCinemaScreeningMovie();
+        movieNameLabel.setText(movieNameLabel.getText() + " " + currentMovie.getMovieDetails().getHebrewName());
     }
 
     private int getHour(String hour) {

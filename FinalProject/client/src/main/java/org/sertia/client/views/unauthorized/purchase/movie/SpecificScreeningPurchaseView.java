@@ -9,15 +9,13 @@ import javafx.scene.control.TextField;
 import org.joda.time.DateTime;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
-import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
-import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
-import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -73,8 +71,8 @@ public class SpecificScreeningPurchaseView extends BasicPresenterWithValidations
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ClientScreening screening = ScreeningHolder.getInstance().getScreening();
-        ClientMovie movie = MovieHolder.getInstance().getMovie();
-        movieNameLabel.setText(movie.getName());
+        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        movieNameLabel.setText(movie.getMovieDetails().getName());
         branchNameLabel.setText(screening.getCinemaName());
         hallNumber.setText(String.valueOf(screening.getHallId()));
         String movieScreeningTime = screening.getScreeningTime().toString();

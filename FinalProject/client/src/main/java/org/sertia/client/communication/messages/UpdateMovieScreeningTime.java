@@ -1,5 +1,7 @@
 package org.sertia.client.communication.messages;
 
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+
 public class UpdateMovieScreeningTime {
     private BaseClientServerMessage metadata;
     private CinemaScreeningMovie currentMovie;

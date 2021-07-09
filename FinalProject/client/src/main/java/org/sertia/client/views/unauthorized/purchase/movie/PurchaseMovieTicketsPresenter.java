@@ -12,6 +12,7 @@ import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -26,7 +27,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
     @FXML
     private Accordion moviesAccordion;
 
-    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<ClientMovie, List<ClientScreening>> movieToScreenings){
+    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings){
         HashMap<String, List<ClientScreening>> cinemaToScreenings = new HashMap<>();
 
         for (ClientScreening screening : movieToScreenings.getValue()) {
@@ -40,7 +41,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
         return cinemaToScreenings;
     }
 
-    private TitledPane screeningMovieToTilePane(Map.Entry<ClientMovie, List<ClientScreening>> movieToScreenings) {
+    private TitledPane screeningMovieToTilePane(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings) {
         Accordion moviesAccordion = new Accordion();
 
         HashMap<String, List<ClientScreening>> cinemaToScreenings = cinemaToScreenings(movieToScreenings);
@@ -83,7 +84,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
 
         TitledPane tiledPane = new TitledPane("AllMoviesByCinema", moviesAccordion);
         tiledPane.setAnimated(false);
-        tiledPane.setText(movieToScreenings.getKey().getName());
+        tiledPane.setText(movieToScreenings.getKey().getMovieDetails().getName());
         tiledPane.setContent(moviesAccordion);
         return tiledPane;
     }
@@ -99,16 +100,16 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
         // Need to get movies by start time
         MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
 
-        HashMap<ClientMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
+        HashMap<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
 
         ArrayList<SertiaMovie> screeningMovieArrayList = (ArrayList<SertiaMovie>) catalog.getMoviesCatalog();
         for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
             final SertiaMovie screeningMovie = screeningMovieArrayList.get(i);
 
-            if (movieToScreenings.containsKey(screeningMovie.getMovieDetails())) {
-                movieToScreenings.get(screeningMovie.getMovieDetails()).addAll(screeningMovie.getScreenings());
+            if (movieToScreenings.containsKey(screeningMovie)) {
+                movieToScreenings.get(screeningMovie).addAll(screeningMovie.getScreenings());
             } else {
-                movieToScreenings.put(screeningMovie.getMovieDetails(), screeningMovie.getScreenings());
+                movieToScreenings.put(screeningMovie, screeningMovie.getScreenings());
             }
         }
 

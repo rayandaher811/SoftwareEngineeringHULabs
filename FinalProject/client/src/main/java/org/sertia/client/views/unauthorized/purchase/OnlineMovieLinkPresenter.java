@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 
 import java.io.IOException;
@@ -26,8 +27,8 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ClientMovie movie = MovieHolder.getInstance().getMovie();
-        movieName.setText(movie.getName());
+        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        movieName.setText(movie.getMovieDetails().getName());
     }
 
     @FXML

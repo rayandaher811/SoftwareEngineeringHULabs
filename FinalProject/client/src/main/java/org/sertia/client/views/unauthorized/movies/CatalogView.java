@@ -14,6 +14,7 @@ import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -35,19 +36,19 @@ public class CatalogView extends BasicPresenter implements Initializable {
     @FXML
     private Accordion moviesKindAndDataAccordion;
 
-    private HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
-        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
+    private HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
+        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
 
         for (SertiaMovie screeningMovie : movies) {
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
-                if (movieToCinemaAndScreenings.containsKey(screeningMovie.getMovieDetails())) {
-                    if (movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).containsKey(specificScreening.getCinemaName())){
-                        movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).get(specificScreening.getCinemaName()).add(specificScreening);
+                if (movieToCinemaAndScreenings.containsKey(screeningMovie)) {
+                    if (movieToCinemaAndScreenings.get(screeningMovie).containsKey(specificScreening.getCinemaName())){
+                        movieToCinemaAndScreenings.get(screeningMovie).get(specificScreening.getCinemaName()).add(specificScreening);
                     } else {
-                        movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});
+                        movieToCinemaAndScreenings.get(screeningMovie).put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});
                     }
                 } else {
-                    movieToCinemaAndScreenings.put(screeningMovie.getMovieDetails(), new HashMap(){{put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});}});
+                    movieToCinemaAndScreenings.put(screeningMovie, new HashMap(){{put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});}});
                 }
             }
         }
@@ -58,9 +59,9 @@ public class CatalogView extends BasicPresenter implements Initializable {
     private TitledPane getCurrentlyPlayingMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> currentlyAvailableMovies) {
         Accordion currentlyPlayingMoviesAccordion = new Accordion();
 
-        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
+        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
         ArrayList<TitledPane> values = new ArrayList<>();
-        for (Map.Entry<ClientMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
+        for (Map.Entry<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
             Accordion moviePlayingTimeAccordion = new Accordion();
             ArrayList<TitledPane> specificCinemaList = new ArrayList<>();
             for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()){
@@ -104,7 +105,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             hBox.getChildren().addAll(moviePlayingTimeAccordion, bgBtn);
             TitledPane tiledPane = new TitledPane();
             tiledPane.setAnimated(true);
-            tiledPane.setText(moviesInBranch.getKey().getName());
+            tiledPane.setText(moviesInBranch.getKey().getMovieDetails().getName());
             tiledPane.setContent(hBox);
             values.add(tiledPane);
 
@@ -125,7 +126,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             Button moreInfoBtn = new Button();
             moreInfoBtn.setText(MOVIE_DETAILS);
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
-                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
@@ -163,7 +164,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             Button moreInfoBtn = new Button();
             moreInfoBtn.setText(MOVIE_DETAILS);
             moreInfoBtn.setOnMouseClicked(mouseEvent -> {
-                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                MovieHolder.getInstance().setMovie(sertiaMovie, true);
                 try {
                     App.setRoot("unauthorized/movieDetails");
                 } catch (IOException e) {
@@ -174,7 +175,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
             buyLinkBtn.setText(BUY_STREAMING_LINK);
             buyLinkBtn.setOnMouseClicked(mouseEvent -> {
                 try {
-                    MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                    MovieHolder.getInstance().setMovie(sertiaMovie, true);
                     App.setRoot("unauthorized/onlineWatchLinkForm");
                 } catch (IOException e) {
                     e.printStackTrace();

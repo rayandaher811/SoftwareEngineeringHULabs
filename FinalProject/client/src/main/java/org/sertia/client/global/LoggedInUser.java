@@ -1,7 +1,5 @@
 package org.sertia.client.global;
 
-import org.sertia.client.communication.messages.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.user.login.UserRole;
 
 import java.util.UUID;

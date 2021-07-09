@@ -1,6 +1,5 @@
 package org.sertia.client.views.authorized.media.manager;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -10,8 +9,8 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
-import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
 public class EditMovieScreeningTimePresenter implements Initializable {
@@ -50,12 +48,12 @@ public class EditMovieScreeningTimePresenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ClientMovie movie = MovieHolder.getInstance().getMovie();
+        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
         ClientScreening screening = ScreeningHolder.getInstance().getScreening();
-        mainLabel.setText(mainLabel.getText() + movie.getName());
+        mainLabel.setText(mainLabel.getText() + movie.getMovieDetails().getName());
         mainLabel.setMaxWidth(400);
-        movieNameLabel.setText(movie.getName());
-        actorNameLabel.setText(movie.getMainActorName());
+        movieNameLabel.setText(movie.getMovieDetails().getName());
+        actorNameLabel.setText(movie.getMovieDetails().getMainActorName());
         branchNameLabel.setText(screening.getCinemaName());
         hallNumber.setText(String.valueOf(screening.getHallId()));
         String movieScreeningTime = screening.getScreeningTime().toString();
