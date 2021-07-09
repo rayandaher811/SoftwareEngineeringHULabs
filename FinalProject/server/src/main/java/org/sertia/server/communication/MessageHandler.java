@@ -67,7 +67,6 @@ public class MessageHandler extends AbstractServer {
         // Decorating the credit card service in order to record all the refunds
         creditCardService = new CreditCardServiceRefundsRecorderDecorator(new CreditCardService());
 
-        this.userLoginController = new UserLoginController();
         this.priceChangeController = new PriceChangeController();
         this.complaintsController = new ComplaintsController(creditCardService);
         this.moviesCatalogController = new MoviesCatalogController(creditCardService);
@@ -75,6 +74,7 @@ public class MessageHandler extends AbstractServer {
         this.screeningTicketController = new ScreeningTicketController(covidRegulationsController, creditCardService);
         this.streamingTicketController = new StreamingTicketController(creditCardService);
         this.cinemaController = new CinemaController();
+        this.userLoginController = new UserLoginController(cinemaController);
         this.reportsController = new ReportsController(
                 complaintsController,
                 screeningTicketController,
@@ -746,12 +746,12 @@ public class MessageHandler extends AbstractServer {
         ClientReportsResponse response = new ClientReportsResponse(false);
 
         try {
-            GetCinemaReports request = (GetCinemaReports) sertiaBasicRequest;
-            if(Integer.getInteger((String) client.getInfo(ManagedCinemaIdType)) != request.cinemaId) {
-                response.setFailReason("not your cinema!");
+            Integer cinemaId = (Integer) client.getInfo(ManagedCinemaIdType);
+            if(cinemaId == null) {
+                response.setFailReason("אינך מקושר לסניף קולנוע");
                 response.setSuccessful(false);
             } else {
-                response = reportsController.getCinemaReports(request.cinemaId);
+                response = reportsController.getCinemaReports(cinemaId);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -123,9 +123,9 @@ public class    DBFiller {
 
     private void fillCinema() {
         cinemas = new ArrayList<Cinema>();
-        cinemas.add(new Cinema("Hakerion", users.get(1)));
-        cinemas.add(new Cinema("GrandKenion", users.get(2)));
-        cinemas.add(new Cinema("HotsotHamifrats", users.get(3)));
+        cinemas.add(new Cinema("הקריון", users.get(1)));
+        cinemas.add(new Cinema("גרנד קניון", users.get(2)));
+        cinemas.add(new Cinema("חוצות המפרץ", users.get(3)));
     }
 
     private void fillHalls() {

@@ -10,12 +10,19 @@ public class LoggedInUser {
     private String uuid;
     private UserRole userRole;
 
+    public String getManagedCinema() {
+        return managedCinema;
+    }
+
+    private String managedCinema;
+
     private static LoggedInUser loggedInUser = null;
 
-    private LoggedInUser(String userName, UserRole userRole) {
+    private LoggedInUser(String userName, UserRole userRole, String managedCinema) {
         this.userName = userName;
         this.uuid = UUID.randomUUID().toString();
         this.userRole = userRole;
+        this.managedCinema = managedCinema;
     }
 
     public static LoggedInUser getInstance() {
@@ -34,9 +41,9 @@ public class LoggedInUser {
         return uuid;
     }
 
-    public static void setConnectionStatus(String userName, UserRole role) {
+    public static void setConnectionStatus(String userName, UserRole role, String managedCinema) {
         if (loggedInUser == null)
-            loggedInUser = new LoggedInUser(userName, role);
+            loggedInUser = new LoggedInUser(userName, role, managedCinema);
     }
 
     public static void onDisconnection() {

@@ -77,11 +77,20 @@ public class EmployeesFormPresenter implements Initializable {
             case CinemaManager -> initializeSertiaManagerView();
             case CostumerSupport -> initializeCustomerSupportView();
         }
-        topLabel.setText(getHelloSentenceByRole(userRole) + ", " + HELLO_SENTENCE);
+        String helloSentence;
+        if (userRole.equals(UserRole.BranchManager)) {
+            helloSentence = getHelloSentenceByRole(userRole) + " " + LoggedInUser.getInstance().getManagedCinema() +
+            ", " + HELLO_SENTENCE;
+            topLabel.setText(LoggedInUser.getInstance().getManagedCinema() + helloSentence);
+        } else {
+            helloSentence = getHelloSentenceByRole(userRole) + ", " + HELLO_SENTENCE;
+        }
+
+        topLabel.setText(helloSentence);
     }
 
     private String getHelloSentenceByRole(UserRole userRole) {
-        switch (userRole){
+        switch (userRole) {
             case BranchManager:
                 return BRANCH_MANAGER;
             case MediaManager:

@@ -9,6 +9,7 @@ public class LoginResult  extends SertiaBasicResponse implements Serializable {
 
 	public Integer sessionId;
 	public UserRole userRole;
+	public String managerCinema;
 
 	public LoginResult() {
 		super(false);

@@ -70,7 +70,7 @@ public class UserLoginPresenter {
             return false;
         }
         if (result.userRole != UserRole.None) {
-            LoggedInUser.setConnectionStatus(userName, result.userRole);
+            LoggedInUser.setConnectionStatus(userName, result.userRole, result.managerCinema);
             return true;
         }
         return false;
