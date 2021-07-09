@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class CreateComplaintPresenter extends BasicPresenterWithValidations implements Initializable {
 
+    public TextField clientIdTxt;
     @FXML
     private TextField nameTxtField;
     @FXML
@@ -48,8 +49,14 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
             userMistakes.clear();
 
         if (isDataValid()){
-            SertiaBasicResponse response = ClientComplaintControl.getInstance().tryCreateComplaint(nameTxtField.getText(),
-                    phoneTxTextField.getText(), emailTxTextField.getText(), complaintData.getText(), Integer.parseInt(purchaseIdTextField.getText()), ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()));
+            SertiaBasicResponse response = ClientComplaintControl.getInstance()
+                    .tryCreateComplaint(nameTxtField.getText(),
+                                        phoneTxTextField.getText(),
+                                        emailTxTextField.getText(),
+                                        complaintData.getText(),
+                                        Integer.parseInt(purchaseIdTextField.getText()),
+                                        ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()),
+                                        clientIdTxt.getText());
             Alert.AlertType type;
             String msg = "";
             if (response.isSuccessful){
@@ -83,7 +90,9 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
         boolean isTicketTypeValid = isTicketTypeValid();
         boolean isComplaintValid = isStringNotEmpty(complaintData.getText(),
                 "Must write complaint.. that's the whole concept XD");
-        return isNameValid && isPhoneValid && isEmailValid && isPurchaseIdValid && isTicketTypeValid && isComplaintValid;
+        boolean isIdValid = isIdCorrcet(clientIdTxt.getText());
+        return isNameValid && isPhoneValid && isEmailValid &&
+                isPurchaseIdValid && isTicketTypeValid && isComplaintValid && isIdValid;
     }
 
     private boolean isTicketTypeValid() {

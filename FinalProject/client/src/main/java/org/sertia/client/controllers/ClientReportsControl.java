@@ -5,6 +5,11 @@ import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 
 public class ClientReportsControl extends ClientControl {
+    private static final ClientReportsControl instance = new ClientReportsControl();
+
+    public static ClientReportsControl getInstance(){
+        return instance;
+    }
 
     public ClientReportsResponse getSertiaReports() {
         ClientReportsResponse response = client.request(new GetSertiaReports(), ClientReportsResponse.class);

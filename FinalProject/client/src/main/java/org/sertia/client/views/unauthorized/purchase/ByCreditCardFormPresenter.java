@@ -183,7 +183,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         boolean isCvvCorrect = isCvvCorrect();
         boolean isEmailCorrect = isEmailValid(cardHolderEmailTxt.getText());
         boolean isPhoneCorrcet = isPhoneValid(cardHolderPhoneTxt.getText());
-        boolean isIdNumberCorrect = isIdCorrcet();
+        boolean isIdNumberCorrect = isIdCorrcet(cardHolderId.getText());
         return isCardHolderNameValid && isCreditCardProviderValid /*&& isCreditCardCorrect*/
                 && isCvvCorrect && isEmailCorrect && isPhoneCorrcet && isIdNumberCorrect;
     }
@@ -191,14 +191,6 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
     private boolean isCvvCorrect() {
         if (cvv.getText() == null || cvv.getText().isBlank() || cvv.getText().isEmpty() || cvv.getText().length() != 3) {
             userMistakes.add("Please fill your cvv, it's in size 3 exactly");
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isIdCorrcet() {
-        if (cardHolderId.getText() == null || cardHolderId.getText().isBlank() || cardHolderId.getText().isEmpty() || cardHolderId.getText().length() != 9) {
-            userMistakes.add("Please fill your ID number, it should be in length of 9");
             return false;
         }
         return true;

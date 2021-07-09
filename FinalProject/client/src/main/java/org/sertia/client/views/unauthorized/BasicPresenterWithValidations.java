@@ -52,6 +52,13 @@ public abstract class BasicPresenterWithValidations extends BasicPresenter {
         return isItNumber(purchaseId, "Invalid purchase id, must be a number");
     }
 
+    protected boolean isIdCorrcet(String id) {
+        if (id == null || id.isBlank() || id.isEmpty() || id.length() != 9) {
+            userMistakes.add("Please fill your ID number, it should be in length of 9");
+            return false;
+        }
+        return true;
+    }
     protected boolean isPhoneValid(String phoneNumber) {
         Pattern p = Pattern.compile("^\\d{10}$");
 

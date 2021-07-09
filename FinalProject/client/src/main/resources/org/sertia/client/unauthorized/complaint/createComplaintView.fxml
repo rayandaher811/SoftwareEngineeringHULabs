@@ -24,13 +24,19 @@
                         <Label>שם הלקוח</Label>
                     </children>
                     <children>
-                        <TextField fx:id="nameTxtField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
+                        <TextField fx:id="nameTxtField" maxWidth="500" maxHeight="300" alignment="CENTER"/>
                     </children>
                     <children>
                         <Label>טלפון</Label>
                     </children>
                     <children>
-                        <TextField fx:id="phoneTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
+                        <TextField fx:id="phoneTxTextField" maxWidth="500" maxHeight="300" alignment="CENTER"/>
+                    </children>
+                    <children>
+                        <Label>ת"ז</Label>
+                    </children>
+                    <children>
+                        <TextField fx:id="clientIdTxt" maxWidth="500" maxHeight="300" alignment="CENTER"/>
                     </children>
                     <children>
                         <Label>דוא"ל</Label>

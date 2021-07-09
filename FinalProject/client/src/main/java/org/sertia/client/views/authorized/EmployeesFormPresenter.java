@@ -50,7 +50,7 @@ public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private void statisticsView() throws IOException {
-        App.setRoot("authorized/media.manager/availableMoviesForEdit");
+        App.setRoot("authorized/reportsViewer");
     }
 
     @FXML
@@ -67,11 +67,6 @@ public class EmployeesFormPresenter implements Initializable {
     @FXML
     private void addOrRemoveStreaming() throws IOException {
         App.setRoot("authorized/media.manager/addOrRemoveStreaming");
-    }
-
-    @FXML
-    private void addMovie() throws IOException {
-        App.setRoot("authorized/media.manager/addNewMovieData");
     }
 
     @Override
