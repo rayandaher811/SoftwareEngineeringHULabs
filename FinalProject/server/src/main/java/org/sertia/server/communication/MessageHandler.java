@@ -19,6 +19,7 @@ import org.sertia.contracts.price.change.request.GetUnapprovedPriceChangeRequest
 import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
 import org.sertia.contracts.reports.request.GetCinemaReports;
 import org.sertia.contracts.reports.request.GetSertiaReports;
+import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
@@ -730,7 +731,7 @@ public class MessageHandler extends AbstractServer {
     // region reports
 
     private void handleSertiaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        ClientReportsResponse response = new ClientReportsResponse(false);
 
         try {
             response = reportsController.getSertiaReports();
@@ -743,7 +744,7 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleCinemaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        ClientReportsResponse response = new ClientReportsResponse(false);
 
 
         try {

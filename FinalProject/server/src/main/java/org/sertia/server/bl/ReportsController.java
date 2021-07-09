@@ -15,7 +15,7 @@ public class ReportsController {
         this.reportables = Arrays.asList(reportables);
     }
 
-    public SertiaBasicResponse getSertiaReports() {
+    public ClientReportsResponse getSertiaReports() {
         ClientReportsResponse clientReportsResponse = new ClientReportsResponse(true);
         reportables.stream()
                 .flatMap(reportable -> reportable.createSertiaReports().stream())
@@ -24,7 +24,7 @@ public class ReportsController {
         return clientReportsResponse;
     }
 
-    public SertiaBasicResponse getCinemaReports(int cinemaId) {
+    public ClientReportsResponse getCinemaReports(int cinemaId) {
         ClientReportsResponse clientReportsResponse = new ClientReportsResponse(true);
         reportables.stream()
                 .flatMap(reportable -> reportable.createCinemaReports(cinemaId).stream())
