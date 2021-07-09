@@ -186,7 +186,7 @@ public class MoviesCatalogController extends Reportable {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Movie movie = getMovieById(addScreeningRequest.movieId, session);
 
-            Hall selectedHall = getHall(addScreeningRequest.cinemaId, addScreeningRequest.hallNumber);
+            Hall selectedHall = getHall(addScreeningRequest.hallId);
 
             validateScreeningTime(addScreeningRequest.screeningTime, movie, selectedHall);
 
@@ -201,13 +201,12 @@ public class MoviesCatalogController extends Reportable {
         }
     }
 
-    private Hall getHall(int cinemaId, int hallNumber) throws SertiaException {
-        for (Hall hall : DbUtils.getAll(Hall.class)) {
-            if(hall.getCinema().getId() == cinemaId && hall.getHallNumber() == hallNumber)
-                return hall;
-        }
+    private Hall getHall(int hallId) throws SertiaException {
+        Optional<Hall> hall = DbUtils.getById(Hall.class, hallId);
+        if (!hall.isPresent())
+            throw new SertiaException("Hall with id : " + hallId +" not found.");
 
-        throw new SertiaException("Hall not found (cinemaId, Hall number) = (" + cinemaId + ", " + hallNumber + ").");
+        return hall.get();
     }
 
     private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
@@ -505,7 +504,6 @@ public class MoviesCatalogController extends Reportable {
 
     public static Movie getMovieById(int movieId, Session session) throws SertiaException {
         Movie movie = session.get(Movie.class, movieId);
-        ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, movieId);
 
         if(movie == null)
             throw new SertiaException("There are no such movie with the " + movieId + " Id.");

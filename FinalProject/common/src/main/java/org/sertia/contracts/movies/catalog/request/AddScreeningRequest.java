@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 public class AddScreeningRequest extends SertiaBasicRequest {
     public int movieId;
     public int cinemaId;
-    public int hallNumber;
+    public int hallId;
     public LocalDateTime screeningTime;
 
-    public AddScreeningRequest(int movieId, int hallNumber, LocalDateTime screeningTime, int cinemaId) {
+    public AddScreeningRequest(int movieId, int hallId, LocalDateTime screeningTime, int cinemaId) {
         this.movieId = movieId;
-        this.hallNumber = hallNumber;
+        this.hallId = hallId;
         this.screeningTime = screeningTime;
         this.cinemaId = cinemaId;
     }

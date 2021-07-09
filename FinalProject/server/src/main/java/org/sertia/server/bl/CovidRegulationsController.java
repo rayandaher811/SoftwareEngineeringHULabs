@@ -90,7 +90,9 @@ public class CovidRegulationsController extends Reportable {
     }
 
     public void cancelAllScreeningsDueCovid(LocalDateTime startDate, LocalDateTime endDate) throws SertiaException {
-        if (startDate.isBefore(LocalDateTime.now()) || startDate.isAfter(endDate))
+        if(startDate.isBefore(LocalDateTime.now()))
+            throw new SertiaException("You cannot cancel screenings that already screened.");
+        if (startDate.isAfter(endDate))
             throw new SertiaException("Screenings cancellation request dateTime ranges aren't valid");
 
         Session session = null;
