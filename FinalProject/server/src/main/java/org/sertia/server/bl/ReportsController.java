@@ -1,6 +1,5 @@
 package org.sertia.server.bl;
 
-import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.server.bl.Services.Reportable;
 

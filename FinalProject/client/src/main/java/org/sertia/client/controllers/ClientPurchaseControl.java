@@ -45,8 +45,8 @@ public class ClientPurchaseControl extends ClientControl {
         return failedScreeningPaymentResponse(response.failReason);
     }
 
-    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
-        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
+    public TicketCancellationResponse cancelScreeningTicket(int purchaseId, String userId) {
+        return client.request(new CancelScreeningTicketRequest(purchaseId, userId), TicketCancellationResponse.class);
     }
 
     public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
@@ -61,8 +61,8 @@ public class ClientPurchaseControl extends ClientControl {
         return failedResponse;
     }
 
-    public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
-        return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
+    public TicketCancellationResponse cancelStreamingTicket(int purchaseId, String userId) {
+        return client.request(new CancelStreamingTicketRequest(purchaseId, userId), TicketCancellationResponse.class);
     }
 
     public VoucherPaymentResponse purchaseVoucher(VoucherPurchaseRequest request) {

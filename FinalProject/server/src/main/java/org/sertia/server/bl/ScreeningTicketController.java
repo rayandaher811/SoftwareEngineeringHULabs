@@ -7,10 +7,7 @@ import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsSta
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.*;
-import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
-import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
-import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
-import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
+import org.sertia.contracts.screening.ticket.response.*;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
@@ -79,20 +76,25 @@ public class ScreeningTicketController extends Reportable {
     }
 
     public SertiaBasicResponse cancelTicket(CancelScreeningTicketRequest request) {
+        TicketCancellationResponse response = new TicketCancellationResponse(true);
         return DbUtils.getById(ScreeningTicket.class, request.ticketId)
                 .map(screeningTicket -> {
-                    try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-                        session.delete(screeningTicket);
-                        refundCreditForScreening(screeningTicket.getScreening(), screeningTicket.getPaymentInfo());
-                    } catch (RuntimeException e) {
-                        System.out.println("couldn't delete ticket " + request.ticketId);
-                        return new SertiaBasicResponse(false)
-                                .setFailReason("couldn't delete ticket");
+                    if (!screeningTicket.getPaymentInfo().getPayerId().equals(request.userId)) {
+                        return null;
                     }
 
-                    return new SertiaBasicResponse(true);
-                }).orElse(new SertiaBasicResponse(false)
-                        .setFailReason("ticket doesn't exist"));
+                    try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                        session.beginTransaction();
+                        session.delete(screeningTicket);
+                        session.getTransaction().commit();
+                        double refundAmount = refundCreditForScreening(screeningTicket.getScreening(), screeningTicket.getPaymentInfo());
+                        return new TicketCancellationResponse(true, refundAmount);
+                    } catch (RuntimeException e) {
+                        System.out.println("couldn't delete ticket " + request.ticketId);
+                        return Utils.createFailureResponse(response, "ביטול רכישה נכשל, פנה לשירות לקוחות");
+                    }
+                }).orElse(
+                        Utils.createFailureResponse(response, "הכרטיס אינו קיים"));
     }
 
     public SertiaBasicResponse getSeatMapForScreening(GetScreeningSeatMap request) {
@@ -167,14 +169,20 @@ public class ScreeningTicketController extends Reportable {
         return true;
     }
 
-    private void refundCreditForScreening(Screening screening, CustomerPaymentDetails paymentDetails) {
+    private double refundCreditForScreening(Screening screening, CustomerPaymentDetails paymentDetails) {
         LocalDateTime screeningTime = screening.getScreeningTime();
         long hoursToScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
+        double refundAmount;
         if (hoursToScreening >= 3) {
-            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice(), RefundReason.ScreeningService);
-        } else if (hoursToScreening <= 1) {
-            creditCardService.refund(paymentDetails, screening.getScreenableMovie().getTicketPrice() / 2, RefundReason.ScreeningService);
+            refundAmount = screening.getScreenableMovie().getTicketPrice();
+        } else if (hoursToScreening >= 1) {
+            refundAmount = screening.getScreenableMovie().getTicketPrice() / 2;
+        } else {
+            refundAmount = 0;
         }
+
+        creditCardService.refund(paymentDetails, refundAmount, RefundReason.ScreeningService);
+        return refundAmount;
     }
 
     private SertiaBasicResponse purchaseTicketsForScreening(ScreeningTicketWithSeatsRequest request) {
@@ -218,9 +226,9 @@ public class ScreeningTicketController extends Reportable {
     private String getScreeningMail(ScreeningPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\nסרט:").append(response.movieName)
-        .append("\nקולנוע:").append(response.cinemaName)
-        .append("\nאולם:").append(response.hallNumber)
-        .append("\nכרטיסים:");
+                .append("\nקולנוע:").append(response.cinemaName)
+                .append("\nאולם:").append(response.hallNumber)
+                .append("\nכרטיסים:");
         response.ticketIdToSeat.forEach((integer, hallSeat) ->
                 stringBuilder.append(hallSeat.row).append(", ").append(hallSeat.numberInRow).append(" כיסא ").append(" :מספר הזמנה ,").append(integer.toString()));
 
@@ -352,7 +360,7 @@ public class ScreeningTicketController extends Reportable {
                 .getScreening().getHall().getCinema().getName()));
 
         for (Cinema cinema : DbUtils.getAll(Cinema.class)) {
-            if(!cinemaToTickets.containsKey(cinema.getName())) {
+            if (!cinemaToTickets.containsKey(cinema.getName())) {
                 cinemaToTickets.put(cinema.getName(), Collections.emptyList());
             }
         }

@@ -31,4 +31,9 @@ public class PrimaryController {
     private void toPrepaidBalance() throws IOException {
         App.setRoot("unauthorized/prepaid/checkCurrentBalance");
     }
+
+    @FXML
+    private void toCancelPurchase() throws IOException {
+        App.setRoot("unauthorized/cancelPurchaseForm");
+    }
 }

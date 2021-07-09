@@ -737,7 +737,7 @@ public class MessageHandler extends AbstractServer {
             response = reportsController.getSertiaReports();
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle get sertia reports.");
+            response.failReason = "We couldn't handle get sertia reports.";
         }
 
         sendResponseToClient(client, response);
@@ -746,11 +746,10 @@ public class MessageHandler extends AbstractServer {
     private void handleCinemaReports(SertiaBasicRequest sertiaBasicRequest, ConnectionToClient client) {
         ClientReportsResponse response = new ClientReportsResponse(false);
 
-
         try {
             GetCinemaReports request = (GetCinemaReports) sertiaBasicRequest;
             if(Integer.getInteger((String) client.getInfo(ManagedCinemaIdType)) != request.cinemaId) {
-                response.setFailReason("not you're cinema!");
+                response.setFailReason("not your cinema!");
                 response.setSuccessful(false);
             } else {
                 response = reportsController.getCinemaReports(request.cinemaId);

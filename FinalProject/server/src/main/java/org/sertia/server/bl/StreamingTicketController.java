@@ -2,12 +2,12 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.joda.time.DateTime;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketRequest;
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
+import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
@@ -90,10 +90,15 @@ public class StreamingTicketController extends Reportable {
 
     public SertiaBasicResponse cancelStreamingTicket(CancelStreamingTicketRequest request) {
         int streamingTickerId = request.streamingId;
+        TicketCancellationResponse response = new TicketCancellationResponse(true);
         return DbUtils.getById(StreamingLink.class, streamingTickerId).map(streamingTicket -> {
+            if (!streamingTicket.getCustomerPaymentDetails().getPayerId().equals(request.userId)) {
+                return null;
+            }
+
             if (getHoursToLinkActivation(streamingTicket) < 1) {
-                return new SertiaBasicResponse(false)
-                        .setFailReason("can't cancel link that starts in less than an hour");
+                return Utils.createFailureResponse(response, "לא ניתן לבטל חבילת צפייה פחות משעה לפני הפיכתה לזמינה");
+
             }
 
             try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -101,12 +106,10 @@ public class StreamingTicketController extends Reportable {
                 creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), streamingTicket.getPaidPrice() / 2, RefundReason.StreamingService);
                 return new SertiaBasicResponse(true);
             } catch (RuntimeException exception) {
-                return new SertiaBasicResponse(false)
-                        .setFailReason("failed to delete streaming ticket");
+                return Utils.createFailureResponse(response, "ביטול רכישה נכשל, פנה לשירות לקוחות");
             }
         }).orElseGet(() ->
-                new SertiaBasicResponse(false)
-                        .setFailReason("no streaming with id " + streamingTickerId));
+                Utils.createFailureResponse(response, "חבילת צפייה עם הפרטים הנוכחיים אינה קיימת"));
     }
 
     private long getHoursToLinkActivation(StreamingLink streamingLink) {
@@ -116,7 +119,7 @@ public class StreamingTicketController extends Reportable {
     private void notifyClientsRegardingStreamingLinks() {
         System.out.println("notifying links " + LocalDateTime.now());
         DbUtils.getAll(StreamingLink.class).forEach(streamingLink -> {
-            if(ChronoUnit.MINUTES.between(LocalDateTime.now().withSecond(0), streamingLink.getActivationStart().withSecond(0)) == 60) {
+            if (ChronoUnit.MINUTES.between(LocalDateTime.now().withSecond(0), streamingLink.getActivationStart().withSecond(0)) == 60) {
                 CustomerNotifier.getInstance().notify(
                         streamingLink.getCustomerPaymentDetails().getEmail(),
                         "הלינק לחבילת הצפייה שלך  זמין בעוד שעה");

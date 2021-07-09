@@ -183,7 +183,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         boolean isCvvCorrect = isCvvCorrect();
         boolean isEmailCorrect = isEmailValid(cardHolderEmailTxt.getText());
         boolean isPhoneCorrcet = isPhoneValid(cardHolderPhoneTxt.getText());
-        boolean isIdNumberCorrect = isIdCorrcet(cardHolderId.getText());
+        boolean isIdNumberCorrect = isIdCorrect(cardHolderId.getText());
         return isCardHolderNameValid && isCreditCardProviderValid /*&& isCreditCardCorrect*/
                 && isCvvCorrect && isEmailCorrect && isPhoneCorrcet && isIdNumberCorrect;
     }
