@@ -608,7 +608,7 @@ public class MessageHandler extends AbstractServer {
         SertiaBasicResponse response = new SertiaBasicResponse(false);
 
         try {
-            complaintsController.createNewComplaint(((CreateNewComplaintRequest) request).complaint);
+            complaintsController.createNewComplaint(((CreateNewComplaintRequest) request));
             response.setSuccessful(true);
         } catch (SertiaException e){
             response.setFailReason(e.getMessage());

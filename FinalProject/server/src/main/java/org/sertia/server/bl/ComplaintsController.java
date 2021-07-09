@@ -2,6 +2,7 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
+import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CreditCardService;
@@ -30,8 +31,10 @@ public class ComplaintsController extends Reportable {
 		this.creditCardService = creditCardService;
 	}
 
-	public void createNewComplaint(ClientOpenComplaint clientComplaint) throws Exception {
+	public void createNewComplaint(CreateNewComplaintRequest createComplaintRequest) throws Exception {
 		Session session = null;
+		String ticketPayerId = "";
+		ClientOpenComplaint clientComplaint = createComplaintRequest.complaint;
 
 		try {
 			session = HibernateSessionFactory.getInstance().openSession();
@@ -41,18 +44,26 @@ public class ComplaintsController extends Reportable {
 			complaint.setDescription(clientComplaint.description);
 			complaint.setTicketType(Utils.clientTicketTypeToDL(clientComplaint.ticketType));
 
+
+
 			// Extracting and adding the right ticket type in the right place
 			switch (complaint.getTicketType()) {
 				case Streaming:
 					complaint.setStreamingLink(getTicketById(clientComplaint.ticketId, session, StreamingLink.class));
+					ticketPayerId = complaint.getStreamingLink().getCustomerPaymentDetails().getPayerId();
 					break;
 				case Screening:
 					complaint.setScreeningTicket(getTicketById(clientComplaint.ticketId, session, ScreeningTicket.class));
+					ticketPayerId = complaint.getScreeningTicket().getPaymentInfo().getPayerId();
 					break;
 				case Voucher:
 					complaint.setTicketsVoucher(getTicketById(clientComplaint.ticketId, session, TicketsVoucher.class));
+					ticketPayerId = complaint.getTicketsVoucher().getCustomerPaymentDetails().getPayerId();
 					break;
 			}
+
+			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber))
+				throw new SertiaException("Client's id: " + createComplaintRequest.clientIdNumber + " isn't the real ticket payer Id.");
 
 			// Saving the request
 			session.beginTransaction();

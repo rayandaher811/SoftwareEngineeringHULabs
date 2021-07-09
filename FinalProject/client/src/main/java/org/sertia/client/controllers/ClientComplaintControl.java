@@ -46,8 +46,8 @@ public class ClientComplaintControl extends ClientControl {
         return Collections.emptyList();
     }
 
-    public SertiaBasicResponse tryCreateComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType) {
-        return client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType)),
+    public SertiaBasicResponse tryCreateComplaint(String customerName, String customerPhoneNumber, String customerEmail, String description, int ticketId, ClientTicketType ticketType, String clientIdNumber) {
+        return client.request(new CreateNewComplaintRequest(new ClientOpenComplaint(customerName, customerPhoneNumber, customerEmail, description, ticketId, ticketType), clientIdNumber),
                 SertiaBasicResponse.class);
     }
 }
