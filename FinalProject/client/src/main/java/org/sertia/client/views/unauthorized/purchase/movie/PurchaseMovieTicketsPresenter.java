@@ -58,7 +58,6 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
                     try {
                         int numberOfTicketsPurchased = Integer.parseInt(this.amountOfTicketsTxt.getText());
                         // TODO: fixme, it should be seat map or something like that
-//                        int screeningId = ClientPurchaseControl.getScreeningSeatMap(cinemaScreeningMovie.getScreeningId());
                         ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
                         MovieHolder.getInstance().setMovie(movieToScreenings.getKey(), false);
                         boolean isCovidLimitationsEnbaled = false;
