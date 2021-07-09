@@ -530,9 +530,8 @@ public class MessageHandler extends AbstractServer {
                 client.setInfo(ClientUsernameType, loginCredentials.username);
 
                 // Saving the manager's cinema
-                if(result.userRole == UserRole.CinemaManager)
+                if(result.userRole == UserRole.BranchManager)
                     client.setInfo(ManagedCinemaIdType, cinemaController.getCinemaIdByManagerUsername(loginCredentials.username));
-
             }
         } catch (SertiaException e){
             result.setFailReason(e.getMessage());

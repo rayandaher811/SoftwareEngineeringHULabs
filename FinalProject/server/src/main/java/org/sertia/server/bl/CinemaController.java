@@ -13,8 +13,7 @@ public class CinemaController {
         try (Session session = HibernateSessionFactory.getInstance().openSession()){
             List<Cinema> cinemas = DbUtils.getAll(Cinema.class);
 
-            for (Cinema cinema :
-                    cinemas) {
+            for (Cinema cinema : cinemas) {
                 if(cinema.getManager().getUsername().equals(managerUsername))
                     return cinema.getId();
             }

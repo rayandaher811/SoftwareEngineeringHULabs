@@ -112,10 +112,10 @@ public class    DBFiller {
 
     private void fillUsers() {
         users = new ArrayList<User>();
-        users.add(new User("Admin", "123123", Role.BranchManager));
-        users.add(new User("cinemaManagerA", "123123", Role.CinemaManager));
-        users.add(new User("cinemaManagerB", "123123", Role.CinemaManager));
-        users.add(new User("cinemaManagerC", "123123", Role.CinemaManager));
+        users.add(new User("Admin", "123123", Role.CinemaManager));
+        users.add(new User("cinemaManagerA", "123123", Role.BranchManager));
+        users.add(new User("cinemaManagerB", "123123", Role.BranchManager));
+        users.add(new User("cinemaManagerC", "123123", Role.BranchManager));
         users.add(new User("SupporterA", "123123", Role.CostumerSupport));
         users.add(new User("SupporterB", "123123", Role.CostumerSupport));
         users.add(new User("MediaManager", "123123", Role.MediaManager));

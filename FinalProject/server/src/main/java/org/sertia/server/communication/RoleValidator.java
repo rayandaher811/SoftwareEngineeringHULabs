@@ -60,13 +60,13 @@ public class RoleValidator {
     }
 
     public boolean isCinemaManagerOperation(Class<?> requestType) {
-        return requestType == GetCinemaReports.class;
+        return requestType == GetSertiaReports.class ||
+                requestType == GetUnapprovedPriceChangeRequest.class ||
+                requestType == ApprovePriceChangeRequest.class ||
+                requestType == DissapprovePriceChangeRequest.class;
     }
 
     public boolean isBranchManagerOperation(Class<?> requestType) {
-        return requestType == GetUnapprovedPriceChangeRequest.class ||
-                requestType == ApprovePriceChangeRequest.class ||
-                requestType == DissapprovePriceChangeRequest.class ||
-                requestType == GetSertiaReports.class;
+        return requestType == GetCinemaReports.class;
     }
 }
