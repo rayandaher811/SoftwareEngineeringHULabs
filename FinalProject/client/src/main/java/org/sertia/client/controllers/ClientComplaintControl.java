@@ -27,11 +27,11 @@ public class ClientComplaintControl extends ClientControl {
         }
         return instance;
     }
-//
-//    public SertiaBasicResponse tryResolveComplaint(int complaintId, double refundAmount) {
-//        return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class);
-//    }
-//
+
+    public SertiaBasicResponse tryResolveComplaint(int complaintId, double refundAmount) {
+        return client.request(new PurchaseCancellationFromComplaintRequest(complaintId, refundAmount), SertiaBasicResponse.class);
+    }
+
     public SertiaBasicResponse tryCloseComplaint(int complaintId) {
         return client.request(new CloseComplaintRequest(complaintId), SertiaBasicResponse.class);
     }

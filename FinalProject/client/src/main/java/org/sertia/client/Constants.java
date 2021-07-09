@@ -1,5 +1,9 @@
 package org.sertia.client;
 
+import org.sertia.contracts.price.change.ClientTicketType;
+
+import java.util.HashMap;
+
 public class Constants {
     public static final String HOME_ONLINE_SCREENING = "צפיה ביתית ע\"י לינק";
     public static final String COMING_SOON = "בקרוב בסרטיה";
@@ -26,4 +30,16 @@ public class Constants {
     public static final String REMOVE_STREAMING_LINK = "מחיקת חבילת צפיה";
     public static final String ADD_STREAMING_LINK = "הוספת חבילת צפיה";
     public static final String ADD_SCREENING = "הוספת הקרנה";
+
+    public static final String APPROVE_CHANGE_REQUEST = "אשר בקשת שינוי";
+    public static final String DENY_CHANGE_REQUEST = "דחה בקשה";
+    public static final String MOVIE_NAME = "שם הסרט: ";
+    public static final String REQUEST_ID = "מזהה בקשה: ";
+    public static final String NEW_PRICE = "מחיר חדש: ";
+    public static final String TICKET_TYPE = "סוג כרטיס: ";
+
+    public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
+            new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
+                put(ClientTicketType.Streaming.name(), "חבילת צפיה");
+                put(ClientTicketType.Voucher.name(), "כרטיסיה");}};
 }

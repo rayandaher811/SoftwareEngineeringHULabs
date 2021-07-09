@@ -40,7 +40,7 @@ public class EmployeesFormPresenter implements Initializable {
 
     @FXML
     private void priceChangeRequestsApprovals() throws IOException {
-        App.setRoot("authorized/media.manager/availableMoviesForEdit");
+        App.setRoot("authorized/sertia.manager/approvePriceChangeRequests");
     }
 
     @FXML
@@ -62,11 +62,6 @@ public class EmployeesFormPresenter implements Initializable {
     @FXML
     private void updateTicketsPrice() throws IOException {
         App.setRoot("authorized/media.manager/changeMovieTicketPrice");
-    }
-
-    @FXML
-    private void removeMovie() throws IOException {
-        App.setRoot("authorized/media.manager/removeMovie");
     }
 
     @FXML
