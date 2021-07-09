@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -64,12 +64,23 @@ public class ReportsViewPresenter implements Initializable {
                 ((ClientReport)observableValue.getValue()).reportEntries.forEach(reportEntry -> {
                     pieChartConvertedData.add(new PieChart.Data(reportEntry.fieldName, reportEntry.value));
                 });
-                ObservableList<PieChart.Data> pieChartData =
-                        FXCollections.observableArrayList(pieChartConvertedData);
-                final PieChart chart = new PieChart(pieChartData);
-                chart.setTitle(((ClientReport)observableValue.getValue()).title);
 
-                paneData.getChildren().add(chart);
+                final CategoryAxis xAxis = new CategoryAxis();
+                final NumberAxis yAxis = new NumberAxis();
+                final BarChart<String,Number> bc = new BarChart(xAxis,yAxis);
+
+                bc.setTitle(((ClientReport)observableValue.getValue()).title);
+                xAxis.setLabel("parameter");
+                yAxis.setLabel("Value");
+                ArrayList<XYChart.Series<String, Number>> seriesArrayList = new ArrayList<>();
+                ((ClientReport)observableValue.getValue()).reportEntries.forEach(reportEntry -> {
+                    XYChart.Series series = new XYChart.Series();
+                    series.setName(reportEntry.fieldName);
+                    series.getData().add(new XYChart.Data(reportEntry.fieldName, reportEntry.value));
+                    seriesArrayList.add(series);
+                });
+                bc.getData().addAll(seriesArrayList);
+                paneData.getChildren().add(bc);
             });
         }
     }
