@@ -124,17 +124,7 @@ public class HandleComplaintsPresenter implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<ClientOpenComplaint> openedComplaints = ClientComplaintControl.getInstance().getOpenedComplaints();
 
-        openedComplaints.add(getComplaint("bg"));
-        openedComplaints.add(getComplaint("gg"));
-        openedComplaints.add(getComplaint("aa"));
-        openedComplaints.add(getComplaint("yy"));
-
         openedComplaints.forEach(openedComplaint ->
                 complaintsAccordion.getPanes().add(clientOpenComplaintToTiledPane(openedComplaint)));
-    }
-
-
-    private ClientOpenComplaint getComplaint(String customerName) {
-        return new ClientOpenComplaint(customerName, "0542256705", "bg@gmail.com", "dfkasodmasdmaskimd", 2, ClientTicketType.Screening);
     }
 }

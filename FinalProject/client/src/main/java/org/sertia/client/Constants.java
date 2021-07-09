@@ -37,9 +37,11 @@ public class Constants {
     public static final String REQUEST_ID = "מזהה בקשה: ";
     public static final String NEW_PRICE = "מחיר חדש: ";
     public static final String TICKET_TYPE = "סוג כרטיס: ";
-
+    public static final String TAV_SAGOL_LABEL_TXT = "אין תקנות פעילות כעת, תוכלי להגדירן כעת";
+    public static final String START_TAV_SAGOL_REGULATIONS_TXT = "החלי מדיניות תו סגול";
     public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
             new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
                 put(ClientTicketType.Streaming.name(), "חבילת צפיה");
                 put(ClientTicketType.Voucher.name(), "כרטיסיה");}};
+
 }

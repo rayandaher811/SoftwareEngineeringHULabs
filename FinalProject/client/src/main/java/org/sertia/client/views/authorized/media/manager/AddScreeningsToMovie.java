@@ -57,7 +57,7 @@ public class AddScreeningsToMovie implements Initializable {
 
             // TODO: fail reason is null
             type = Alert.AlertType.ERROR;
-            msg = response.failReason;
+            msg = addScreeningResponse.failReason;
         }
         Alert errorAlert = new Alert(type);
         errorAlert.setTitle("Add screening to movie in sertia");

@@ -1,11 +1,9 @@
 package org.sertia.client.views.authorized.customer.support;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.contracts.SertiaBasicResponse;
@@ -17,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
-import static org.sertia.client.Constants.CANCEL_REGULATIONS;
+import static org.sertia.client.Constants.*;
 
 public class UpdateTavSagolRegulationsPresenter implements Initializable {
     public DatePicker fromDatePickerComp;
@@ -26,6 +24,8 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
     public Button updateMaxPeopleBtn;
     public Button backBtn;
     public Button enableOrDisableRegulationsBtn;
+    public Button startOrStopRegulationsBtn;
+    public Label tavSagolLabel;
     private ClientCovidRegulationsStatus covidRegulationsStatus;
 
     private boolean areDatesValid() {
@@ -49,9 +49,6 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
 
     @FXML
     public void updateRegulations() {
-        if (covidRegulationsStatus.isActive) {
-            // TODO: missing endpoint in controller
-        }
         if (areDatesValid()) {
             LocalDate fromDate = fromDatePickerComp.getValue();
             LocalDate toDate = toDatePickerComp.getValue();
@@ -120,11 +117,46 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // TODO: if there are regulations, in specific dates, client don't know them and cannot show that
         covidRegulationsStatus = ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus();
         if (covidRegulationsStatus.isActive) {
-            fromDatePickerComp.setVisible(false);
-            toDatePickerComp.setVisible(false);
-            enableOrDisableRegulationsBtn.setText(CANCEL_REGULATIONS);
+            maxAllowedPeopleTxt.setText(String.valueOf(covidRegulationsStatus.maxNumberOfPeople));
+            startOrStopRegulationsBtn.setText(CANCEL_REGULATIONS);
+            startOrStopRegulationsBtn.setStyle("-fx-background-color: #ff1500");
+        } else {
+            tavSagolLabel.setText(tavSagolLabel.getText() + " , " + TAV_SAGOL_LABEL_TXT);
+            startOrStopRegulationsBtn.setStyle("-fx-background-color: #00ff00");
+            startOrStopRegulationsBtn.setText(START_TAV_SAGOL_REGULATIONS_TXT);
         }
+    }
+
+    public void startOrStopRegulation(ActionEvent actionEvent) {
+        SertiaBasicResponse response = null;
+        if (covidRegulationsStatus.isActive) {
+            response = ClientCovidRegulationsControl.getInstance().cancelRegulations();
+        } else {
+            response = ClientCovidRegulationsControl.getInstance().activeRegulations();
+        }
+
+        Alert.AlertType type;
+        String msg;
+        if (response.isSuccessful) {
+            type = Alert.AlertType.INFORMATION;
+            msg = "Regulations update has finished successfully!";
+            Alert alert = new Alert(type);
+            alert.setTitle("Update tav sagol regulations");
+            alert.setContentText(msg);
+            alert.showAndWait();
+            back();
+        } else {
+            type = Alert.AlertType.ERROR;
+            msg = response.failReason;
+            Alert alert = new Alert(type);
+            alert.setTitle("Update tav sagol regulations");
+            alert.setContentText(msg);
+            alert.showAndWait();
+        }
+
+
     }
 }
