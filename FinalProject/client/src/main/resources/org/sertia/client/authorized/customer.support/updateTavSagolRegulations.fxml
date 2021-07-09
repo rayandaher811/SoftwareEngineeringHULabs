@@ -35,7 +35,7 @@
                                     prefWidth="217.0"/>
                     </VBox>
                 </HBox>
-                <Button text="החל הגבלות" onAction="#updateByDate"/>
+                <Button fx:id="enableOrDisableRegulationsBtn" text="החל הגבלות" onAction="#updateRegulations"/>
                 <Label>מספר מקסימלי של אנשים באולם</Label>
                 <TextField fx:id="maxAllowedPeopleTxt" alignment="CENTER" promptText="מספר אנשים" maxWidth="200"/>
                 <Button onAction="#updateMaximumCapacity" fx:id="updateMaxPeopleBtn" text="עדכן כמות אנשים מקסימלית"/>

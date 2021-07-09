@@ -8,7 +8,7 @@
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.EmployeesFormPresenter">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="618.0"
+            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="718.0"
                    BorderPane.alignment="CENTER">
                 <font>
                     <Font size="26.0"/>

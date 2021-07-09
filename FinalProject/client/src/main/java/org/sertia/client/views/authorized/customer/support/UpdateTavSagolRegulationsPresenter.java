@@ -1,6 +1,7 @@
 package org.sertia.client.views.authorized.customer.support;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -8,17 +9,24 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ResourceBundle;
 
-public class UpdateTavSagolRegulationsPresenter {
+import static org.sertia.client.Constants.CANCEL_REGULATIONS;
+
+public class UpdateTavSagolRegulationsPresenter implements Initializable {
     public DatePicker fromDatePickerComp;
     public DatePicker toDatePickerComp;
     public TextField maxAllowedPeopleTxt;
     public Button updateMaxPeopleBtn;
     public Button backBtn;
+    public Button enableOrDisableRegulationsBtn;
+    private ClientCovidRegulationsStatus covidRegulationsStatus;
 
     private boolean areDatesValid() {
         LocalDate fromDate = fromDatePickerComp.getValue();
@@ -40,7 +48,10 @@ public class UpdateTavSagolRegulationsPresenter {
     }
 
     @FXML
-    public void updateByDate() {
+    public void updateRegulations() {
+        if (covidRegulationsStatus.isActive) {
+            // TODO: missing endpoint in controller
+        }
         if (areDatesValid()) {
             LocalDate fromDate = fromDatePickerComp.getValue();
             LocalDate toDate = toDatePickerComp.getValue();
@@ -90,6 +101,11 @@ public class UpdateTavSagolRegulationsPresenter {
                     errorAlert.showAndWait();
                 }
             }
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Failed to set regulations");
+            errorAlert.setContentText("new amount of people in hall must be a number");
+            errorAlert.showAndWait();
         }
     }
 
@@ -99,6 +115,16 @@ public class UpdateTavSagolRegulationsPresenter {
             App.setRoot("authorized/employeesForm");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        covidRegulationsStatus = ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus();
+        if (covidRegulationsStatus.isActive) {
+            fromDatePickerComp.setVisible(false);
+            toDatePickerComp.setVisible(false);
+            enableOrDisableRegulationsBtn.setText(CANCEL_REGULATIONS);
         }
     }
 }

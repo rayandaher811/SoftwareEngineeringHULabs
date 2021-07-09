@@ -22,4 +22,5 @@ public class Constants {
     public static final String REFUND_EMOUNT = "סכום לזיכוי";
     public static final String RESOLVE_COMPLAINT_BTN_TXT = "קבל תלונה";
     public static final String REJECT_COMPLAINT_BTN_TXT = "דחה תלונה";
+    public static final String CANCEL_REGULATIONS = "ביטול הנחיות";
 }
