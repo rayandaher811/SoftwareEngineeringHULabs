@@ -1,6 +1,8 @@
 package org.sertia.server.bl;
 
+import com.mysql.cj.jdbc.JdbcConnection;
 import org.hibernate.Session;
+import org.hibernate.exception.JDBCConnectionException;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.complaints.requests.CreateNewComplaintRequest;
 import org.sertia.contracts.reports.ClientReport;
@@ -73,7 +75,11 @@ public class ComplaintsController extends Reportable {
 
 			// Notifying our client
 			notifier.notify(clientComplaint.customerEmail, "You had opened an complaint in sertia server, we will contact you within 24 hours.");
-		} catch (Exception e){
+		} catch (JDBCConnectionException e){
+			e.printStackTrace();
+			throw new SertiaException("We couldn't add your complaint due internal technical issues.");
+		}
+		catch (Exception e){
 			session.getTransaction().rollback();
 			throw e;
 		} finally {
