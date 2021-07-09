@@ -16,8 +16,6 @@ public final class DbUtils {
             CriteriaQuery<T> query = builder.createQuery(clazz);
             query.from(clazz);
             return session.createQuery(query).getResultList();
-        } catch (Exception e) {
-            return Collections.emptyList();
         }
     }
 

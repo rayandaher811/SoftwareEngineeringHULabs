@@ -153,6 +153,9 @@ public class MessageHandler extends AbstractServer {
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handle get Sertia catalog.");
+        } catch (SertiaException e){
+            e.printStackTrace();
+            response.setFailReason(e.getMessage());
         }
 
         sendResponseToClient(client, response);

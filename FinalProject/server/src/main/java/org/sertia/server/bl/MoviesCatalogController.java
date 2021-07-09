@@ -70,30 +70,34 @@ public class MoviesCatalogController extends Reportable {
         }
     }
 
-    public SertiaBasicResponse getSertiaCatalog() {
-        Map<ScreenableMovie, List<Screening>> screeningMovies = getScreenings();
-        Map<Integer, Streaming> streamings = getStreamings();
-        List<SertiaMovie> sertiaMovieList = new ArrayList<>();
+    public SertiaBasicResponse getSertiaCatalog() throws SertiaException {
+        try{
+            Map<ScreenableMovie, List<Screening>> screeningMovies = getScreenings();
+            Map<Integer, Streaming> streamings = getStreamings();
+            List<SertiaMovie> sertiaMovieList = new ArrayList<>();
 
-        screeningMovies.keySet()
-                .forEach(screenableMovie -> {
-                    Movie movie = screenableMovie.getMovie();
-                    SertiaMovie sertiaMovie = new SertiaMovie();
-                    sertiaMovie.movieId = movie.getId();
-                    sertiaMovie.movieDetails = movieToClientMovie(movie);
-                    sertiaMovie.isComingSoon = movie.isComingSoon();
-                    sertiaMovie.ticketPrice = screenableMovie.getTicketPrice();
-                    sertiaMovie.screenings = screeningMovies.get(screenableMovie).stream().map(MoviesCatalogController::screeningToClientScreening)
-                            .collect(Collectors.toList());
-                    Optional.ofNullable(streamings.get(movie.getId()))
-                            .ifPresent(streaming -> {
-                                sertiaMovie.isStreamable = true;
-                                sertiaMovie.extraDayPrice = streaming.extraDayPrice;
-                            });
-                    sertiaMovieList.add(sertiaMovie);
-                });
+            screeningMovies.keySet()
+                    .forEach(screenableMovie -> {
+                        Movie movie = screenableMovie.getMovie();
+                        SertiaMovie sertiaMovie = new SertiaMovie();
+                        sertiaMovie.movieId = movie.getId();
+                        sertiaMovie.movieDetails = movieToClientMovie(movie);
+                        sertiaMovie.isComingSoon = movie.isComingSoon();
+                        sertiaMovie.ticketPrice = screenableMovie.getTicketPrice();
+                        sertiaMovie.screenings = screeningMovies.get(screenableMovie).stream().map(MoviesCatalogController::screeningToClientScreening)
+                                .collect(Collectors.toList());
+                        Optional.ofNullable(streamings.get(movie.getId()))
+                                .ifPresent(streaming -> {
+                                    sertiaMovie.isStreamable = true;
+                                    sertiaMovie.extraDayPrice = streaming.extraDayPrice;
+                                });
+                        sertiaMovieList.add(sertiaMovie);
+                    });
 
-        return new SertiaCatalogResponse(true, sertiaMovieList);
+            return new SertiaCatalogResponse(true, sertiaMovieList);
+        } catch (Exception e){
+            throw new SertiaException("Sertia server couldn't get you our catalog due technical issues... .");
+        }
     }
 
     public SertiaBasicResponse addMovie(SertiaMovie movieData) {
