@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.controllers.ClientReportsControl;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
 import java.io.IOException;

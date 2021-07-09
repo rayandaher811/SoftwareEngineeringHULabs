@@ -9,7 +9,7 @@
       fx:controller="org.sertia.client.views.unauthorized.purchase.ByPrepaidCardFormPresenter">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישת כרטיסייה"
+            <Label fx:id="topLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="רכישה באמצעות כרטיסיה"
                    BorderPane.alignment="CENTER">
                 <font>
                     <Font size="26.0"/>
