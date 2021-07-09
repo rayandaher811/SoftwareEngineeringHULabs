@@ -31,7 +31,7 @@ public class AddScreeningsToMovie implements Initializable {
     @FXML
     private ComboBox branchName;
 
-    // TODO: error in add screenings, getting error from server
+    //  error in add screenings, getting error from server
     public void addScreenings() {
         ClientMovie currentMovie = MovieHolder.getInstance().getMovie();
         CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
@@ -40,6 +40,7 @@ public class AddScreeningsToMovie implements Initializable {
         LocalDateTime screeningTime = LocalDateTime.of(inputDate.getYear(),
                 inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(screeningHour), getMin(screeningHour));
         List<ClientHall> clientHallsInCinema = response.cinemaToHalls.get(branchName.getSelectionModel().getSelectedItem());
+        // TODO: use hall number from client hall
         // TODO: there is no mapping between hall name which client knows to it's ID, must make one.. or create an endpoint
         SertiaMovie movie = ClientCatalogControl.getInstance().requestAllMoviesCatalog().stream().filter(sertiaMovie -> sertiaMovie.getMovieDetails().getName().equals(currentMovie.getName())).findFirst().get();
 

@@ -19,7 +19,6 @@ public class ClientPriceChangeControl extends ClientControl {
         return client.request(new BasicPriceChangeRequest(movieId, clientTicketType, newPrice), SertiaBasicResponse.class);
     }
 
-    // TODO: price??
     public SertiaBasicResponse tryApprovePriceChange(int requestId) {
         return client.request(new ApprovePriceChangeRequest(requestId), SertiaBasicResponse.class);
     }
