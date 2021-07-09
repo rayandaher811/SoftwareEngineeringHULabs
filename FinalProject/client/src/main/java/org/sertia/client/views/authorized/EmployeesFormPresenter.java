@@ -58,7 +58,6 @@ public class EmployeesFormPresenter implements Initializable {
         App.setRoot("authorized/customer.support/handleComplaints");
     }
 
-
     @FXML
     private void updateTicketsPrice() throws IOException {
         App.setRoot("authorized/media.manager/changeMovieTicketPrice");
@@ -74,8 +73,8 @@ public class EmployeesFormPresenter implements Initializable {
         UserRole userRole = LoggedInUser.getInstance().getUserRole();
         switch (userRole) {
             case MediaManager -> initializeMediaManagerView();
-            case BranchManager -> initializeSertiaManagerView();
-            case CinemaManager -> initializeCinemaManagerView();
+            case BranchManager -> initializeCinemaManagerView();
+            case CinemaManager -> initializeSertiaManagerView();
             case CostumerSupport -> initializeCustomerSupportView();
         }
         topLabel.setText(getHelloSentenceByRole(userRole) + ", " + HELLO_SENTENCE);
@@ -97,16 +96,6 @@ public class EmployeesFormPresenter implements Initializable {
     }
 
     private void initializeCinemaManagerView() {
-        Button priceChangeRequestsApproval = new Button();
-        priceChangeRequestsApproval.setText(PRICE_CHANGE_APPROVAL);
-        priceChangeRequestsApproval.setOnMouseClicked(mouseEvent -> {
-            try {
-                priceChangeRequestsApprovals();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        priceChangeRequestsApproval.setMinWidth(200.0);
         Button statisticsView = new Button();
         statisticsView.setText(STATISTICS_VIEW);
         statisticsView.setMinWidth(200.0);
@@ -117,7 +106,7 @@ public class EmployeesFormPresenter implements Initializable {
                 e.printStackTrace();
             }
         });
-        buttonsVbox.getChildren().addAll(priceChangeRequestsApproval, statisticsView);
+        buttonsVbox.getChildren().addAll(statisticsView);
     }
 
     private void initializeCustomerSupportView() {
