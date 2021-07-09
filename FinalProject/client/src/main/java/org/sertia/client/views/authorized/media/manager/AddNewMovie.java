@@ -2,6 +2,7 @@ package org.sertia.client.views.authorized.media.manager;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -9,6 +10,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.SertiaMovieHolder;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -69,9 +71,28 @@ public class AddNewMovie extends BasicPresenter {
         boolean isStreamable = availableOnline.isSelected();
         boolean isComingSoon = isComingSoonCb.isSelected();
         SertiaMovie movie = new SertiaMovie(clientMovie, screeningList, ticketPrice, isStreamable, isComingSoon);
-        SertiaMovieHolder.getInstance().setSertiaMovie(movie);
+        SertiaBasicResponse response = ClientCatalogControl.getInstance().tryCreateMovie(movie);
+
         try {
-            App.setRoot("authorized/media.manager/addNewMovieScreenings");
+            Alert.AlertType type;
+            String msg = "";
+            if (response.isSuccessful){
+                type = Alert.AlertType.INFORMATION;
+                msg = "Movie added successfully! Need to add screenings";
+                Alert errorAlert = new Alert(type);
+                errorAlert.setTitle("Buying from sertia system");
+                errorAlert.setContentText(msg);
+                errorAlert.showAndWait();
+                App.setRoot("authorized/employeesForm");
+            } else {
+                type = Alert.AlertType.ERROR;
+                msg = response.failReason;
+                Alert errorAlert = new Alert(type);
+                errorAlert.setTitle("Add movie");
+                errorAlert.setContentText(msg);
+                errorAlert.showAndWait();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,7 +101,7 @@ public class AddNewMovie extends BasicPresenter {
     @FXML
     public void back(){
         try {
-            App.setRoot("authorized/employeesForm");
+            App.setRoot("authorized/media.manager/addOrRemoveMovie");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -29,8 +29,13 @@ public class EmployeesFormPresenter implements Initializable {
     }
 
     @FXML
-    private void updateMovie() throws IOException {
+    private void updateStreamingTime() throws IOException {
         App.setRoot("authorized/media.manager/availableMoviesForEdit");
+    }
+
+    @FXML
+    private void addOrRemoveMovie() throws IOException {
+        App.setRoot("authorized/media.manager/addOrRemoveMovie");
     }
 
     @FXML
@@ -62,6 +67,11 @@ public class EmployeesFormPresenter implements Initializable {
     @FXML
     private void removeMovie() throws IOException {
         App.setRoot("authorized/media.manager/removeMovie");
+    }
+
+    @FXML
+    private void addOrRemoveStreaming() throws IOException {
+        App.setRoot("authorized/media.manager/addOrRemoveStreaming");
     }
 
     @FXML
@@ -170,31 +180,34 @@ public class EmployeesFormPresenter implements Initializable {
 
     private void initializeMediaManagerView() {
         Button editMoviesScreeningTimeBtn = new Button();
-        editMoviesScreeningTimeBtn.setText(EDIT_PLAYING_TIME);
+        editMoviesScreeningTimeBtn.setText(ADD_OR_DELETE_SCREENING);
         editMoviesScreeningTimeBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                updateMovie();
+                addOrRemoveMovie();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        editMoviesScreeningTimeBtn.setMinWidth(200.0);
+        editMoviesScreeningTimeBtn.setMinWidth(220);
+        editMoviesScreeningTimeBtn.setMaxWidth(220);
         Button addMovieBtn = new Button();
-        addMovieBtn.setText(ADD_NEW_MOVIES);
-        addMovieBtn.setMinWidth(200.0);
+        addMovieBtn.setText(ADD_OR_DELETE_STREAMING);
+        addMovieBtn.setMinWidth(220);
+        addMovieBtn.setMinWidth(220);
         addMovieBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                addMovie();
+                addOrRemoveStreaming();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         Button removeMovieBtn = new Button();
-        removeMovieBtn.setText(REMOVE_MOVIES);
-        removeMovieBtn.setMinWidth(200.0);
+        removeMovieBtn.setText(EDIT_PLAYING_TIME);
+        removeMovieBtn.setMinWidth(220);
+        removeMovieBtn.setMaxWidth(220);
         removeMovieBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                removeMovie();
+                updateStreamingTime();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -202,7 +215,8 @@ public class EmployeesFormPresenter implements Initializable {
 
         Button changeTicketsPriceBtn = new Button();
         changeTicketsPriceBtn.setText(EDIT_TICKETS_PRICE);
-        changeTicketsPriceBtn.setMinWidth(200.0);
+        changeTicketsPriceBtn.setMinWidth(220);
+        changeTicketsPriceBtn.setMaxWidth(220);
         changeTicketsPriceBtn.setOnMouseClicked(mouseEvent -> {
             try {
                 updateTicketsPrice();

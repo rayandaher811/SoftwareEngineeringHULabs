@@ -37,21 +37,11 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
     }
 
     @FXML
-    private void back() throws IOException {
+    public void back() throws IOException {
         App.setRoot("authorized/employeesForm");
     }
 
-    private void updateMovie(ClientScreening screening, ClientMovie movie) {
-        MovieHolder.getInstance().setMovie(movie, false);
-        ScreeningHolder.getInstance().setScreening(screening);
-        try {
-            App.setRoot("authorized/media.manager/editMovieScreeningTimePresenter");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(List<SertiaMovie> movies) {
+    private HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
         HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
 
         for (SertiaMovie screeningMovie : movies) {
@@ -71,10 +61,10 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         return movieToCinemaAndScreenings;
     }
 
-    private TitledPane getCurrentlyPlayingMoviesAsTitledPane(List<SertiaMovie> currentlyAvailableMovies) {
+    private TitledPane getCurrentlyPlayingMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> currentlyAvailableMovies) {
         Accordion currentlyPlayingMoviesAccordion = new Accordion();
 
-        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies);
+        HashMap<ClientMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
         ArrayList<TitledPane> values = new ArrayList<>();
         for (Map.Entry<ClientMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
             Accordion moviePlayingTimeAccordion = new Accordion();
@@ -87,8 +77,15 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                     btn.setText(cinemaScreeningMovie.screeningTime.toString());
                     buttonObservableList.add(btn);
                     btn.setOnMouseClicked(mouseEvent -> {
-                        updateMovie(cinemaScreeningMovie, moviesInBranch.getKey());
+                        try {
+                            ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
+                            MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
+                            App.setRoot("authorized/media.manager/editMovieScreeningTimePresenter");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     });
+
                 });
                 allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
                 Accordion specificCinema = new Accordion();
@@ -99,10 +96,22 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                 specificCinemaList.add(tiledPane);
             }
             moviePlayingTimeAccordion.getPanes().addAll(specificCinemaList);
+            HBox hBox = new HBox();
+            Button bgBtn = new Button();
+            bgBtn.setText(ADD_SCREENING);
+            bgBtn.setOnMouseClicked(mouseEvent -> {
+                try {
+                    MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
+                    App.setRoot("authorized/media.manager/addNewScreening");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            hBox.getChildren().addAll(moviePlayingTimeAccordion, bgBtn);
             TitledPane tiledPane = new TitledPane();
             tiledPane.setAnimated(true);
             tiledPane.setText(moviesInBranch.getKey().getName());
-            tiledPane.setContent(moviePlayingTimeAccordion);
+            tiledPane.setContent(hBox);
             values.add(tiledPane);
 
         }
@@ -113,11 +122,130 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         return tiledPane;
     }
 
+    private TitledPane getComingSoonMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> comingSoonMovies) {
+        Accordion comingSoonAccordion = new Accordion();
+        ArrayList<TitledPane> values = new ArrayList<>();
+        for (SertiaMovie sertiaMovie : comingSoonMovies.getValue()) {
+            ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
+            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+            Button moreInfoBtn = new Button();
+            moreInfoBtn.setText(ADD_SCREENING);
+            moreInfoBtn.setOnMouseClicked(mouseEvent -> {
+                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                try {
+                    App.setRoot("authorized/media.manager/addNewScreening");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            HBox horizontalView = new HBox();
+            horizontalView.getChildren().addAll(moreInfoBtn);
+
+            buttonObservableList.addAll(moreInfoBtn);
+
+            allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
+            Accordion specificCinema = new Accordion();
+            TitledPane tiledPane = new TitledPane(sertiaMovie.getMovieDetails().getName(), specificCinema);
+            tiledPane.setAnimated(true);
+            tiledPane.setText(sertiaMovie.getMovieDetails().getName());
+            tiledPane.setContent(horizontalView);
+            specificCinema.getPanes().add(tiledPane);
+            values.add(tiledPane);
+        }
+        comingSoonAccordion.getPanes().addAll(values);
+        TitledPane tiledPane = new TitledPane("comingSoonMovies", comingSoonAccordion);
+        tiledPane.setAnimated(false);
+        tiledPane.setText(COMING_SOON);
+        tiledPane.setContent(comingSoonAccordion);
+        return tiledPane;
+    }
+
+    private TitledPane getStreamableMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> streamableMovies) {
+        Accordion streamableAccordion = new Accordion();
+        ArrayList<TitledPane> values = new ArrayList<>();
+        for (SertiaMovie sertiaMovie : streamableMovies.getValue()) {
+            ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
+            ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+            Button moreInfoBtn = new Button();
+            moreInfoBtn.setText(ADD_SCREENING);
+            moreInfoBtn.setOnMouseClicked(mouseEvent -> {
+                MovieHolder.getInstance().setMovie(sertiaMovie.getMovieDetails(), true);
+                try {
+                    App.setRoot("authorized/media.manager/addNewScreening");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            HBox horizontalView = new HBox();
+            horizontalView.getChildren().addAll(moreInfoBtn);
+
+            buttonObservableList.addAll(moreInfoBtn);
+
+            allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
+            Accordion specificCinema = new Accordion();
+            TitledPane tiledPane = new TitledPane(sertiaMovie.getMovieDetails().getName(), specificCinema);
+            tiledPane.setAnimated(true);
+            tiledPane.setText(sertiaMovie.getMovieDetails().getName());
+            tiledPane.setContent(horizontalView);
+            specificCinema.getPanes().add(tiledPane);
+            values.add(tiledPane);
+        }
+        streamableAccordion.getPanes().addAll(values);
+
+        TitledPane tiledPane = new TitledPane("streamableMovies", streamableAccordion);
+        tiledPane.setAnimated(true);
+        tiledPane.setText(HOME_ONLINE_SCREENING);
+        tiledPane.setContent(streamableAccordion);
+        return tiledPane;
+    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
-        List<SertiaMovie> availableMovies = ClientCatalogControl.getInstance().getAvailableMovies();
-        list.add(getCurrentlyPlayingMoviesAsTitledPane(availableMovies));
+        List<SertiaMovie> moviesList = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
+        HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();
+
+        moviesList.forEach(sertiaMovie -> {
+            if (sertiaMovie.isComingSoon) {
+                if (moviesByType.containsKey("COMING-SOON")) {
+                    moviesByType.get("COMING-SOON").add(sertiaMovie);
+                } else {
+                    moviesByType.put("COMING-SOON", new ArrayList<>() {{
+                        add(sertiaMovie);
+                    }});
+                }
+            } else {
+                if (moviesByType.containsKey("CURRENTLY-PLAYING")) {
+                    moviesByType.get("CURRENTLY-PLAYING").add(sertiaMovie);
+                } else {
+                    moviesByType.put("CURRENTLY-PLAYING", new ArrayList<>() {{
+                        add(sertiaMovie);
+                    }});
+                }
+            }
+            // TODO: what's about movies which can be streamable and also have screenings? they will appear twice... what do you think we have to do?
+            if (sertiaMovie.isStreamable) {
+                if (moviesByType.containsKey("STREAMABLE")) {
+                    moviesByType.get("STREAMABLE").add(sertiaMovie);
+                } else {
+                    moviesByType.put("STREAMABLE", new ArrayList<>() {{
+                        add(sertiaMovie);
+                    }});
+                }
+            }
+        });
+
+        moviesByType.entrySet().forEach(stringArrayListEntry -> {
+            if (stringArrayListEntry.getKey().equals("CURRENTLY-PLAYING")) {
+                list.add(getCurrentlyPlayingMoviesAsTitledPane(stringArrayListEntry));
+            } else if (stringArrayListEntry.getKey().equals("STREAMABLE")) {
+                list.add(getStreamableMoviesAsTitledPane(stringArrayListEntry));
+            } else if (stringArrayListEntry.getKey().equals("COMING-SOON")) {
+                list.add(getComingSoonMoviesAsTitledPane(stringArrayListEntry));
+            }
+        });
         moviesKindAndDataAccordion.getPanes().addAll(list);
     }
 }

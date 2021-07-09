@@ -5,10 +5,6 @@ public class Constants {
     public static final String COMING_SOON = "בקרוב בסרטיה";
     public static final String CURRENTLY_AVAILABLE = "מופיע כעת";
     public static final String MOVIE_DETAILS = "פרטי הסרט";
-    public static final String EDIT_PLAYING_TIME = "עריכת זמני הקרנת סרטים";
-    public static final String ADD_NEW_MOVIES = "הוספת סרטים לרשת";
-    public static final String REMOVE_MOVIES = "מחיקת סרטים מהרשת";
-    public static final String EDIT_TICKETS_PRICE = "שינוי מחירי הכרטיסים";
     public static final String HELLO_SENTENCE = "ברוכה הבאה למערכת הסרטייה";
     public static final String BRANCH_MANAGER = "מנהלת הסניף";
     public static final String CINEMA_MANAGER = "מנהלת הרשת";
@@ -23,4 +19,11 @@ public class Constants {
     public static final String RESOLVE_COMPLAINT_BTN_TXT = "קבל תלונה";
     public static final String REJECT_COMPLAINT_BTN_TXT = "דחה תלונה";
     public static final String CANCEL_REGULATIONS = "ביטול הנחיות";
+    public static final String ADD_OR_DELETE_SCREENING = "הוספה / הסרה של סרט";
+    public static final String ADD_OR_DELETE_STREAMING = "הוספה / הסרה של חבילת צפיה ביתית";
+    public static final String EDIT_PLAYING_TIME = "עדכון / הוספת מועדי הקרנה";
+    public static final String EDIT_TICKETS_PRICE = "עדכון מחירים";
+    public static final String REMOVE_STREAMING_LINK = "מחיקת חבילת צפיה";
+    public static final String ADD_STREAMING_LINK = "הוספת חבילת צפיה";
+    public static final String ADD_SCREENING = "הוספת הקרנה";
 }

@@ -1,11 +1,10 @@
 package org.sertia.client.views.authorized.media.manager;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import org.joda.time.DateTime;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
@@ -46,6 +45,9 @@ public class EditMovieScreeningTimePresenter implements Initializable {
     @FXML
     private TextField screeningTimeTxt;
 
+    @FXML
+    private Button removeScreeningBtn;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ClientMovie movie = MovieHolder.getInstance().getMovie();
@@ -60,13 +62,15 @@ public class EditMovieScreeningTimePresenter implements Initializable {
         DateTime dateTime = DateTime.parse(movieScreeningTime);
         datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
         screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
+        removeScreeningBtn.setStyle("-fx-background-color: #ff1500");
     }
 
     @FXML
-    private void backToPreviusPage() throws IOException {
+    private void backToPreviousPage() throws IOException {
         App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
+    // TODO: INPUT VALIDAION AND HANDLE ERRORS
     @FXML
     private void requestChangeFromServer() throws IOException {
         String newHour = screeningTimeTxt.getText();
@@ -115,5 +119,28 @@ public class EditMovieScreeningTimePresenter implements Initializable {
     private String parseTimeWithoutDate(String dateTime) {
         int pivotIndex = dateTime.indexOf(":");
         return dateTime.substring(pivotIndex - 2, pivotIndex + 3);
+    }
+
+    public void removeScreening(MouseEvent mouseEvent) {
+        ClientScreening screening = ScreeningHolder.getInstance().getScreening();
+        SertiaBasicResponse response =
+                ClientCatalogControl.getInstance().tryRemoveScreening(screening.getScreeningId());
+
+        if (response.isSuccessful) {
+            Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.INFORMATION);
+            missingKeyFieldsAlert.setTitle("Remove screening");
+            missingKeyFieldsAlert.setContentText("Remove operation ended successfully!");
+            missingKeyFieldsAlert.show();
+            try {
+                backToPreviousPage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
+            missingKeyFieldsAlert.setTitle("Remove screening");
+            missingKeyFieldsAlert.setContentText(response.failReason);
+            missingKeyFieldsAlert.show();
+        }
     }
 }

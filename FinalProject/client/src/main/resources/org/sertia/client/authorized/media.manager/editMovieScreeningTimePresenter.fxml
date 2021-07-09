@@ -61,14 +61,18 @@
                 </GridPane>
             </center>
             <bottom>
-                <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                onAction="#backToPreviusPage" text="חזור"/>
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-                                onAction="#requestChangeFromServer" text="עדכן"/>
-                    </children>
-                </HBox>
+                <VBox alignment="CENTER">
+                    <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <children>
+                            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                    onAction="#backToPreviousPage" text="חזור" minWidth="90" maxWidth="90"/>
+                            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                    onAction="#requestChangeFromServer" text="עדכן" minWidth="90" maxWidth="90"/>
+                        </children>
+                    </HBox>
+                    <Button fx:id="removeScreeningBtn" text="מחק הקרנה" onMouseClicked="#removeScreening" minWidth="180"
+                            maxWidth="180"/>
+                </VBox>
             </bottom>
         </BorderPane>
     </children>

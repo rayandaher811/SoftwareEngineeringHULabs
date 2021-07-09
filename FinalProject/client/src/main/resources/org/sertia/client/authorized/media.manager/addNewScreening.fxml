@@ -7,7 +7,7 @@
       fx:controller="org.sertia.client.views.authorized.media.manager.AddScreeningsToMovie">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="שלב 2 - הוספת הקרנות לסרט"
+            <Label fx:id="movieNameLabel" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="הוספת הקרנות לסרט"
                    BorderPane.alignment="CENTER">
                 <font>
                     <Font size="26.0"/>

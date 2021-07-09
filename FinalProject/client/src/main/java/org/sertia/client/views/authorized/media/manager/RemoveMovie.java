@@ -24,8 +24,8 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
     @FXML
     private ComboBox movieToRemove;
     private HashMap<String, SertiaMovie> movieNameToId;
-    protected String alertData;
     private boolean isBug;
+    protected String alertData;
 
     @FXML
     public void requestRemove() {
@@ -70,7 +70,7 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
     @FXML
     public void backToMenu() {
         try {
-            App.setRoot("authorized/employeesForm");
+            App.setRoot("authorized/media.manager/addOrRemoveMovie");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.authorized.media.manager.AddNewMovie">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="שלב 1 - הוספת פרטי סרט חדש"
+            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="500.0" text="הוספת סרט חדש למערכת הסרטייה"
                    BorderPane.alignment="CENTER">
                 <font>
                     <Font size="26.0"/>
