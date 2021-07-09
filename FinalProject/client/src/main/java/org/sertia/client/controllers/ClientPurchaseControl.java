@@ -1,7 +1,5 @@
 package org.sertia.client.controllers;
 
-import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.screening.ticket.response.*;
 
@@ -95,22 +93,4 @@ public class ClientPurchaseControl extends ClientControl {
 
         return response;
     }
-
-//
-//    public SertiaBasicResponse cancelScreeningTicket(int purchaseId) {
-//        return client.request(new CancelScreeningTicketRequest(purchaseId), SertiaBasicResponse.class);
-//    }
-//
-//    public StreamingPaymentResponse purchaseStreaming(StreamingPaymentRequest request) {
-//        return client.request(request, StreamingPaymentResponse.class);
-//    }
-//
-//    public SertiaBasicResponse cancelStreamingTicket(int purchaseId) {
-//        return client.request(new CancelStreamingTicketRequest(purchaseId), SertiaBasicResponse.class);
-//    }
-//
-//    public VoucherPaymentResponse purchaseVoucher(BasicPriceChangeRequest request) {
-//        return client.request(request, VoucherPaymentResponse.class);
-//    }
-//
 }

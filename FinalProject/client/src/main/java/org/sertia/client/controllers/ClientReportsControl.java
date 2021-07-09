@@ -7,13 +7,13 @@ import org.sertia.contracts.reports.response.ClientReportsResponse;
 public class ClientReportsControl extends ClientControl {
     private static final ClientReportsControl instance = new ClientReportsControl();
 
-    public static ClientReportsControl getInstance(){
+    public static ClientReportsControl getInstance() {
         return instance;
     }
 
     public ClientReportsResponse getSertiaReports() {
         ClientReportsResponse response = client.request(new GetSertiaReports(), ClientReportsResponse.class);
-        if(response.isSuccessful) {
+        if (response.isSuccessful) {
             return response;
         }
         ClientReportsResponse clientReportsResponse = new ClientReportsResponse(false);
@@ -24,7 +24,7 @@ public class ClientReportsControl extends ClientControl {
 
     public ClientReportsResponse getCinemaReports(int cinemaId) {
         ClientReportsResponse response = client.request(new GetCinemaReports(cinemaId), ClientReportsResponse.class);
-        if(response.isSuccessful) {
+        if (response.isSuccessful) {
             return response;
         }
         ClientReportsResponse clientReportsResponse = new ClientReportsResponse(false);

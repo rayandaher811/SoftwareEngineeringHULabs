@@ -16,4 +16,9 @@ public class ClientReport implements Serializable {
     public void addEntry(String fieldName, double value) {
         reportEntries.add(new ReportEntry(fieldName, value));
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }
