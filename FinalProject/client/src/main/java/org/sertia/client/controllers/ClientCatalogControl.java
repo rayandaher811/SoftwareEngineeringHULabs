@@ -69,13 +69,9 @@ public class ClientCatalogControl extends ClientControl {
         return client.request(new StreamingRemovalRequest(movieId), SertiaBasicResponse.class);
     }
 
-    public List<SertiaMovie> requestAllMoviesCatalog() {
+    public SertiaCatalogResponse requestAllMoviesCatalog() {
         SertiaCatalogResponse response = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class);
-        if (response.isSuccessful) {
-            return response.movies;
-        }
-
-        return Collections.emptyList();
+        return response;
     }
 
     public List<SertiaMovie> getOnlineMovies() {

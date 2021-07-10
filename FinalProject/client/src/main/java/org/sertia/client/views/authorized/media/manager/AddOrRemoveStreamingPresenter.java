@@ -15,6 +15,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,12 +46,20 @@ public class AddOrRemoveStreamingPresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         alertData = "";
-        List<SertiaMovie> catalog = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
-        movieNameToId = new HashMap<>();
-        catalog.forEach(sertiaMovie -> movieNameToId.put(sertiaMovie.getMovieDetails().getName(), sertiaMovie));
-        ObservableList<String> ticketTypes = FXCollections.observableList(new ArrayList<>(movieNameToId.keySet()));
-        availableMovies.setItems(ticketTypes);
-        availableMovies.getSelectionModel().selectedItemProperty().addListener(this::onChange);
+        SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
+        if (!response.isSuccessful) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fetch movies catalog");
+            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
+            errorAlert.showAndWait();
+        } else {
+            List<SertiaMovie> catalog = response.movies;
+            movieNameToId = new HashMap<>();
+            catalog.forEach(sertiaMovie -> movieNameToId.put(sertiaMovie.getMovieDetails().getName(), sertiaMovie));
+            ObservableList<String> ticketTypes = FXCollections.observableList(new ArrayList<>(movieNameToId.keySet()));
+            availableMovies.setItems(ticketTypes);
+            availableMovies.getSelectionModel().selectedItemProperty().addListener(this::onChange);
+        }
     }
 
     public void addOrRemove(MouseEvent mouseEvent) {

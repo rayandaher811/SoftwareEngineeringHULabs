@@ -16,6 +16,7 @@ import org.sertia.client.controllers.ClientPriceChangeControl;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
@@ -86,14 +87,22 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<SertiaMovie> catalog = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
-        movieNameToId = new HashMap<>();
-        catalog.forEach(sertiaMovie -> movieNameToId.put(sertiaMovie.getMovieDetails().getName(), sertiaMovie));
-        ObservableList<String> ticketTypes = FXCollections.observableList(new ArrayList<>(movieNameToId.keySet()));
-        movieToSet.setItems(ticketTypes);
-        movieToSet.valueProperty().addListener((observableValue, o, t1) -> {
-            valueChanged((String)t1);
-        });
+        SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
+        if (!response.isSuccessful) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fetch movies catalog");
+            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
+            errorAlert.showAndWait();
+        } else {
+            List<SertiaMovie> catalog = response.movies;
+            movieNameToId = new HashMap<>();
+            catalog.forEach(sertiaMovie -> movieNameToId.put(sertiaMovie.getMovieDetails().getName(), sertiaMovie));
+            ObservableList<String> ticketTypes = FXCollections.observableList(new ArrayList<>(movieNameToId.keySet()));
+            movieToSet.setItems(ticketTypes);
+            movieToSet.valueProperty().addListener((observableValue, o, t1) -> {
+                valueChanged((String)t1);
+            });
+        }
     }
 
     @Override
