@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.price.change.ClientTicketType;
 import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
@@ -59,25 +60,15 @@ public class CancelPurhcasePresenter extends BasicPresenterWithValidations imple
                 response = clientPurchaseControl.cancelStreamingTicket(requestPurchaseID, requestClientId);
             }
 
-            Alert.AlertType type;
-            String msg = "";
             if (response.isSuccessful) {
-                type = Alert.AlertType.INFORMATION;
-                msg = "ביטול הרכישה הסתיים בהצלחה, להלן סכום הזיכוי: " + response.refundAmount;
+                Utils.popAlert(Alert.AlertType.INFORMATION, "ביטול רכישה", "ביטול הרכישה הסתיים בהצלחה, להלן סכום הזיכוי: " + response.refundAmount);
+                try {
+                    App.setRoot("unauthorized/primary");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-            }
-
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("ביטול רכישה");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
-
-            try {
-                App.setRoot("unauthorized/primary");
-            } catch (IOException e) {
-                e.printStackTrace();
+                Utils.popAlert(Alert.AlertType.ERROR, "ביטול רכישה", response.failReason);
             }
         }
     }
