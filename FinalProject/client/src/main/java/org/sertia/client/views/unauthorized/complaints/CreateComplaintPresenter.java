@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.price.change.ClientTicketType;
@@ -39,48 +40,38 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
     public ComboBox ticketTypeField;
 
     @FXML
-    public void toMainMenu() throws IOException {
-        App.setRoot("unauthorized/primary");
+    public void toMainMenu() {
+        try {
+            App.setRoot("unauthorized/primary");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     public void publishComplaint() {
         if (!userMistakes.isEmpty())
             userMistakes.clear();
-
-        if (!isDataValid()){
-            notifyClient();
-        }
-        else {
+        if (isInputValid()) {
             SertiaBasicResponse response = ClientComplaintControl.getInstance()
                     .tryCreateComplaint(nameTxtField.getText(),
-                                        phoneTxTextField.getText(),
-                                        emailTxTextField.getText(),
-                                        complaintData.getText(),
-                                        Integer.parseInt(purchaseIdTextField.getText()),
-                                        ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()),
-                                        clientIdTxt.getText());
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful){
-                type = Alert.AlertType.INFORMATION;
-                msg = "operation ended successfully!";
-            } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-            }
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+                            phoneTxTextField.getText(),
+                            emailTxTextField.getText(),
+                            complaintData.getText(),
+                            Integer.parseInt(purchaseIdTextField.getText()),
+                            ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()),
+                            clientIdTxt.getText());
+
             if (response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Create complaint", "Complaint sent successfully!");
                 try {
                     App.setRoot("unauthorized/primary");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Utils.popAlert(Alert.AlertType.ERROR, "Create complaint", response.failReason);
             }
-
         }
     }
 

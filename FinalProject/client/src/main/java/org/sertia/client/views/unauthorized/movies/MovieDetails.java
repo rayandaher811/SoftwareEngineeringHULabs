@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 
@@ -16,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MovieDetails extends BasicPresenter implements Initializable {
+public class MovieDetails implements Initializable {
     public TextField movieNameTxt;
     public TextField movieHebrewNameTxt;
     public TextField producerNameTxt;
@@ -26,7 +25,7 @@ public class MovieDetails extends BasicPresenter implements Initializable {
     public ImageView movieImageView;
 
     @FXML
-    private void back() {
+    public void back() {
         try {
             App.setRoot("unauthorized/sertiaCatalogPresenter");
         } catch (IOException e) {

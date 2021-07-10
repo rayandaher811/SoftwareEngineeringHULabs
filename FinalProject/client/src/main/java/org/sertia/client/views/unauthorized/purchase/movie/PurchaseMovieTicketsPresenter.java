@@ -7,8 +7,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
@@ -55,17 +57,11 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
                 buttonObservableList.add(btn);
                 btn.setOnMouseClicked(mouseEvent -> {
                     try {
-                        int numberOfTicketsPurchased = Integer.parseInt(this.amountOfTicketsTxt.getText());
-                        // TODO: fixme, it should be seat map or something like that
                         ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
                         MovieHolder.getInstance().setMovie(movieToScreenings.getKey(), false);
-                        boolean isCovidLimitationsEnbaled = false;
-                        System.out.println("number of tickets is: " + numberOfTicketsPurchased);
-//                        if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()){
-                        if (isCovidLimitationsEnbaled) {
-                            System.out.println("Need to go to covid view");
+                        if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
+                            App.setRoot("unauthorized/payment/selectionMethodForm");
                         } else {
-                            System.out.println("Need to show available spots");
                             App.setRoot("unauthorized/seatMapView");
                         }
                     } catch (IOException e) {
@@ -97,10 +93,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fetch movies catalog");
-            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> screeningMovieArrayList = response.movies;
             HashMap<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();

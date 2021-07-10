@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
-import org.sertia.client.views.unauthorized.didntuse.CovidRegulationsView;
 
 import java.io.IOException;
 
@@ -28,6 +27,7 @@ public class PaymentMethodSelectionPresenter {
         }
     }
 
+    @FXML
     public void back(ActionEvent actionEvent) {
         if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
             try {
@@ -42,6 +42,5 @@ public class PaymentMethodSelectionPresenter {
                 e.printStackTrace();
             }
         }
-
     }
 }

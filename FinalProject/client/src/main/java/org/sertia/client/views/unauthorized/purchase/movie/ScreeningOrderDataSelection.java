@@ -13,6 +13,7 @@ import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
@@ -49,20 +50,13 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
         }
     }
 
-    private void popupAlert() {
-        Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
-        errorAlert.setTitle("Covid19 notification");
-        errorAlert.setContentText("Were sorry, according to TAV-SAGOL rules, we will choose seats for you");
-        errorAlert.showAndWait();
-    }
-
     public void next() {
         if (isInputValid()) {
             try {
                 NumberOfTicketsHolder.getInstance().setNumberOfTickets(
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
-                    popupAlert();
+                    Utils.popAlert(Alert.AlertType.INFORMATION, "Covid19 notification", "Were sorry, according to TAV-SAGOL rules, we will choose seats for you");
                     App.setRoot("unauthorized/payment/selectionMethodForm");
                 } else {
                     App.setRoot("unauthorized/movie/seatMapView");

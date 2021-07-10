@@ -10,9 +10,8 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
-import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
@@ -23,13 +22,7 @@ import java.util.*;
 
 import static org.sertia.client.Constants.*;
 
-/*
-    public int userLoginButton;
-    public int openComplaintButton;
-    public int purchaseVoucherButton;
-    public int createMovieButton;
- */
-public class CatalogView extends BasicPresenter implements Initializable {
+public class CatalogView implements Initializable {
 
     @FXML
     private Accordion moviesKindAndDataAccordion;
@@ -40,13 +33,19 @@ public class CatalogView extends BasicPresenter implements Initializable {
         for (SertiaMovie screeningMovie : movies) {
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
                 if (movieToCinemaAndScreenings.containsKey(screeningMovie)) {
-                    if (movieToCinemaAndScreenings.get(screeningMovie).containsKey(specificScreening.getCinemaName())){
+                    if (movieToCinemaAndScreenings.get(screeningMovie).containsKey(specificScreening.getCinemaName())) {
                         movieToCinemaAndScreenings.get(screeningMovie).get(specificScreening.getCinemaName()).add(specificScreening);
                     } else {
-                        movieToCinemaAndScreenings.get(screeningMovie).put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});
+                        movieToCinemaAndScreenings.get(screeningMovie).put(specificScreening.getCinemaName(), new ArrayList<>() {{
+                            add(specificScreening);
+                        }});
                     }
                 } else {
-                    movieToCinemaAndScreenings.put(screeningMovie, new HashMap(){{put(specificScreening.getCinemaName(), new ArrayList<>(){{add(specificScreening);}});}});
+                    movieToCinemaAndScreenings.put(screeningMovie, new HashMap() {{
+                        put(specificScreening.getCinemaName(), new ArrayList<>() {{
+                            add(specificScreening);
+                        }});
+                    }});
                 }
             }
         }
@@ -59,10 +58,10 @@ public class CatalogView extends BasicPresenter implements Initializable {
 
         HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
         ArrayList<TitledPane> values = new ArrayList<>();
-        for (Map.Entry<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()){
+        for (Map.Entry<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()) {
             Accordion moviePlayingTimeAccordion = new Accordion();
             ArrayList<TitledPane> specificCinemaList = new ArrayList<>();
-            for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()){
+            for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()) {
                 ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
                 ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
                 cinemaToScreenings.getValue().stream().forEach(cinemaScreeningMovie -> {
@@ -207,10 +206,7 @@ public class CatalogView extends BasicPresenter implements Initializable {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fetch movies catalog");
-            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> moviesList = response.movies;
             HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();

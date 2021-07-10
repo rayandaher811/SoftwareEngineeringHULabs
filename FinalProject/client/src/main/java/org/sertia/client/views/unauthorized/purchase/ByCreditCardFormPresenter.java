@@ -13,6 +13,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.*;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
@@ -78,15 +79,9 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
 
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
-        Alert.AlertType type;
-        String msg = "";
+
         if (response.isSuccessful) {
-            type = Alert.AlertType.INFORMATION;
-            msg = "operation ended successfully!";
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
@@ -94,14 +89,8 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             }
 
         } else {
-            type = Alert.AlertType.ERROR;
-            msg = response.failReason;
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
         }
-
     }
 
     private void purchaseInNormalTime() {
@@ -120,27 +109,16 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                         ScreeningHolder.getInstance().getScreening().getScreeningId());
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
-        Alert.AlertType type;
-        String msg = "";
+        
         if (response.isSuccessful) {
-            type = Alert.AlertType.INFORMATION;
-            msg = "operation ended successfully!";
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            type = Alert.AlertType.ERROR;
-            msg = response.failReason;
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
         }
     }
 
@@ -150,28 +128,22 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         if (buyOnlineScreeningLinkDataHolder.isInitialized()) {
             StreamingPaymentRequest streamingPaymentRequest =
                     new StreamingPaymentRequest(cardHolderId.getText(),
-                                                cardHolderName.getText(),
-                                                creditCardNumber.getText(),
-                                                cardHolderEmailTxt.getText(),
-                                                cardHolderPhoneTxt.getText(),
-                                                cvv.getText(),
-                                                LocalDateTime.of(
-                                                        Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                                        Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                                1, 0, 0),
-                                                movie.getMovieId(),
-                                                buyOnlineScreeningLinkDataHolder.getStartTime(),
-                                                buyOnlineScreeningLinkDataHolder.getNumberOfDaysForRental());
+                            cardHolderName.getText(),
+                            creditCardNumber.getText(),
+                            cardHolderEmailTxt.getText(),
+                            cardHolderPhoneTxt.getText(),
+                            cvv.getText(),
+                            LocalDateTime.of(
+                                    Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                    1, 0, 0),
+                            movie.getMovieId(),
+                            buyOnlineScreeningLinkDataHolder.getStartTime(),
+                            buyOnlineScreeningLinkDataHolder.getNumberOfDaysForRental());
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
-            Alert.AlertType type;
-            String msg = "";
+
             if (response.isSuccessful) {
-                type = Alert.AlertType.INFORMATION;
-                msg = "operation ended successfully!";
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying streaming link");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying streaming link", "operation ended successfully!");
                 BuyOnlineScreeningLinkDataHolder.getInstance().clear();
                 try {
                     App.setRoot("unauthorized/primary");
@@ -179,20 +151,11 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                     e.printStackTrace();
                 }
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
             }
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fatal server error");
-            errorAlert.setContentText("client data for streaming link is not set");
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fatal server error", "client data for streaming link is not set");
         }
-
     }
 
     @FXML

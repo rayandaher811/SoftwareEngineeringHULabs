@@ -30,7 +30,6 @@ public class Constants {
     public static final String REMOVE_STREAMING_LINK = "מחיקת חבילת צפיה";
     public static final String ADD_STREAMING_LINK = "הוספת חבילת צפיה";
     public static final String ADD_SCREENING = "הוספת הקרנה";
-
     public static final String APPROVE_CHANGE_REQUEST = "אשר בקשת שינוי";
     public static final String DENY_CHANGE_REQUEST = "דחה בקשה";
     public static final String MOVIE_NAME = "שם הסרט: ";
@@ -39,6 +38,10 @@ public class Constants {
     public static final String TICKET_TYPE = "סוג כרטיס: ";
     public static final String TAV_SAGOL_LABEL_TXT = "אין תקנות פעילות כעת, תוכלי להגדירן כעת";
     public static final String START_TAV_SAGOL_REGULATIONS_TXT = "החלי מדיניות תו סגול";
+    public static final String SUCCESSFUL_CANCEL_PURCHASE_MSG = "ביטול הרכישה הסתיים בהצלחה, להלן סכום הזיכוי: ";
+    public static final String CANCEL_PURCHASE_TITLE = "ביטול רכישה";
+    public static final String SPCIFY_PURCHASE_TYPE = "אנא ציין סוג רכישה";
+
     public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
             new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
                 put(ClientTicketType.Streaming.name(), "חבילת צפיה");

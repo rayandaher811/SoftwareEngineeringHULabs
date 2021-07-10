@@ -10,10 +10,8 @@ import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
-import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.screening.ticket.HallSeat;
-import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
 import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 import java.io.IOException;

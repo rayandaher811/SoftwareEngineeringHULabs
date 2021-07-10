@@ -8,7 +8,6 @@ import javafx.scene.input.MouseEvent;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;

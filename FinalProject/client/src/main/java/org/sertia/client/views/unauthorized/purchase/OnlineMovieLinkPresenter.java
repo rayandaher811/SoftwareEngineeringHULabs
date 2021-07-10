@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.global.BuyOnlineScreeningLinkDataHolder;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 
@@ -53,12 +54,9 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
         datePickerFrom.setEditable(false);
         datePickerFrom.valueProperty().addListener((observableValue, date, t1) -> {
             LocalDate nowDate = LocalDate.now();
-            if (t1.isBefore(nowDate)){
+            if (t1.isBefore(nowDate)) {
                 datePickerFrom.setStyle("-fx-background-color: #ff1500");
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle("Buying online streaming link");
-                errorAlert.setContentText("Please choose start date greater than today");
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Buying online streaming link", "Please choose start date greater than today");
                 totalDays = -1;
             } else {
                 datePickerFrom.setStyle("");
@@ -73,7 +71,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
         totalDays = -1;
         numberOfRentalDaysLabel.setVisible(false);
         numberOfRentalDays.setVisible(false);
-        if (fromDate.isBefore(newDate)){
+        if (fromDate.isBefore(newDate)) {
             totalDays = ChronoUnit.DAYS.between(fromDate, newDate);
             numberOfRentalDaysLabel.setVisible(true);
             numberOfRentalDays.setText(String.valueOf(totalDays));
@@ -82,10 +80,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
             datePickerTo.setStyle("");
 
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Buying online streaming link");
-            errorAlert.setContentText("please choose valid date range, start date must be before end date");
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Buying online streaming link", "please choose valid date range, start date must be before end date");
             datePickerTo.setStyle("-fx-background-color: #ff1500");
             isFromDateSet = false;
             totalDays = -1;
@@ -99,10 +94,10 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
                 BuyOnlineScreeningLinkDataHolder.
                         getInstance()
                         .setClientData(nameTxtField.getText(),
-                                       emailTxTextField.getText(),
-                                       phoneTxTextField.getText(),
-                                       Integer.parseInt(String.valueOf(totalDays)),
-                                       datePickerFrom.getValue());
+                                emailTxTextField.getText(),
+                                phoneTxTextField.getText(),
+                                Integer.parseInt(String.valueOf(totalDays)),
+                                datePickerFrom.getValue());
                 App.setRoot("unauthorized/payment/byCreditCardForm");
             } catch (IOException e) {
                 e.printStackTrace();

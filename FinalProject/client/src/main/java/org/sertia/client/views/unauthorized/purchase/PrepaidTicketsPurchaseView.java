@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.VoucherPurchaseRequest;
@@ -49,19 +50,14 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
                             Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
                             1, 0, 0));
             SertiaBasicResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful){
-                type = Alert.AlertType.INFORMATION;
-                msg = "Prepaid tickets bought successfully!";
+            if (response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying prepaid tickets from sertia system",
+                        "Prepaid tickets bought successfully!");
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
+                Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system",
+                        response.failReason);
             }
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying prepaid tickets from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
+
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
@@ -77,12 +73,6 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
         creditCardProviderCombo.getItems().addAll(List.of(CreditCardProvider.values()));
         initializeMonthCombo();
         initializeYearCombo();
-        boolean isLinkRequest = MovieHolder.getInstance().isOnlineLinkPurchaseRequest();
-        if (isLinkRequest) {
-            System.out.println("BG link");
-        } else {
-            System.out.println("BG phisical ticket");
-        }
     }
 
     @Override

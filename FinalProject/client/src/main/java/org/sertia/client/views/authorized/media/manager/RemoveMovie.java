@@ -46,19 +46,11 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
                 e.printStackTrace();
             }
         } else {
-            Alert.AlertType alertType;
-            String alertTitle;
             if (isBug) {
-                alertType = Alert.AlertType.ERROR;
-                alertTitle = "Bug!";
+                Utils.popAlert(Alert.AlertType.ERROR, "Bug!", alertData);
             } else {
-                alertType = Alert.AlertType.WARNING;
-                alertTitle = "Invalid using popup";
+                Utils.popAlert(Alert.AlertType.WARNING, "Bug!", "Invalid using popup");
             }
-            Alert errorAlert = new Alert(alertType);
-            errorAlert.setTitle(alertTitle);
-            errorAlert.setContentText(alertData);
-            errorAlert.show();
         }
     }
 
@@ -77,10 +69,7 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
         alertData = "";
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fetch movies list");
-            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies list", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
             movieNameToId = new HashMap<>();

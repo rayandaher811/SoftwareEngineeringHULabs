@@ -1,14 +1,14 @@
 package org.sertia.client.views.unauthorized;
 
 import javafx.scene.control.Alert;
-import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class BasicPresenterWithValidations extends BasicPresenter {
+public abstract class BasicPresenterWithValidations {
     protected ArrayList<String> userMistakes;
 
     protected abstract boolean isDataValid();
@@ -67,6 +67,7 @@ public abstract class BasicPresenterWithValidations extends BasicPresenter {
         }
         return true;
     }
+
     protected boolean isPhoneValid(String phoneNumber) {
         Pattern p = Pattern.compile("^\\d{10}$");
 
@@ -101,10 +102,7 @@ public abstract class BasicPresenterWithValidations extends BasicPresenter {
     }
 
     protected void notifyClient() {
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setTitle("Input validations failure");
-        errorAlert.setContentText(String.join("\n", userMistakes));
-        errorAlert.show();
+        Utils.popAlert(Alert.AlertType.ERROR, "Input validations failure", String.join("\n", userMistakes));
     }
 
     protected boolean isInputValid() {
