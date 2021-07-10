@@ -47,9 +47,12 @@ public class PriceChangeController {
 			PriceChangeRequest request = new PriceChangeRequest();
 			request.setRequester(DbUtils.getUserByUsername(username));
 			request.setAccepted(false);
-			request.setMovie(MoviesCatalogController.getMovieById(priceChangeRequest.movieId, session));
 			request.setTicketType(Utils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
 			request.setNewPrice(priceChangeRequest.newPrice);
+
+			// Voucher request is not depended on movie
+			if(request.getTicketType() != TicketType.Voucher)
+				request.setMovie(MoviesCatalogController.getMovieById(priceChangeRequest.movieId, session));
 
 			// Making sure the requests is valid if streaming
 			if(request.getTicketType() == TicketType.Streaming)
@@ -77,7 +80,7 @@ public class PriceChangeController {
 			for (PriceChangeRequest request : getAllPriceChangeRequests(session)) {
 				if(!request.isAccepted() && request.getHandler() == null)
 					clientRequests.add(new BasicPriceChangeRequest(request.getId(),
-																	request.getMovie().getId(),
+																	request.getTicketType() != TicketType.Voucher ? request.getMovie().getId() : -1,
 																	request.getRequester().getUsername(),
 																	Utils.dlTicketTypeToClient(request.getTicketType()),
 																	request.getNewPrice(),

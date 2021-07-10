@@ -12,6 +12,7 @@ import org.sertia.client.controllers.ClientPriceChangeControl;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
+import org.sertia.contracts.price.change.ClientTicketType;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
 
@@ -72,16 +73,21 @@ public class ApprovePriceChangeRequests implements Initializable {
         // TODO: get movie name from ID
         Label movieName = new Label();
 
-        GetMovieByIdResponse response = ClientCatalogControl.getInstance().requestMovieById(priceChangeRequest.movieId);
-        if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Get movie name from server", response.failReason);
-        } else {
-            movieName.setText(String.valueOf(response.movie.getName()));
+        if(priceChangeRequest.clientTicketType != ClientTicketType.Voucher) {
+            GetMovieByIdResponse response = ClientCatalogControl.getInstance().requestMovieById(priceChangeRequest.movieId);
+            if (!response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.ERROR, "Get movie name from server", response.failReason);
+            } else {
+                movieName.setText(String.valueOf(response.movie.getName()));
+            }
+
+            // Adding the movie name box
+            Label movieIdTitle = new Label();
+            movieIdTitle.setText(MOVIE_NAME);
+            HBox movieIdVerticalBox = getHboxForData(movieIdTitle, movieName);
+            vBox.getChildren().addAll(movieIdVerticalBox);
         }
 
-        Label movieIdTitle = new Label();
-        movieIdTitle.setText(MOVIE_NAME);
-        HBox movieIdVerticalBox = getHboxForData(movieIdTitle, movieName);
         Label requestId = new Label();
         requestId.setText(String.valueOf(priceChangeRequest.requestId));
         Label requestIdTitle = new Label();
@@ -99,7 +105,7 @@ public class ApprovePriceChangeRequests implements Initializable {
         Label ticketTypeTitle = new Label();
         ticketTypeTitle.setText(TICKET_TYPE);
         HBox ticketTypeVbox = getHboxForData(ticketTypeTitle, ticketType);
-        vBox.getChildren().addAll(movieIdVerticalBox, requestIdVerticalBox, newPriceVerticalBox, ticketTypeVbox);
+        vBox.getChildren().addAll(requestIdVerticalBox, newPriceVerticalBox, ticketTypeVbox);
         hBox.getChildren().addAll(vBox, declineResolveHbox);
         titledPane.setContent(hBox);
         titledPane.setText(priceChangeRequest.userName);

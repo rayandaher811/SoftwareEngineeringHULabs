@@ -19,7 +19,7 @@
             </top>
             <center>
                 <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
-                    <Label>שם הסרט</Label>
+                    <Label fx:id="movieNameLabel">שם הסרט</Label>
                     <ComboBox fx:id="moviesComboBox" maxWidth="500" maxHeight="300"/>
                     <ComboBox fx:id="availableTicketsType"/>
                     <Label>מחיר</Label>

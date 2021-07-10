@@ -6,10 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.controllers.ClientPriceChangeControl;
+import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
@@ -29,6 +31,9 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     @FXML
     private ComboBox<SertiaMovie> moviesComboBox;
     @FXML
+    private Label movieNameLabel;
+
+    @FXML
     private TextField movieTicketPriceTxt;
     private String errorMessage;
 
@@ -37,10 +42,15 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     @FXML
     public void requestPriceChange() {
         if (isDataValid()) {
-            SertiaMovie sertiaMovie = moviesComboBox.getSelectionModel().getSelectedItem();
-
-            int movieId = sertiaMovie.getMovieId();
             ClientTicketType ticketType = availableTicketsType.getValue().ticketType;
+            int movieId = -1;
+
+            // In case pf voucher price change the movie doesn't matter
+            if(ticketType != ClientTicketType.Voucher) {
+                SertiaMovie sertiaMovie = moviesComboBox.getSelectionModel().getSelectedItem();
+                movieId = sertiaMovie.getMovieId();
+            }
+
             SertiaBasicResponse response =
                     ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
             if (response.isSuccessful) {
@@ -76,11 +86,17 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
         }
 
         ticketTypes.add(TicketType.SCREENING);
+        ticketTypes.add(TicketType.VOUCHER);
         availableTicketsType.getItems().addAll(ticketTypes);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        availableTicketsType.setOnAction(e->
+        {
+            moviesComboBox.setVisible(availableTicketsType.getValue() != TicketType.VOUCHER);
+            movieNameLabel.setVisible(availableTicketsType.getValue() != TicketType.VOUCHER);
+        });
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
             Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
@@ -90,23 +106,27 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             moviesComboBox.valueProperty().addListener((observableValue, o, t1) -> {
                 valueChanged(t1);
             });
-
             availableTicketsType.valueProperty().addListener((observableValue, clientTicketType, t1) -> {
                 if (t1 != null) {
-                    if (t1.ticketType != ClientTicketType.Streaming) {
-                        movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
-                    } else {
-                        movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
-                    }
-                }
+					if (t1.ticketType == ClientTicketType.Screening) {
+	                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
+	                } else if (t1.ticketType == ClientTicketType.Streaming) {
+	                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
+	                } else {
+	                    movieTicketPriceTxt.setText(String.valueOf(ClientPurchaseControl.getInstance().getVouchersInfo().price));
+	                }
+				}
             });
+
+            // Voucher option don't need any movie
+            availableTicketsType.getItems().addAll(TicketType.VOUCHER,TicketType.SCREENING);
         }
     }
 
     @Override
     protected boolean isDataValid() {
         errorMessage = "";
-        boolean isMovieSelected = isMovieSelected();
+        boolean isMovieSelected = availableTicketsType.getValue() == TicketType.VOUCHER|| isMovieSelected();
         boolean isPriceSetAsExpected = isPriceSetAndValid();
         return isMovieSelected && isPriceSetAsExpected;
     }
