@@ -45,16 +45,10 @@ public class MovieDetails implements Initializable {
         movieDescriptionTxt.setText(movie.getDescription());
         movieTicketPrice.setText(String.valueOf(cinemaScreeningMovie.getTicketPrice()));
         setImageView(movie);
-//        detailsPage.getChildren().addAll(movieNameTxt, movieHebrewNameTxt, producerNameTxt,
-//                mainActorsTxt, movieDescriptionTxt, movieImageView);
     }
 
     private void setImageView(ClientMovie movie) {
-        String path;
-//        if (movie.getPosterImageUrl() == null)
-        path = "https://assets2.rockpapershotgun.com/shrek-again.jpg/BROK/resize/880%3E/format/jpg/quality/80/shrek-again.jpg";
-//        else
-//            path = movie.getPosterImageUrl();
+        String path = movie.getPosterImageUrl();
         Image image = new Image(path);
         movieImageView.setImage(image);
         movieImageView.setFitHeight(111.1);
