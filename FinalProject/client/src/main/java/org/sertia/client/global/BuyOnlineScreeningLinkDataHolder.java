@@ -11,7 +11,7 @@ public class BuyOnlineScreeningLinkDataHolder {
     private String phone;
     private boolean isInitialized;
     private int numberOfDaysForRental;
-    LocalDateTime startTime;
+    LocalDateTime startDateTime;
 
     public static BuyOnlineScreeningLinkDataHolder getInstance() {
         return instance;
@@ -23,16 +23,16 @@ public class BuyOnlineScreeningLinkDataHolder {
         this.phone = null;
         this.isInitialized = false;
         this.numberOfDaysForRental = -1;
-        this.startTime = null;
+        this.startDateTime = null;
     }
 
-    public void setClientData(String clientName, String email, String phone, int numberOfDaysForRental, LocalDate startTime) {
+    public void setClientData(String clientName, String email, String phone, int numberOfDaysForRental, LocalDateTime startDateTime) {
         this.clientName = clientName;
         this.email = email;
         this.phone = phone;
         this.isInitialized = true;
         this.numberOfDaysForRental = numberOfDaysForRental;
-        this.startTime = LocalDateTime.of(startTime, LocalTime.of(0, 0));
+        this.startDateTime = startDateTime;
     }
 
     public String getClientName() {
@@ -55,7 +55,7 @@ public class BuyOnlineScreeningLinkDataHolder {
         return numberOfDaysForRental;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 }

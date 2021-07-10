@@ -31,7 +31,6 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.SplittableRandom;
 
 public class ByCreditCardFormPresenter extends BasicPresenterWithValidations implements Initializable {
 
@@ -136,12 +135,9 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                             cardHolderEmailTxt.getText(),
                             cardHolderPhoneTxt.getText(),
                             cvv.getText(),
-                            LocalDateTime.of(
-                                    Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                    1, 0, 0),
+                            buyOnlineScreeningLinkDataHolder.getStartDateTime(),
                             movie.getMovieId(),
-                            buyOnlineScreeningLinkDataHolder.getStartTime(),
+                            buyOnlineScreeningLinkDataHolder.getStartDateTime(),
                             buyOnlineScreeningLinkDataHolder.getNumberOfDaysForRental());
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
 

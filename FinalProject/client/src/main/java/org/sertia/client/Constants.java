@@ -2,7 +2,9 @@ package org.sertia.client;
 
 import org.sertia.contracts.price.change.ClientTicketType;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Constants {
     public static final String HOME_ONLINE_SCREENING = "צפיה ביתית ע\"י לינק";
@@ -46,10 +48,15 @@ public class Constants {
     public static final String HEBREW_MOVIE_NAME = "שם הסרט בעברית: ";
     public static final String RESULT_NUMBER = "תוצאה מספר: ";
     public static final String BRANCH_NAME = "שם סניף: ";
+    public static final String CHOOSE_VALID_HOUR = "בחר בבקשה שעת התחלה מתוך האפשרויות";
+    public static final String CHOOSE_VALID_MIN = "בחר בבקשה דקות בשעה";
 
+    public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
+    public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());
 
-    public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
-            new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
-                put(ClientTicketType.Streaming.name(), "חבילת צפיה");
-                put(ClientTicketType.Voucher.name(), "כרטיסיה");}};
+    public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS = new HashMap<>(){{
+            put(ClientTicketType.Screening.name(), "הקרנה");
+            put(ClientTicketType.Streaming.name(), "חבילת צפיה");
+            put(ClientTicketType.Voucher.name(), "כרטיסיה");
+    }};
 }

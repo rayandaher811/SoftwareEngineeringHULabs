@@ -38,6 +38,13 @@
                                     prefWidth="120.0" BorderPane.alignment="CENTER"/>
                     </VBox>
                     <VBox alignment="CENTER" spacing="5">
+                        <Label>בשעה</Label>
+                        <HBox>
+                            <ComboBox fx:id="hourPicker"/>
+                            <ComboBox fx:id="minutePicker"/>
+                        </HBox>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="5">
                         <Label>השכרה מ-תאריך</Label>
                         <DatePicker fx:id="datePickerFrom" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0"
                                     prefWidth="120.0" BorderPane.alignment="CENTER"/>
