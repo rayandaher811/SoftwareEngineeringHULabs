@@ -15,8 +15,8 @@ import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
@@ -42,6 +42,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
     private TextField screeningTimeTxt;
 
     private int numberOfFreeTickets;
+
     public void back() {
         try {
             App.setRoot("unauthorized/sertiaCatalogPresenter");
@@ -56,7 +57,8 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
                 NumberOfTicketsHolder.getInstance().setNumberOfTickets(
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
-                    Utils.popAlert(Alert.AlertType.INFORMATION, "Covid19 notification", "Were sorry, according to TAV-SAGOL rules, we will choose seats for you");
+                    Utils.popAlert(Alert.AlertType.INFORMATION, "Covid19 notification",
+                            "Were sorry, according to TAV-SAGOL rules, we will choose seats for you");
                     App.setRoot("unauthorized/payment/selectionMethodForm");
                 } else {
                     App.setRoot("unauthorized/movie/seatMapView");
@@ -87,7 +89,15 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
         datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
         screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
         numberOfTicketsToPurchase.setFocusTraversable(false);
-        numberOfFreeSeatsLabel.setText(String.valueOf(numberOfFreeTickets));
+        ClientCovidRegulationsStatus response = ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus();
+        if (response.isActive) {
+            int hallCapacity = seatMapResponse.hallSeats.size();
+            int usedTickets = hallCapacity - numberOfFreeTickets;
+            int allowedToBuy = response.maxNumberOfPeople - usedTickets;
+            numberOfFreeSeatsLabel.setText(String.valueOf(allowedToBuy));
+        } else {
+            numberOfFreeSeatsLabel.setText(String.valueOf(numberOfFreeTickets));
+        }
     }
 
     private String parseTimeWithoutDate(String dateTime) {
@@ -97,15 +107,30 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
 
     @Override
     protected boolean isDataValid() {
-        boolean isNumberOfTicketsValid = isItNumber(numberOfTicketsToPurchase.getText(),
-                "Number of tickets must appear and be a number!");
-        boolean isEnoughSpaceInHall = false;
-        if (isNumberOfTicketsValid) {
-            isEnoughSpaceInHall = Integer.parseInt(numberOfTicketsToPurchase.getText()) <= numberOfFreeTickets;
-            if (!isEnoughSpaceInHall){
-                userMistakes.add("You requested to buy more tickets than available in hall");
+        ClientCovidRegulationsStatus response = ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus();
+
+        if (!response.isSuccessful) {
+            Utils.popAlert(Alert.AlertType.ERROR, "Failed to get covid regulations", response.failReason);
+        } else {
+            boolean isNumberOfTicketsValid = isItNumber(numberOfTicketsToPurchase.getText(),
+                    "Number of tickets must appear and be a number!");
+            boolean isEnoughSpaceInHall = false;
+            if (isNumberOfTicketsValid) {
+                isEnoughSpaceInHall = Integer.parseInt(numberOfTicketsToPurchase.getText()) <= numberOfFreeTickets;
+                if (!isEnoughSpaceInHall) {
+                    userMistakes.add("You requested to buy more tickets than available in hall");
+                }
+
+                int numOfTicketsToPurchase = Integer.parseInt(numberOfTicketsToPurchase.getText());
+                boolean isNotOverTheLimit = true;
+                if (numberOfFreeTickets - numOfTicketsToPurchase >= response.maxNumberOfPeople){
+                    isNotOverTheLimit = false;
+                    userMistakes.add("You exceeded max allowed seats in hall");
+                }
+                return isNumberOfTicketsValid && isEnoughSpaceInHall && isNotOverTheLimit;
             }
         }
-        return isNumberOfTicketsValid && isEnoughSpaceInHall;
+
+        return false;
     }
 }

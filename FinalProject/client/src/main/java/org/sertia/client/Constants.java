@@ -69,6 +69,8 @@ public class Constants {
     public static final String CREDIT_CARD_PROVIDER_HINT = "בחר את ספק כרטיס האשראי שלך מבין האפשרויות";
     public static final String VOUCHER_INFO_ERROR = "בירור מידע כרטיסיה";
     public static final String COULDNT_FETCH_VOUCHER_DATA = "שגיאה בקריאת פרטי מידע על הכרטיסייה, פירוט השגיאה: ";
+    public static final String PURCHASE_MOVIE_TICKETS = "רכישת כרטיסים לסרט";
+    public static final String HALL_IS_FULL = "האולם מלא, לא ניתן לסיים את תהליך הרכישה";
 
     public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
     public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());
