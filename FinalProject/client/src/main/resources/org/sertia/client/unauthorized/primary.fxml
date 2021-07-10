@@ -20,6 +20,7 @@
             <Button onAction="#toPrepaidPurchaseView" text="רכישת כרטיסייה" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toPrepaidBalance" text="בירור יתרת כרטיסיה" minWidth="180.0" maxWidth="180.0"/>
             <Button onAction="#toCancelPurchase" text="ביטול רכישה" minWidth="180.0" maxWidth="180.0"/>
+            <Button onAction="#toStreamLink" text="צפיה בלינק" minWidth="180.0" maxWidth="180.0"/>
         </VBox>
     </Group>
 </VBox>

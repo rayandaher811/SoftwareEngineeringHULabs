@@ -70,7 +70,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
             LocalDate nowDate = LocalDate.now();
             if (t1.isBefore(nowDate)) {
                 datePickerFrom.setStyle("-fx-background-color: #ff1500");
-                Utils.popAlert(Alert.AlertType.ERROR, "Buying online streaming link", "Please choose start date greater than today");
+                Utils.popAlert(Alert.AlertType.ERROR, BUY_ONLINE_STREAMING_LINK, PLEASE_CHOOSE_START_DATE_GREATER_THAN_TODAY);
                 totalDays = -1;
             } else {
                 datePickerFrom.setStyle("");
@@ -98,7 +98,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
             datePickerTo.setStyle("");
 
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Buying online streaming link", "please choose valid date range, start date must be before end date");
+            Utils.popAlert(Alert.AlertType.ERROR, BUY_ONLINE_STREAMING_LINK, DATES_RANGE_INVALID_ERROR_MSG);
             datePickerTo.setStyle("-fx-background-color: #ff1500");
             isFromDateSet = false;
             totalDays = -1;
@@ -128,7 +128,7 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
 
     @Override
     protected boolean isDataValid() {
-        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "Please insert your name");
+        boolean isNameValid = isFullNameValid(nameTxtField.getText());
         boolean isPhoneValid = isPhoneValid(phoneTxTextField.getText());
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         boolean isHourValid = hourPicker.getSelectionModel().getSelectedItem() != null;

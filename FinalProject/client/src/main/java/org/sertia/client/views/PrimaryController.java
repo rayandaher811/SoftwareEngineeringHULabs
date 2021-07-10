@@ -1,5 +1,6 @@
 package org.sertia.client.views;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -50,6 +51,11 @@ public class PrimaryController implements Initializable {
     @FXML
     private void toCancelPurchase() throws IOException {
         App.setRoot("unauthorized/cancelPurchaseForm");
+    }
+
+    @FXML
+    private void toStreamLink() throws IOException {
+        App.setRoot("unauthorized/streamLink");
     }
 
     @Override

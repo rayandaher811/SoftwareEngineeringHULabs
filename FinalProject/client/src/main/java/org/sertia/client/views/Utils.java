@@ -8,6 +8,10 @@ public class Utils {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(msg);
+        alert.getDialogPane().setMinHeight(250);
+        alert.getDialogPane().setMaxHeight(250);
+        alert.getDialogPane().setMinWidth(250);
+        alert.getDialogPane().setMinWidth(250);
         alert.showAndWait();
     }
 }

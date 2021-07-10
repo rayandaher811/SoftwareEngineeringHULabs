@@ -128,4 +128,12 @@ public abstract class BasicPresenterWithValidations {
             return false;
         }
     }
+
+    protected boolean isFullNameValid(String fullName) {
+        if (fullName.split(" ").length != 2) {
+            userMistakes.add("Please write down your full name, first name + last name");
+            return false;
+        }
+        return true;
+    }
 }

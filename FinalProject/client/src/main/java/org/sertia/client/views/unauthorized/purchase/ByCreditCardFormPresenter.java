@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static org.sertia.client.Constants.*;
+
 public class ByCreditCardFormPresenter extends BasicPresenterWithValidations implements Initializable {
 
     public TextField creditCardNumber;
@@ -83,7 +85,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
 
         if (response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", buildSuccessfulScreeningTicketPurchasingMessage(response));
+            Utils.popAlert(Alert.AlertType.INFORMATION, PURCHASE_USING_CREDIT_CARD, buildSuccessfulScreeningTicketPurchasingMessage(response));
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
@@ -91,7 +93,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             }
 
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, PURCHASE_USING_CREDIT_CARD, response.failReason);
         }
     }
 
@@ -111,16 +113,16 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                         ScreeningHolder.getInstance().getScreening().getScreeningId());
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
-        
+
         if (response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", buildSuccessfulScreeningTicketPurchasingMessage(response));
+            Utils.popAlert(Alert.AlertType.INFORMATION, PURCHASE_USING_CREDIT_CARD, buildSuccessfulScreeningTicketPurchasingMessage(response));
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, PURCHASE_USING_CREDIT_CARD, response.failReason);
         }
     }
 
@@ -135,6 +137,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                             cardHolderEmailTxt.getText(),
                             cardHolderPhoneTxt.getText(),
                             cvv.getText(),
+
                             buyOnlineScreeningLinkDataHolder.getStartDateTime(),
                             movie.getMovieId(),
                             buyOnlineScreeningLinkDataHolder.getStartDateTime(),
@@ -142,10 +145,9 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
 
             if (response.isSuccessful) {
-                String msg = "You streaming link info:\n" +
-                                "Streaming link: " + response.streamingLink + "\n" +
-                        "Start time - End time: " + response.startTime + " - " + response.endTime;
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying streaming link", msg);
+                String msg = STREMING_LINK_INFO + response.streamingLink + "\n" +
+                        START_TIME_END_TIME + response.startTime + " - " + response.endTime;
+                Utils.popAlert(Alert.AlertType.INFORMATION, BUY_ONLINE_STREAMING_LINK, msg);
                 BuyOnlineScreeningLinkDataHolder.getInstance().clear();
                 try {
                     App.setRoot("unauthorized/primary");
@@ -153,10 +155,10 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, PURCHASE_USING_CREDIT_CARD, response.failReason);
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fatal server error", "client data for streaming link is not set");
+            Utils.popAlert(Alert.AlertType.ERROR, FATAL_SERVER_ERROR, CLIENT_DATA_FOR_STREAMING_LINK_IS_NOT_SET);
         }
     }
 
@@ -209,7 +211,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
 
     private boolean isCvvCorrect() {
         if (cvv.getText() == null || cvv.getText().isBlank() || cvv.getText().isEmpty() || cvv.getText().length() != 3) {
-            userMistakes.add("Please fill your cvv, it's in size 3 exactly");
+            userMistakes.add(CVV_HINT);
             return false;
         }
         return true;
@@ -217,7 +219,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
 
     private boolean isCreditCardProviderCorrect() {
         if (creditCardProviderCombo.getSelectionModel().getSelectedItem() == null || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isEmpty() || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isBlank()) {
-            userMistakes.add("Please specify credit card provider from the list");
+            userMistakes.add(CREDIT_CARD_PROVIDER_HINT);
             return false;
         }
         if (CreditCardProvider.valueOf(creditCardProviderCombo.getSelectionModel().getSelectedItem().toString()) != null) {
@@ -240,26 +242,17 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         }
     }
 
-    protected boolean isFullNameValid(String fullName) {
-        if (fullName.split(" ").length != 2) {
-            userMistakes.add("Please write down your full name, first name + last name");
-            return false;
-        }
-        return true;
-    }
-
-    private String buildSuccessfulScreeningTicketPurchasingMessage(ScreeningPaymentResponse response){
-        String msg =  "You've purchased a screening ticket/s and here is it's info:\n"+
-                "Cinema name: " + response.cinemaName + "\n" +
-                "Movie name: " + response.movieName + "\n" +
-                "Hall number: " + response.hallNumber + "\n" +
-                "Screening time: " + response.screeningTime + "\n" +
-                "Tickets : <Ticket Id> = <row, number in row>\n";
+    private String buildSuccessfulScreeningTicketPurchasingMessage(ScreeningPaymentResponse response) {
+        String msg = PURCHASE_SUMMARY + CINEMA_NAME + response.cinemaName + "\n" +
+                MOVIE_NAME + response.movieName + "\n" +
+                HALL_NUMBER + response.hallNumber + "\n" +
+                SCREENING_TIME + response.screeningTime + "\n" +
+                TICKETS + "\n";
 
         // Inserting it's tickets info
-        for (Map.Entry<Integer, HallSeat> set:
+        for (Map.Entry<Integer, HallSeat> set :
                 response.ticketIdToSeat.entrySet()) {
-            msg += set.getKey() + " = " +set.getValue().row + ", " + set.getValue().getNumberInRow() + "\n";
+            msg += set.getKey() + " = " + set.getValue().row + ", " + set.getValue().getNumberInRow() + "\n";
         }
 
         return msg;
