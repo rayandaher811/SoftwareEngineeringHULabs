@@ -8,6 +8,7 @@ import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
+import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.VoucherDetails;
@@ -55,7 +56,7 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
     }
 
     private void purchaseWithCovid(VoucherDetails voucherDetails) {
-        ScreeningTicketWithCovidRequest request = new ScreeningTicketWithCovidRequest(MovieHolder.getInstance().getCinemaScreeningMovie().movieId, voucherDetails, NumberOfTicketsHolder.getInstance().getNumberOfTickets());
+        ScreeningTicketWithCovidRequest request = new ScreeningTicketWithCovidRequest(ScreeningHolder.getInstance().getScreening().screeningId, voucherDetails, NumberOfTicketsHolder.getInstance().getNumberOfTickets());
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
         handlePaymentResponse(response);
@@ -63,7 +64,7 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
 
     private void purchaseInNormalTime(VoucherDetails voucherDetails) {
         List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
-        ScreeningTicketWithSeatsRequest request = new ScreeningTicketWithSeatsRequest(MovieHolder.getInstance().getCinemaScreeningMovie().movieId, voucherDetails, selectedSeats);
+        ScreeningTicketWithSeatsRequest request = new ScreeningTicketWithSeatsRequest(ScreeningHolder.getInstance().getScreening().screeningId, voucherDetails, selectedSeats);
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(request);
         handlePaymentResponse(response);

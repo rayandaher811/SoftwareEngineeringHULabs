@@ -411,6 +411,8 @@ public class ScreeningTicketController extends Reportable {
         screeningTicketRequest.expirationDate = request.expirationDate;
         screeningTicketRequest.cvv = request.cvv;
         screeningTicketRequest.screeningId = request.screeningId;
+        screeningTicketRequest.isVoucher = request.isVoucher;
+        screeningTicketRequest.voucherDetails = request.voucherDetails;
         screeningTicketRequest.chosenSeats = seats.stream().map(HallSeat::getId).collect(Collectors.toList());
 
         return screeningTicketRequest;
