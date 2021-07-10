@@ -23,6 +23,8 @@ import org.sertia.contracts.reports.request.GetCinemaReports;
 import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.contracts.screening.ticket.request.*;
+import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
+import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
 import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.request.LoginRequest;
@@ -34,7 +36,6 @@ import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CreditCardServiceRefundsRecorderDecorator;
 import org.sertia.server.bl.Services.ICreditCardService;
 
-import javax.swing.table.TableRowSorter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +120,6 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(CancelStreamingTicketRequest.class, this::handleStreamingTicketCancel);
         messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
         messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
-        messageTypeToHandler.put(UseVoucherRequest.class, this::handleUseVoucherRequest);
 
         messageTypeToHandler.put(ActiveCovidRegulationsRequest.class, this::handleActiveCovidRegulationRequest);
         messageTypeToHandler.put(CancelAllScreeningsDueCovidRequest.class, this::handleCancelAllScreeningsDueCovidRequest);
@@ -158,26 +158,23 @@ public class MessageHandler extends AbstractServer {
             response = moviesCatalogController.getSertiaCatalog();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle get Sertia catalog.");
-        } catch (SertiaException e){
-            e.printStackTrace();
-            response.setFailReason(e.getMessage());
+            response.setFailReason("ארעה שגיאה בעת קבלת קטלוג סרטיה");
         }
 
         sendResponseToClient(client, response);
     }
 
-    private void handleGetMovieById(SertiaBasicRequest request, ConnectionToClient client){
+    private void handleGetMovieById(SertiaBasicRequest request, ConnectionToClient client) {
         GetMovieByIdResponse response = new GetMovieByIdResponse(false);
         try {
             response.movie = moviesCatalogController.getMovieById(((GetMovieByIdRequest) request).movieId);
             response.setSuccessful(true);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            response.setFailReason("We couldn't handle get Movie by id request.");
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             e.printStackTrace();
             response.setFailReason(e.getMessage());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("ארעה שגיאה בעת קבלת סרט");
         }
 
         sendResponseToClient(client, response);
@@ -189,46 +186,46 @@ public class MessageHandler extends AbstractServer {
             response = moviesCatalogController.getCinemaCatalog((CinemaCatalogRequest) request);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't get cinema catalog.");
+            response.setFailReason("ארעה שגיאה בעת קבלת קטלוג קולנוע");
         }
 
         sendResponseToClient(client, response);
     }
 
     private void handleScreeningTicketWithSeats(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
         try {
             ScreeningTicketWithSeatsRequest ticketRequest = (ScreeningTicketWithSeatsRequest) request;
             response = screeningTicketController.buyTicketWithSeatChose(ticketRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't couldn't handle purchase request.");
+            response.setFailReason("ארעה שגיאה בעת רכישת כרטיסים");
         }
 
         sendResponseToClient(client, response);
     }
 
     private void handleScreeningTicketWithCovid(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
         try {
             ScreeningTicketWithCovidRequest ticketRequest = (ScreeningTicketWithCovidRequest) request;
             response = screeningTicketController.buyTicketWithRegulations(ticketRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle purchase request.");
+            response.setFailReason("ארעה שגיאה בעת רכישת כרטיסים");
         }
 
         sendResponseToClient(client, response);
     }
 
     private void handleTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        TicketCancellationResponse response = new TicketCancellationResponse(false);
         try {
             CancelScreeningTicketRequest cancelRequest = (CancelScreeningTicketRequest) request;
             response = screeningTicketController.cancelTicket(cancelRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle ticket cancel.");
+            response.setFailReason("ארעה שגיאה בעת ביטול רכישה");
         }
 
         sendResponseToClient(client, response);
@@ -241,7 +238,7 @@ public class MessageHandler extends AbstractServer {
             response = streamingTicketController.purchaseStreamingTicket(streamingPaymentRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle streaming ticket purhcase.");
+            response.setFailReason("ארעה שגיאה בעת רכישת חבילת צפייה");
         }
 
         sendResponseToClient(client, response);
@@ -254,7 +251,7 @@ public class MessageHandler extends AbstractServer {
             response = streamingTicketController.cancelStreamingTicket(streamingCancelRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle streaming ticket purhcase.");
+            response.setFailReason("ארעה שגיאה בעת ביטול חבילת צפייה");
         }
 
         sendResponseToClient(client, response);
@@ -267,7 +264,7 @@ public class MessageHandler extends AbstractServer {
             response = screeningTicketController.getSeatMapForScreening(seatMapRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't get the seat map for the screening.");
+            response.setFailReason("ארעה שגיאה בעת קבלת מפת אולם");
         }
 
         sendResponseToClient(client, response);
@@ -280,7 +277,7 @@ public class MessageHandler extends AbstractServer {
             response = screeningTicketController.buyVoucher(voucherPurchaseRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle the voucher purchase request.");
+            response.setFailReason("ארעה שגיאה בעת רכישת כרטיסיה");
         }
 
         sendResponseToClient(client, response);
@@ -293,20 +290,7 @@ public class MessageHandler extends AbstractServer {
             response = screeningTicketController.getVoucherBalance(voucherBalanceRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle the voucher balance request.");
-        }
-
-        sendResponseToClient(client, response);
-    }
-
-    private void handleUseVoucherRequest(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
-        try {
-            UseVoucherRequest useVoucherRequest = (UseVoucherRequest) request;
-            response = screeningTicketController.useVoucher(useVoucherRequest);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            response.setFailReason("We couldn't the voucher use request.");
+            response.setFailReason("ארעה שגיאה בעת בדיקת יתרת כרטיסיה");
         }
 
         sendResponseToClient(client, response);
@@ -320,12 +304,11 @@ public class MessageHandler extends AbstractServer {
         try {
             response.unapprovedRequests = priceChangeController.getUnapprovedRequests();
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleAllUnapprovedPriceChangeRequests.");
+            response.setFailReason("ארעה שגיאה בעת קבלת בקשות שינוי מחיר");
         }
 
         sendResponseToClient(client, response);
@@ -338,12 +321,11 @@ public class MessageHandler extends AbstractServer {
             int priceChangeRequestId = ((DissapprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.disapprovePriceChangeRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleDisapprovePriceChangeRequest.");
+            response.setFailReason("ארעה שגיאה בעת ביטול בקשת שינוי מחיר");
         }
 
         sendResponseToClient(client, response);
@@ -356,12 +338,11 @@ public class MessageHandler extends AbstractServer {
             int priceChangeRequestId = ((ApprovePriceChangeRequest) request).priceChangeRequestId;
             priceChangeController.approveRequest(priceChangeRequestId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleApprovePriceChangeRequest.");
+            response.setFailReason("ארעה שגיאה בעת אישור בקשת שינוי מחיר");
         }
 
         sendResponseToClient(client, response);
@@ -374,12 +355,11 @@ public class MessageHandler extends AbstractServer {
             BasicPriceChangeRequest priceChangeRequest = (BasicPriceChangeRequest) request;
             priceChangeController.requestPriceChange(priceChangeRequest, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handlePriceChangeRequest.");
+            response.setFailReason("ארעה שגיאה בעת יצירת בקשה לשינוי מחיר");
         }
 
         sendResponseToClient(client, response);
@@ -396,12 +376,11 @@ public class MessageHandler extends AbstractServer {
             int movieId = ((RemoveMovieRequest) request).movieId;
             moviesCatalogController.removeMovie(movieId);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleMovieRemoval.");
+            response.setFailReason("ארעה שגיאה בעת מחיקת סרט");
         }
 
         sendResponseToClient(client, response);
@@ -416,7 +395,7 @@ public class MessageHandler extends AbstractServer {
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleMovieAddition.");
+            response.setFailReason("ארעה שגיאה בעת הוספת סרט חדש");
         }
 
         sendResponseToClient(client, response);
@@ -433,7 +412,7 @@ public class MessageHandler extends AbstractServer {
             response = moviesCatalogController.getCinemaAndHalls();
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle cinema and halls request.");
+            response.setFailReason("ארעה שגיאה בעת קבלת בתי קולנוע ואולמות");
         }
 
         sendResponseToClient(client, response);
@@ -446,12 +425,11 @@ public class MessageHandler extends AbstractServer {
             AddScreeningRequest addScreeningRequest = (AddScreeningRequest) request;
             moviesCatalogController.addMovieScreenings(addScreeningRequest);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleScreeningAddition.");
+            response.setFailReason("ארעה שגיאה בעת הוספת הקרנה");
         }
 
         sendResponseToClient(client, response);
@@ -464,12 +442,11 @@ public class MessageHandler extends AbstractServer {
             int screeningId = ((RemoveScreeningRequest) request).screeningId;
             moviesCatalogController.removeMovieScreening(screeningId);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleScreeningRemoval.");
+            response.setFailReason("ארעה שגיאה בעת מחיקת הקרנה");
         }
 
         sendResponseToClient(client, response);
@@ -482,12 +459,11 @@ public class MessageHandler extends AbstractServer {
             ClientScreening screeningToUpdate = ((ScreeningTimeUpdateRequest) request).screening;
             moviesCatalogController.updateScreeningTime(screeningToUpdate);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleMovieScreeningTimeUpdate.");
+            response.setFailReason("ארעה שגיאה בעת עדכון זמן הקרנה");
         }
 
         sendResponseToClient(client, response);
@@ -504,12 +480,11 @@ public class MessageHandler extends AbstractServer {
             StreamingAdditionRequest streamingAdditionRequest = (StreamingAdditionRequest) request;
             moviesCatalogController.addStreaming(streamingAdditionRequest.movieId, streamingAdditionRequest.pricePerStream);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleStreamingAddition.");
+            response.setFailReason("ארעה שגיאה בעת הוספת חבילת צפייה");
         }
 
         sendResponseToClient(client, response);
@@ -524,7 +499,7 @@ public class MessageHandler extends AbstractServer {
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleStreamingRemoval.");
+            response.setFailReason("ארעה שגיאה בעת מחיקת חבילת צפייה");
         }
 
         sendResponseToClient(client, response);
@@ -551,17 +526,16 @@ public class MessageHandler extends AbstractServer {
                 client.setInfo(ClientUsernameType, loginCredentials.username);
 
                 // Saving the manager's cinema
-                if(result.userRole == UserRole.BranchManager)
+                if (result.userRole == UserRole.BranchManager)
                     client.setInfo(ManagedCinemaIdType, cinemaController.getCinemaIdByManagerUsername(loginCredentials.username));
             }
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             result.setFailReason(e.getMessage());
             result.setSuccessful(false);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.setSuccessful(false);
-            result.setFailReason("We couldn't handleLoginRequest.");
+            result.setFailReason("ארעה שגיאה בעת חיבור");
         }
 
         sendResponseToClient(client, result);
@@ -582,7 +556,7 @@ public class MessageHandler extends AbstractServer {
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleLogoutRequest.");
+            response.setFailReason("ארעה שגיאה בעת ניתוק");
         }
 
         sendResponseToClient(client, response);
@@ -599,12 +573,11 @@ public class MessageHandler extends AbstractServer {
                     (String) client.getInfo(ClientUsernameType),
                     cancellationFromComplaintRequest.refundAmount);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handlePurchaseCancellationFromComplaintRequest.");
+            response.setFailReason("ארעה שגיאה בעת ביטול רכישה מתלונה");
         }
 
         sendResponseToClient(client, response);
@@ -617,12 +590,11 @@ public class MessageHandler extends AbstractServer {
             CloseComplaintRequest closeComplaintRequest = (CloseComplaintRequest) request;
             complaintsController.closeComplaint(closeComplaintRequest.complaintId, (String) client.getInfo(ClientUsernameType));
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleCloseComplaintRequest.");
+            response.setFailReason("ארעה שגיאה בעת טיפול בתלונה");
         }
 
         sendResponseToClient(client, response);
@@ -634,12 +606,11 @@ public class MessageHandler extends AbstractServer {
         try {
             complaintsController.createNewComplaint(((CreateNewComplaintRequest) request));
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleNewComplaintCreationRequest.");
+            response.setFailReason("ארעה שגיאה בעת פתיחת התלונה");
         }
 
         sendResponseToClient(client, response);
@@ -651,12 +622,11 @@ public class MessageHandler extends AbstractServer {
         try {
             response.openComplaints = complaintsController.getAllUnhandledComplaints();
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleAllUnhandledComplaintsRequest.");
+            response.setFailReason("ארעה שגיאה בעת קבלת התלונות הפתוחות");
         }
 
         sendResponseToClient(client, response);
@@ -674,12 +644,11 @@ public class MessageHandler extends AbstractServer {
             covidRegulationsController.cancelAllScreeningsDueCovid(cancellationRequest.cancellationStartDate,
                     cancellationRequest.cancellationEndDate);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleCancelAllScreeningsDueCovidRequest.");
+            response.setFailReason("ארעה שגיאה בעת ביטול הקרנות עקב קורונה");
         }
 
         sendResponseToClient(client, response);
@@ -692,12 +661,11 @@ public class MessageHandler extends AbstractServer {
             UpdateCovidCrowdingRegulationsRequest updateRequest = (UpdateCovidCrowdingRegulationsRequest) request;
             covidRegulationsController.updateCovidCrowdingRegulations(updateRequest.newMaxNumberOfPeople);
             response.setSuccessful(true);
-        } catch (SertiaException e){
+        } catch (SertiaException e) {
             response.setFailReason(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleUpdateCovidCrowdingRegulationsRequest.");
+            response.setFailReason("ארעה שגיאה בעת עדכון מגבלות תו סגול");
         }
 
         sendResponseToClient(client, response);
@@ -711,7 +679,7 @@ public class MessageHandler extends AbstractServer {
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleCancelCovidRegulationsRequest.");
+            response.setFailReason("ארעה שגיאה בעת ביטול מגבלות תו סגול");
         }
 
         sendResponseToClient(client, response);
@@ -726,7 +694,7 @@ public class MessageHandler extends AbstractServer {
         } catch (Exception e) {
             e.printStackTrace();
             response = new ClientCovidRegulationsStatus(false);
-            response.setFailReason("We couldn't handleGetCovidRegulationsStatusRequest.");
+            response.setFailReason("ארעה שגיאה בעת קבלת מגבלות תו סגול נוכחיות");
         }
 
         sendResponseToClient(client, response);
@@ -740,7 +708,7 @@ public class MessageHandler extends AbstractServer {
             response.setSuccessful(true);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handleActiveCovidRegulationRequest.");
+            response.setFailReason("ארעה שגיאה בעת הפעלת מגבלות תו סגול");
         }
 
         sendResponseToClient(client, response);
@@ -757,7 +725,7 @@ public class MessageHandler extends AbstractServer {
             response = reportsController.getSertiaReports();
         } catch (Exception e) {
             e.printStackTrace();
-            response.failReason = "We couldn't handle get sertia reports.";
+            response.failReason = "ארעה שגיאה בעת קבלת דוחות סרטיה";
         }
 
         sendResponseToClient(client, response);
@@ -768,15 +736,15 @@ public class MessageHandler extends AbstractServer {
 
         try {
             Integer cinemaId = (Integer) client.getInfo(ManagedCinemaIdType);
-            if(cinemaId == null) {
-                response.setFailReason("אינך מקושר לסניף קולנוע");
+            if (cinemaId == null) {
+                response.setFailReason("אינך מנהל של סניף קולנוע");
                 response.setSuccessful(false);
             } else {
                 response = reportsController.getCinemaReports(cinemaId);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.setFailReason("We couldn't handle get cinema reports.");
+            response.setFailReason("ארעה שגיאה בעת קבלת דוחות עבור בית קולנוע");
         }
 
         sendResponseToClient(client, response);

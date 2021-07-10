@@ -14,6 +14,8 @@ public class ScreeningPaymentResponse extends SertiaBasicResponse {
     public String cinemaName;
     public LocalDateTime screeningTime;
     public int hallNumber;
+    public boolean isVoucher;
+    public int voucherBalance;
 
     public ScreeningPaymentResponse(boolean isSuccessful) {
         super(isSuccessful);

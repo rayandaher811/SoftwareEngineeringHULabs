@@ -18,6 +18,7 @@
         <center>
             <VBox alignment="CENTER" spacing="5">
                 <TextField fx:id="voucherIdTxt" maxWidth="180" alignment="CENTER" promptText="מזהה כרטיסיה"/>
+                <TextField fx:id="voucherBuyerId" maxWidth="180" alignment="CENTER" promptText="תעודת זהות הרוכש"/>
                 <TextField fx:id="balanceTxt" editable="false" alignment="CENTER" maxWidth="180"/>
                 <Button fx:id="payButton" onAction="#checkBalance" text="ברר" maxWidth="180" minWidth="180"/>
             </VBox>

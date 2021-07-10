@@ -6,8 +6,10 @@ import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.HallSeat;
+import org.sertia.contracts.screening.ticket.VoucherDetails;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.screening.ticket.response.*;
+import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
@@ -31,7 +33,7 @@ public class ScreeningTicketController extends Reportable {
         this.creditCardService = creditDetails;
     }
 
-    public SertiaBasicResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
+    public ScreeningPaymentResponse buyTicketWithRegulations(ScreeningTicketWithCovidRequest request) {
         ClientSeatMapResponse seatMapForScreening = getSeatMapForScreening(request.screeningId);
         ScreeningPaymentResponse response = new ScreeningPaymentResponse(true);
 
@@ -64,7 +66,7 @@ public class ScreeningTicketController extends Reportable {
         }
     }
 
-    public SertiaBasicResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
+    public ScreeningPaymentResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
         if (!isPaymentRequestValid(request)) {
             ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(false);
             paymentResponse.failReason = "Payment details are invalid";
@@ -75,12 +77,16 @@ public class ScreeningTicketController extends Reportable {
         return purchaseTicketsForScreening(request);
     }
 
-    public SertiaBasicResponse cancelTicket(CancelScreeningTicketRequest request) {
+    public TicketCancellationResponse cancelTicket(CancelScreeningTicketRequest request) {
         TicketCancellationResponse response = new TicketCancellationResponse(true);
-        return DbUtils.getById(ScreeningTicket.class, request.ticketId)
+        Optional<TicketCancellationResponse> ticketCancellationResponse = DbUtils.getById(ScreeningTicket.class, request.ticketId)
                 .map(screeningTicket -> {
                     if (!screeningTicket.getPaymentInfo().getPayerId().equals(request.userId)) {
                         return null;
+                    }
+
+                    if (screeningTicket.isVoucher()) {
+                        return Utils.createFailureResponse(response, "לא ניתן לבטל כרטיס שנרכש על ידי כרטיסיה");
                     }
 
                     try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -93,8 +99,11 @@ public class ScreeningTicketController extends Reportable {
                         System.out.println("couldn't delete ticket " + request.ticketId);
                         return Utils.createFailureResponse(response, "ביטול רכישה נכשל, פנה לשירות לקוחות");
                     }
-                }).orElse(
-                        Utils.createFailureResponse(response, "הכרטיס אינו קיים"));
+                });
+
+        return ticketCancellationResponse.orElseGet(() ->
+                ticketCancellationResponse.orElse(Utils.createFailureResponse(response, "הכרטיס אינו קיים")));
+
     }
 
     public SertiaBasicResponse getSeatMapForScreening(GetScreeningSeatMap request) {
@@ -106,7 +115,7 @@ public class ScreeningTicketController extends Reportable {
         VoucherPaymentResponse response = new VoucherPaymentResponse(true);
         if (vouchersInfo == null) {
             response.isSuccessful = false;
-            response.failReason = "sertia has no voucher info, contact support";
+            response.failReason = "לא קיימים נתוני כרטיסיות במערכת, אנא פנה לשירות לקוחות";
 
             return response;
         }
@@ -125,7 +134,7 @@ public class ScreeningTicketController extends Reportable {
             return response;
         } catch (RuntimeException exception) {
             response.isSuccessful = false;
-            response.failReason = "couldn't purchase voucher, contact support";
+            response.failReason = "רכישת כרטיסיה נכשל, אנא פנה לשירות לקוחות";
 
             return response;
         }
@@ -139,30 +148,19 @@ public class ScreeningTicketController extends Reportable {
             return response;
         }).orElseGet(() -> {
             response.isSuccessful = false;
-            response.setFailReason("voucher doesn't exist");
+            response.setFailReason("לא קיימת כרטיסיה עם הנתונים שהוזנו");
 
             return response;
         });
     }
 
-    public SertiaBasicResponse useVoucher(UseVoucherRequest request) {
-        return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
-            try (Session session = HibernateSessionFactory.getInstance().openSession()) {
-                if (ticketsVoucher.getTicketsBalance() == 1) {
-                    session.delete(ticketsVoucher);
-                }
-
-                ticketsVoucher.setTicketsBalance(ticketsVoucher.getTicketsBalance() - 1);
-                session.save(ticketsVoucher);
-                return new SertiaBasicResponse(true);
-            } catch (RuntimeException exception) {
-                return new SertiaBasicResponse(false).setFailReason("failed to update voucher");
-            }
-        }).orElseGet(() -> {
-            SertiaBasicResponse response = new SertiaBasicResponse(false);
-            response.setFailReason("voucher doesn't exist");
-            return response;
-        });
+    public boolean useVoucher(ScreeningTicket ticket, int voucherId, Session session) {
+        return DbUtils.getById(TicketsVoucher.class, voucherId, session).map(ticketsVoucher -> {
+            ticket.setIsVoucher(ticketsVoucher);
+            ticketsVoucher.setTicketsBalance(ticketsVoucher.getTicketsBalance() - 1);
+            session.persist(ticketsVoucher);
+            return true;
+        }).orElse(false);
     }
 
     private boolean isPaymentRequestValid(BasicPaymentRequest clientPaymentRequest) {
@@ -185,9 +183,11 @@ public class ScreeningTicketController extends Reportable {
         return refundAmount;
     }
 
-    private SertiaBasicResponse purchaseTicketsForScreening(ScreeningTicketWithSeatsRequest request) {
+    private ScreeningPaymentResponse purchaseTicketsForScreening(ScreeningTicketWithSeatsRequest request) {
         ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(true);
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+            session.beginTransaction();
+
             Set<ScreeningTicket> screeningTickets = DbUtils.getById(Screening.class, request.screeningId)
                     .map(screening -> {
                         paymentResponse.hallNumber = screening.getHall().getHallNumber();
@@ -201,10 +201,36 @@ public class ScreeningTicketController extends Reportable {
                     })
                     .orElse(Collections.emptySet());
 
-            CustomerPaymentDetails paymentDetails = getPaymentDetails(request);
-            session.saveOrUpdate(paymentDetails);
+            CustomerPaymentDetails paymentDetails;
+            if (request.isUsingVoucher()) {
+                VoucherDetails voucherDetails = request.voucherDetails;
+                if (!doesVoucherExist(voucherDetails)) {
+                    session.getTransaction().rollback();
+                    return Utils.createFailureResponse(paymentResponse, "נתוני הכרטיסיה אינם תקינים");
+                }
+
+                if (!isVoucherUsageValid(voucherDetails, request.chosenSeats.size())) {
+                    session.getTransaction().rollback();
+                    return Utils.createFailureResponse(paymentResponse, "אין מספיק יתרה בכרטיסיה");
+                }
+
+                TicketsVoucher voucher = DbUtils.getById(TicketsVoucher.class, request.voucherDetails.voucherId, session)
+                        .orElseThrow(() -> new SertiaException("קבלת נתוני כרטיסיה נכשלה"));
+                paymentDetails = voucher.getCustomerPaymentDetails();
+                paymentResponse.isVoucher = true;
+                paymentResponse.voucherBalance = voucher.getTicketsBalance() - request.chosenSeats.size();
+                request.cardHolderEmail = paymentDetails.getEmail();
+            } else {
+                paymentDetails = getPaymentDetails(request);
+                session.persist(paymentDetails);
+            }
+
             for (ScreeningTicket screeningTicket : screeningTickets) {
                 screeningTicket.setPaymentInfo(paymentDetails);
+                if (request.isUsingVoucher()) {
+                    handlePaymentForTicketWithVoucher(screeningTicket, request.voucherDetails.voucherId, session);
+                }
+
                 int ticketId = (int) session.save(screeningTicket);
                 org.sertia.server.dl.classes.HallSeat seat = screeningTicket.getSeat();
                 HallSeat purchasedSeat = new HallSeat(seat.getId());
@@ -213,9 +239,12 @@ public class ScreeningTicketController extends Reportable {
                 purchasedSeat.numberInRow = seat.getNumberInRow();
                 paymentResponse.addTicket(ticketId, purchasedSeat);
             }
+
+            session.flush();
+            session.getTransaction().commit();
         } catch (RuntimeException exception) {
             paymentResponse.isSuccessful = false;
-            paymentResponse.failReason = "Problem during purchase process";
+            paymentResponse.failReason = "ארעה שגיאה בעת תהליך הרכישה";
 
             return paymentResponse;
         }
@@ -224,8 +253,30 @@ public class ScreeningTicketController extends Reportable {
         return paymentResponse;
     }
 
+    private boolean handlePaymentForTicketWithVoucher(ScreeningTicket screeningTicket, int voucherId, Session session) {
+        screeningTicket.setIsVoucher(true);
+        return useVoucher(screeningTicket, voucherId, session);
+    }
+
+    private boolean isVoucherUsageValid(VoucherDetails voucherDetails, int numberOfTickets) {
+        SertiaBasicResponse voucherBalance = getVoucherBalance(new VoucherBalanceRequest(voucherDetails.voucherId));
+        return voucherBalance.isSuccessful &&
+                (((VoucherBalanceResponse) voucherBalance).balance >= numberOfTickets);
+    }
+
+    private boolean doesVoucherExist(VoucherDetails voucherDetails) {
+        return DbUtils.getById(TicketsVoucher.class, voucherDetails.voucherId)
+                .map(ticketsVoucher -> ticketsVoucher.getCustomerPaymentDetails().getPayerId().equals(voucherDetails.buyerId))
+                .orElse(false);
+    }
+
     private String getScreeningMail(ScreeningPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
+        if(response.isVoucher) {
+            stringBuilder.append(" השתמשת בכרטיסיה, וכעת היתרה היא ").append(response.voucherBalance)
+            .append("\n");
+        }
+
         stringBuilder.append("\nסרט: ").append(response.movieName)
                 .append("\nקולנוע: ").append(response.cinemaName)
                 .append("\nאולם: ").append(response.hallNumber)
@@ -237,7 +288,7 @@ public class ScreeningTicketController extends Reportable {
                 .append("\n")
                 .append(" שורה ").append(hallSeat.row)
                 .append(" כיסא ").append(hallSeat.numberInRow)
-        .append("\n"));
+                .append("\n"));
 
         return stringBuilder.toString();
     }
@@ -264,7 +315,7 @@ public class ScreeningTicketController extends Reportable {
             return (int) Math.floor(0.8 * covidRegulationsStatus.maxNumberOfPeople);
         }
 
-        return (int) Math.floorDiv(hallCapacity, 2);
+        return Math.floorDiv(hallCapacity, 2);
     }
 
     private ClientSeatMapResponse getSeatMapForScreening(int screeningId) {
@@ -304,7 +355,7 @@ public class ScreeningTicketController extends Reportable {
         }
 
         ticket.setScreening(screening);
-        ticket.setVoucher(false);
+        ticket.setIsVoucher(false);
         ticket.setPaidPrice(screening.getScreenableMovie().getTicketPrice());
         ticket.setSeat(requestedSeat);
         ticket.setPurchaseDate(LocalDateTime.now());

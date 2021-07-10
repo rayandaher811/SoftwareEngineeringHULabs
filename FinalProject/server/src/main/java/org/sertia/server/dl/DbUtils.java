@@ -27,6 +27,13 @@ public final class DbUtils {
         }
     }
 
+    public static <T> Optional<T> getById(Class<T> clazz, int id, Session session) {
+        try {
+            return Optional.ofNullable(session.get(clazz, id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 
     public static User getUserByUsername(String username) {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {

@@ -206,12 +206,9 @@ public class MoviesCatalogController extends Reportable {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             Movie movie = getMovieById(addScreeningRequest.movieId, session);
 
-            Hall hall = session.get(Hall.class, addScreeningRequest.hallId);
+            Hall selectedHall = getHall(addScreeningRequest.hallId);
 
-            if (hall == null)
-                throw new SertiaException("Hall with id : " + addScreeningRequest.hallId +" not found.");
-
-            validateScreeningTime(addScreeningRequest.screeningTime, movie, hall.getScreenings());
+            validateScreeningTime(addScreeningRequest.screeningTime, movie, selectedHall);
 
             ScreenableMovie screenableMovie = DbUtils.getById(ScreenableMovie.class, addScreeningRequest.movieId).get();
 
@@ -219,20 +216,28 @@ public class MoviesCatalogController extends Reportable {
             screening.setMovie(screenableMovie);
             screening.setScreeningTime(addScreeningRequest.screeningTime);
 
-            screening.setHall(hall);
+            screening.setHall(selectedHall);
             session.save(screening);
         }
     }
 
-    private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Set<Screening> screenings) throws SertiaException {
+    private Hall getHall(int hallId) throws SertiaException {
+        Optional<Hall> hall = DbUtils.getById(Hall.class, hallId);
+        if (!hall.isPresent())
+            throw new SertiaException("Hall with id : " + hallId +" not found.");
+
+        return hall.get();
+    }
+
+    private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
         LocalDateTime movieStartTime = screeningDateTime;
         LocalDateTime movieEndTime = screeningDateTime.plus(movie.getDuration());
 
-        for (Screening screening : screenings) {
+        for (Screening screening : hall.getScreenings()) {
             LocalDateTime hallScreeningStartTime = screening.getScreeningTime();
             LocalDateTime hallScreeningEndTime = screening.getScreeningTime().plus(movie.getDuration());
 
-            // Making sure all screenings does not conflict the current screening
+            // Making sure all hall screenings does not conflict the current screening
             if(!((movieStartTime.isAfter(hallScreeningEndTime) && movieStartTime.isAfter(hallScreeningStartTime) &&
                     movieEndTime.isAfter(hallScreeningEndTime) && movieEndTime.isAfter(hallScreeningStartTime)) ||
                  (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
@@ -263,8 +268,6 @@ public class MoviesCatalogController extends Reportable {
             // Refunding all relevant costumers and deleting the tickets
             RefundAndRemoveAllScreeningTickets(session, screening, refundReason);
 
-            session.flush();
-            
             session.remove(screening);
 
             session.flush();

@@ -84,7 +84,7 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
         boolean isTicketTypeValid = isTicketTypeValid();
         boolean isComplaintValid = isStringNotEmpty(complaintData.getText(),
                 "Must write complaint.. that's the whole concept XD");
-        boolean isIdValid = isIdCorrcet(clientIdTxt.getText());
+        boolean isIdValid = isIdCorrect(clientIdTxt.getText());
         return isNameValid && isPhoneValid && isEmailValid &&
                 isPurchaseIdValid && isTicketTypeValid && isComplaintValid && isIdValid;
     }

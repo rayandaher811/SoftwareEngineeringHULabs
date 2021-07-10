@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
-import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
 import java.io.IOException;
@@ -16,19 +15,28 @@ import java.util.ResourceBundle;
 public class CurrentPrePaidBalance extends BasicPresenterWithValidations implements Initializable {
 
     public TextField voucherIdTxt;
+    public TextField voucherBuyerId;
     public TextField balanceTxt;
 
     @FXML
     private void checkBalance() {
         if (isInputValid()) {
             VoucherBalanceResponse response =
-                    ClientPurchaseControl.getInstance().requestVoucherBalance(Integer.parseInt(voucherIdTxt.getText()));
+                    ClientPurchaseControl.getInstance().requestVoucherBalance(Integer.parseInt(voucherIdTxt.getText()), voucherBuyerId.getText());
             if (!response.isSuccessful) {
+                Alert.AlertType type;
+                String msg = "";
                 if (response.isSuccessful) {
-                    Utils.popAlert(Alert.AlertType.INFORMATION, "Buying prepaid tickets from sertia system", "Prepaid tickets bought successfully!");
+                    type = Alert.AlertType.INFORMATION;
+                    msg = "Prepaid tickets bought successfully!";
                 } else {
-                    Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system", response.failReason);
+                    type = Alert.AlertType.ERROR;
+                    msg = response.failReason;
                 }
+                Alert errorAlert = new Alert(type);
+                errorAlert.setTitle("Buying prepaid tickets from sertia system");
+                errorAlert.setContentText(msg);
+                errorAlert.showAndWait();
             } else {
                 balanceTxt.setText(String.valueOf(response.balance));
             }
@@ -36,7 +44,7 @@ public class CurrentPrePaidBalance extends BasicPresenterWithValidations impleme
     }
 
     @FXML
-    public void back() {
+    private void back() {
         try {
             App.setRoot("unauthorized/primary");
         } catch (IOException e) {
@@ -52,7 +60,7 @@ public class CurrentPrePaidBalance extends BasicPresenterWithValidations impleme
 
     @Override
     protected boolean isDataValid() {
-        boolean isIdValid = isPurchaseIdValid(voucherIdTxt.getText());
-        return isIdValid;
+        return isPurchaseIdValid(voucherIdTxt.getText()) &&
+                isIdCorrect(voucherBuyerId.getText());
     }
 }

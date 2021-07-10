@@ -12,16 +12,21 @@ public class ScreeningTicket {
     private int id;
 
     private double paidPrice;
+    private LocalDateTime purchaseDate;
+
     private boolean isVoucher;
+
+    @ManyToOne
+    @JoinColumn(name="voucher_voucher_id", nullable=true)
+    private TicketsVoucher voucher;
+
     @ManyToOne
     private CustomerPaymentDetails customerPaymentDetails;
     @ManyToOne
     private HallSeat seat;
     @ManyToOne
-    @JoinColumn(name="screening_screening_id", nullable=false)
+    @JoinColumn(name="screening_screening_id", nullable=true)
     private Screening screening;
-
-    private LocalDateTime purchaseDate;
 
     public ScreeningTicket() {
     }
@@ -42,7 +47,7 @@ public class ScreeningTicket {
         return isVoucher;
     }
 
-    public void setVoucher(boolean voucher) {
+    public void setIsVoucher(boolean voucher) {
         isVoucher = voucher;
     }
 
@@ -60,6 +65,14 @@ public class ScreeningTicket {
 
     public void setPaymentInfo(CustomerPaymentDetails customerPaymentDetails) {
         this.customerPaymentDetails = customerPaymentDetails;
+    }
+
+    public void setIsVoucher(TicketsVoucher voucher) {
+        this.voucher = voucher;
+    }
+
+    public void setVoucher(TicketsVoucher voucher) {
+        this.voucher = voucher;
     }
 
     public Screening getScreening() {

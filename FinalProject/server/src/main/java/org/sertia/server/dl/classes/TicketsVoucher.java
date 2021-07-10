@@ -2,6 +2,7 @@ package org.sertia.server.dl.classes;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name="tickets_vouchers")
@@ -16,6 +17,10 @@ public class TicketsVoucher {
 
     @ManyToOne
     private CustomerPaymentDetails customerPaymentDetails;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "voucher_voucher_id")
+    private Set<ScreeningTicket> tickets;
 
     public TicketsVoucher() {
     }

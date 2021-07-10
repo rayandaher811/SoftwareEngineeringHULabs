@@ -19,6 +19,7 @@
         <center>
             <VBox alignment="CENTER" spacing="5">
                 <TextField fx:id="voucherIdTxt" maxWidth="180" alignment="CENTER" promptText="מזהה כרטיסיה"/>
+                <TextField fx:id="voucherClientId" maxWidth="180" alignment="CENTER" promptText="תעודת זהות בעל הכרטיסיה"/>
                 <Button fx:id="payButton" onAction="#payWithVoucher" text="רכוש" maxWidth="180" minWidth="180"/>
             </VBox>
         </center>

@@ -65,7 +65,6 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override

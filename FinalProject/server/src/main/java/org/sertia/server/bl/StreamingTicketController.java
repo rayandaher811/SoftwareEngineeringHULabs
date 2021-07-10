@@ -54,7 +54,7 @@ public class StreamingTicketController extends Reportable {
         streamingLink.setCustomerPaymentDetails(paymentDetails);
         LocalDateTime startTime = request.startTime;
         streamingLink.setActivationStart(startTime);
-        int availabilityDays = 1 + request.extraDays;
+        int availabilityDays = request.extraDays;
         streamingLink.setActivationEnd(startTime.plusDays(availabilityDays));
         streamingLink.setPaidPrice(streaming.getExtraDayPrice() * availabilityDays);
         streamingLink.setLink("http://Sertia/link=" + UUID.randomUUID());

@@ -20,14 +20,6 @@ public abstract class BasicPresenterWithValidations {
         return p.matcher(txt).matches();
     }
 
-    protected boolean isIdCorrect(String id) {
-        if (id == null || id.isBlank() || id.length() != 9) {
-            userMistakes.add("Please fill your ID number, it should be in length of 9");
-            return false;
-        }
-        return true;
-    }
-
     protected boolean isEmailValid(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
@@ -60,8 +52,8 @@ public abstract class BasicPresenterWithValidations {
         return isItNumber(purchaseId, "Invalid purchase id, must be a number");
     }
 
-    protected boolean isIdCorrcet(String id) {
-        if (id == null || id.isBlank() || id.isEmpty() || id.length() != 9) {
+    protected boolean isIdCorrect(String id) {
+        if (id == null || id.isBlank() || id.length() != 9) {
             userMistakes.add("Please fill your ID number, it should be in length of 9");
             return false;
         }
