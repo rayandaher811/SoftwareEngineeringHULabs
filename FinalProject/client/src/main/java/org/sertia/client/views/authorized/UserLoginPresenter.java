@@ -46,7 +46,7 @@ public class UserLoginPresenter {
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Login Failed", "Failed to log in, user name or password is incorrect");
+                Utils.popAlert(Alert.AlertType.ERROR, "התחברות נכשלה", "שם משתמש או סיסמא אינם נכונים");
             }
         }
     }

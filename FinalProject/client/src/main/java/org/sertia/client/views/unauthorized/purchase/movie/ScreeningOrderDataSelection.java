@@ -58,7 +58,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
                         Integer.parseInt(numberOfTicketsToPurchase.getText()));
                 if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
                     Utils.popAlert(Alert.AlertType.INFORMATION, "Covid19 notification",
-                            "Were sorry, according to TAV-SAGOL rules, we will choose seats for you");
+                            "עקב מגבלות תו-סגול, אנחנו נבחר את המושבים עבור");
                     App.setRoot("unauthorized/payment/selectionMethodForm");
                 } else {
                     App.setRoot("unauthorized/movie/seatMapView");
