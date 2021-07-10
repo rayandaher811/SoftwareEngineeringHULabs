@@ -25,16 +25,19 @@ public class ApprovePriceChangeRequests implements Initializable {
     public Accordion priceChangeRequestsAccordion;
     public Label noRequestsToApproveLabel;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void renderForm(boolean isRender) {
         GetUnapprovedPriceChangeResponse response =
                 ClientPriceChangeControl.getInstance().getAllOpenedPriceChangeRequests();
 
         if (response.isSuccessful) {
-            initializeForm(response.unapprovedRequests);
+            initializeForm(response.unapprovedRequests, isRender);
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system", response.failReason);
         }
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        renderForm(false);
     }
 
     private TitledPane parsePriceChangeRequest(BasicPriceChangeRequest priceChangeRequest) {
@@ -109,14 +112,17 @@ public class ApprovePriceChangeRequests implements Initializable {
 
         if (response != null && response.isSuccessful) {
             Utils.popAlert(Alert.AlertType.INFORMATION, "Price change request approval", "Price change request has been approved and successfully changed price!");
-            back();
+            renderForm(true);
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, "Price change request approval", response.failReason);
         }
     }
 
-    private void initializeForm(List<BasicPriceChangeRequest> requests) {
+    private void initializeForm(List<BasicPriceChangeRequest> requests, boolean isRender) {
         if (requests.isEmpty()) {
+            if (isRender) {
+                noRequestsToApproveLabel.setText(NO_NEW_REQUESTS);
+            }
             noRequestsToApproveLabel.setVisible(true);
             priceChangeRequestsAccordion.setVisible(false);
         } else {

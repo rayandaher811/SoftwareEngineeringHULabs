@@ -41,10 +41,10 @@ public class Constants {
     public static final String SUCCESSFUL_CANCEL_PURCHASE_MSG = "ביטול הרכישה הסתיים בהצלחה, להלן סכום הזיכוי: ";
     public static final String CANCEL_PURCHASE_TITLE = "ביטול רכישה";
     public static final String SPCIFY_PURCHASE_TYPE = "אנא ציין סוג רכישה";
+    public static final String NO_NEW_REQUESTS = "אין בקשות נוספות לאישור";
 
     public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
             new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
                 put(ClientTicketType.Streaming.name(), "חבילת צפיה");
                 put(ClientTicketType.Voucher.name(), "כרטיסיה");}};
-
 }
