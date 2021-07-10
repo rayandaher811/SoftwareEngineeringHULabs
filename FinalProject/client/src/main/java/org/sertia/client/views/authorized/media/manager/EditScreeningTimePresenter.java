@@ -44,11 +44,11 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
 
         for (SertiaMovie screeningMovie : movies) {
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
-                if (movieToCinemaAndScreenings.containsKey(screeningMovie.getMovieDetails())) {
-                    if (movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).containsKey(specificScreening.getCinemaName())) {
-                        movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).get(specificScreening.getCinemaName()).add(specificScreening);
+                if (movieToCinemaAndScreenings.containsKey(screeningMovie)) {
+                    if (movieToCinemaAndScreenings.get(screeningMovie).containsKey(specificScreening.getCinemaName())) {
+                        movieToCinemaAndScreenings.get(screeningMovie).get(specificScreening.getCinemaName()).add(specificScreening);
                     } else {
-                        movieToCinemaAndScreenings.get(screeningMovie.getMovieDetails()).put(specificScreening.getCinemaName(), new ArrayList<>() {{
+                        movieToCinemaAndScreenings.get(screeningMovie).put(specificScreening.getCinemaName(), new ArrayList<>() {{
                             add(specificScreening);
                         }});
                     }

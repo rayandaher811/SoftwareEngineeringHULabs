@@ -2,6 +2,7 @@ package org.sertia.contracts.movies.catalog;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class CinemaScreeningMovie implements Serializable {
     public int movieId;
@@ -24,6 +25,11 @@ public class CinemaScreeningMovie implements Serializable {
 
     public List<ClientScreening> getScreenings() {
         return screenings;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movieId);
     }
 
     public int getMovieId() {

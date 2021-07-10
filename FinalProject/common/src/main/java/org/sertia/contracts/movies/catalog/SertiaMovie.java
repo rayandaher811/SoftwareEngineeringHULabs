@@ -1,6 +1,7 @@
 package org.sertia.contracts.movies.catalog;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SertiaMovie extends CinemaScreeningMovie  {
 	public boolean isStreamable;
@@ -17,6 +18,11 @@ public class SertiaMovie extends CinemaScreeningMovie  {
 		super(movieDetails, screenings, ticketPrice);
 		this.isStreamable = isStreamable;
 		this.isComingSoon = isComingSoon;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(movieId);
 	}
 
 	@Override
