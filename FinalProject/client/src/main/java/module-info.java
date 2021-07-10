@@ -20,8 +20,6 @@ module org.sertia {
     opens org.sertia.client.views.unauthorized.complaints to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.unauthorized.purchase;
     opens org.sertia.client.views.unauthorized.purchase to com.google.gson, javafx.fxml;
-    exports org.sertia.client.views.unauthorized.didntuse;
-    opens org.sertia.client.views.unauthorized.didntuse to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.authorized;
     opens org.sertia.client.views.authorized to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.unauthorized.purchase.movie;

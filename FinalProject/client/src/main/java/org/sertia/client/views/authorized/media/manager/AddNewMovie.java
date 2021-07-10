@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: base validations
-public class AddNewMovie extends BasicPresenter {
+public class AddNewMovie {
     @FXML
     private TextField movieNameTxt;
     @FXML
