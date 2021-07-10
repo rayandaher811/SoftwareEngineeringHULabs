@@ -51,6 +51,11 @@ public class PriceChangeController {
 			request.setTicketType(Utils.clientTicketTypeToDL(priceChangeRequest.clientTicketType));
 			request.setNewPrice(priceChangeRequest.newPrice);
 
+			// Making sure the requests is valid if streaming
+			if(request.getTicketType() == TicketType.Streaming)
+				if(!DbUtils.getById(Streaming.class, priceChangeRequest.movieId).isPresent())
+					throw new SertiaException("You are requesting to change streaming price to non-streamable movie");
+
 			// Saving the request
 			session.beginTransaction();
 			session.save(request);
