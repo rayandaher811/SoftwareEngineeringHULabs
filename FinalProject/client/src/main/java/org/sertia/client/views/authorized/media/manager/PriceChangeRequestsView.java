@@ -90,11 +90,14 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             moviesComboBox.valueProperty().addListener((observableValue, o, t1) -> {
                 valueChanged(t1);
             });
+
             availableTicketsType.valueProperty().addListener((observableValue, clientTicketType, t1) -> {
-                if (t1.ticketType != ClientTicketType.Streaming) {
-                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
-                } else {
-                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
+                if (t1 != null) {
+                    if (t1.ticketType != ClientTicketType.Streaming) {
+                        movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
+                    } else {
+                        movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
+                    }
                 }
             });
         }
