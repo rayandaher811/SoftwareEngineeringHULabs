@@ -176,7 +176,7 @@ public class MoviesCatalogController extends Reportable {
             session = HibernateSessionFactory.getInstance().openSession();
             // Getting the real screening to avoid redundant changes
             Screening screeningToUpdate = session.get(Screening.class, screening.screeningId);
-            validateScreeningTime(screening.screeningTime, screeningToUpdate.getScreenableMovie().getMovie(), screeningToUpdate.getHall());
+            validateScreeningTime(screening.screeningId, screening.screeningTime, screeningToUpdate.getScreenableMovie().getMovie(), screeningToUpdate.getHall());
             // Updating
             LocalDateTime oldScreeningTime = screeningToUpdate.getScreeningTime();
             screeningToUpdate.setScreeningTime(screening.screeningTime);
@@ -233,6 +233,10 @@ public class MoviesCatalogController extends Reportable {
     }
 
     private void validateScreeningTime(LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
+        validateScreeningTime(null, screeningDateTime, movie, hall);
+    }
+
+    private void validateScreeningTime(Integer screeningId, LocalDateTime screeningDateTime, Movie movie, Hall hall) throws SertiaException {
         LocalDateTime movieStartTime = screeningDateTime;
         LocalDateTime movieEndTime = screeningDateTime.plus(movie.getDuration());
 
@@ -244,8 +248,13 @@ public class MoviesCatalogController extends Reportable {
             if (!((movieStartTime.isAfter(hallScreeningEndTime) && movieStartTime.isAfter(hallScreeningStartTime) &&
                     movieEndTime.isAfter(hallScreeningEndTime) && movieEndTime.isAfter(hallScreeningStartTime)) ||
                     (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
-                            movieEndTime.isBefore(hallScreeningEndTime) && movieEndTime.isBefore(hallScreeningStartTime))))
+                            movieEndTime.isBefore(hallScreeningEndTime) && movieEndTime.isBefore(hallScreeningStartTime)))) {
+                if (screeningId != null && screeningId == screening.getId()) {
+                    continue;
+                }
+
                 throw new SertiaException("הזמן שהזנת מתנגש עם הקרנה אחרת באותו האולם");
+            }
         }
     }
 
@@ -309,8 +318,8 @@ public class MoviesCatalogController extends Reportable {
                         // Deleting the canceled screening
                         session.remove(session.get(Screening.class, screening.getId()));
                     }
-
                 }
+                session.flush();
 
                 session.remove(session.get(ScreenableMovie.class, movieId));
             }
@@ -395,12 +404,14 @@ public class MoviesCatalogController extends Reportable {
         for (StreamingLink link : streaming.getLinks()) {
             if (link.getActivationEnd().isAfter(currentTime)) {
                 creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice(), RefundReason.StreamingService);
+                CustomerNotifier.getInstance().notify(link.getCustomerPaymentDetails().getEmail(), "your streaming link " + link.getLink() + " has been canceled");
             }
 
             // Deleting the canceled screening
             session.remove(link);
         }
 
+        session.flush();
         session.remove(streaming);
     }
 
@@ -444,11 +455,6 @@ public class MoviesCatalogController extends Reportable {
                 movie.getName() != null &&
                 movie.getMainActorName() != null &&
                 movie.getProducerName() != null;
-    }
-
-    private boolean isScreeningValid(ClientScreening screening) {
-        // TODO - implement MoviesCatalogController.isScreeningValid
-        throw new UnsupportedOperationException();
     }
 
     private void notifyVoucherOwners(ClientMovie newMovie, List<String> emails) {

@@ -288,17 +288,21 @@ public class ScreeningTicketController extends Reportable {
 
     private String getScreeningMail(ScreeningPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
-        if(response.isVoucher) {
+        if (response.isVoucher) {
             stringBuilder.append(" השתמשת בכרטיסיה, וכעת היתרה היא ").append(response.voucherBalance)
-            .append("\n");
+                    .append("\n");
         }
 
         stringBuilder.append("\nסרט: ").append(response.movieName)
                 .append("\nקולנוע: ").append(response.cinemaName)
                 .append("\nאולם: ").append(response.hallNumber)
-                .append("\nשעת הקרנה: ").append(response.screeningTime)
-                .append("\nמחיר סופי: ").append(response.finalPrice)
-                .append("\n")
+                .append("\nשעת הקרנה: ").append(response.screeningTime);
+
+        if (!response.isVoucher) {
+            stringBuilder.append("\nמחיר סופי: ").append(response.finalPrice);
+        }
+
+        stringBuilder.append("\n")
                 .append(":כרטיסים").append("\n");
         response.ticketIdToSeat.forEach((ticketId, hallSeat) -> stringBuilder
                 .append(" :מזהה כרטיס ").append(ticketId.toString())

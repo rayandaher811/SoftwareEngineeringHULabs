@@ -22,11 +22,13 @@ public class CreditCardServiceRefundsRecorderDecorator implements ICreditCardSer
 
     @Override
     public void refund(CustomerPaymentDetails customerPaymentDetails, double amount, RefundReason refundReason) {
-        creditCardService.refund(customerPaymentDetails, amount, refundReason);
+        if(amount > 0) {
+            creditCardService.refund(customerPaymentDetails, amount, refundReason);
 
-        // Recording the refund in our DB in order to export reports properly
-        try(Session session = HibernateSessionFactory.getInstance().openSession()){
-            session.save(new Refund(LocalDateTime.now(), amount, refundReason));
+            // Recording the refund in our DB in order to export reports properly
+            try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                session.save(new Refund(LocalDateTime.now(), amount, refundReason));
+            }
         }
     }
 }
