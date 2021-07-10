@@ -251,7 +251,7 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleStreamingTicketCancel(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        TicketCancellationResponse response = new TicketCancellationResponse(false);
         try {
             CancelStreamingTicketRequest streamingCancelRequest = (CancelStreamingTicketRequest) request;
             response = streamingTicketController.cancelStreamingTicket(streamingCancelRequest);

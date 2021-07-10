@@ -76,7 +76,7 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
         if (response.isSuccessful) {
             type = Alert.AlertType.INFORMATION;
             if(response.isVoucher) {
-                msg = "הרכישה הסתיימה, פרטי הכרטיסים ויתרת הכרטיסיה נשלחו לבעל הכרטיסיה";
+                msg = "הרכישה הסתיימה, פרטי הכרטיסים\n ויתרת הכרטיסיה נשלחו לבעל הכרטיסיה";
             } else {
                 msg = "הרכישה הסתיימה, פרטי הכרטיסים נשלחו לבעל הכרטיס";
             }

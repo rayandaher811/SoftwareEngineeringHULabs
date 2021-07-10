@@ -210,6 +210,7 @@ public class ScreeningTicketController extends Reportable {
                         paymentResponse.finalPrice = screening.getScreenableMovie().getTicketPrice() * request.chosenSeats.size();
                         paymentResponse.movieName = screening.getScreenableMovie().getMovie().getName();
                         paymentResponse.screeningTime = screening.getScreeningTime();
+
                         return request.chosenSeats.stream()
                                 .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
                                 .collect(Collectors.toSet());
@@ -237,7 +238,7 @@ public class ScreeningTicketController extends Reportable {
                 request.cardHolderEmail = paymentDetails.getEmail();
             } else {
                 paymentDetails = getPaymentDetails(request);
-                session.persist(paymentDetails);
+                session.saveOrUpdate(paymentDetails);
             }
 
             for (ScreeningTicket screeningTicket : screeningTickets) {
@@ -296,6 +297,7 @@ public class ScreeningTicketController extends Reportable {
                 .append("\nקולנוע: ").append(response.cinemaName)
                 .append("\nאולם: ").append(response.hallNumber)
                 .append("\nשעת הקרנה: ").append(response.screeningTime)
+                .append("\nמחיר סופי: ").append(response.finalPrice)
                 .append("\n")
                 .append(":כרטיסים").append("\n");
         response.ticketIdToSeat.forEach((ticketId, hallSeat) -> stringBuilder

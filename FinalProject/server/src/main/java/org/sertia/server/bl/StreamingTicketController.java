@@ -125,7 +125,7 @@ public class StreamingTicketController extends Reportable {
         }
     }
 
-    public SertiaBasicResponse cancelStreamingTicket(CancelStreamingTicketRequest request) {
+    public TicketCancellationResponse cancelStreamingTicket(CancelStreamingTicketRequest request) {
         int streamingTickerId = request.streamingId;
         TicketCancellationResponse response = new TicketCancellationResponse(true);
         return DbUtils.getById(StreamingLink.class, streamingTickerId).map(streamingTicket -> {
@@ -143,8 +143,10 @@ public class StreamingTicketController extends Reportable {
                 session.delete(streamingTicket);
                 session.flush();
                 session.getTransaction().commit();
-                creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), streamingTicket.getPaidPrice() / 2, RefundReason.StreamingService);
-                return new SertiaBasicResponse(true);
+                double amount = streamingTicket.getPaidPrice() / 2;
+                creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), amount, RefundReason.StreamingService);
+                response.refundAmount = amount;
+                return response;
             } catch (RuntimeException exception) {
                 return Utils.createFailureResponse(response, "ביטול רכישה נכשל, פנה לשירות לקוחות");
             }
@@ -159,7 +161,8 @@ public class StreamingTicketController extends Reportable {
     private void notifyClientsRegardingStreamingLinks() {
         System.out.println("notifying links " + LocalDateTime.now());
         DbUtils.getAll(StreamingLink.class).forEach(streamingLink -> {
-            if (ChronoUnit.MINUTES.between(LocalDateTime.now().withSecond(0), streamingLink.getActivationStart().withSecond(0)) == 60) {
+            long between = ChronoUnit.MINUTES.between(LocalDateTime.now().withSecond(0), streamingLink.getActivationStart().withSecond(0));
+            if (between == 59) {
                 CustomerNotifier.getInstance().notify(
                         streamingLink.getCustomerPaymentDetails().getEmail(),
                         "הלינק לחבילת הצפייה שלך  זמין בעוד שעה");
@@ -173,6 +176,7 @@ public class StreamingTicketController extends Reportable {
         stringBuilder
                 .append(response.purchaseId).append(" :מזהה רכישה").append("\n")
                 .append(response.startTime).append(" :שעת התחלה").append("\n")
+                .append(response.endTime).append(" :שעת סיום").append("\n")
                 .append(response.price).append(" :תשלום סופי").append("\n")
                 .append(response.streamingLink).append(" :לינק");
 
