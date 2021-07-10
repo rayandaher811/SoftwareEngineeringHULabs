@@ -61,7 +61,7 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
             VoucherPaymentResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
             if (response.isSuccessful) {
                 Utils.popAlert(Alert.AlertType.INFORMATION, "Buying prepaid tickets from sertia system",
-                        "Your voucher Id is: \" + response.voucherId");
+                        "Your voucher Id is: " + response.voucherId);
             } else {
                 Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system",
                         response.failReason);
