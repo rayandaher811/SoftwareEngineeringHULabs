@@ -23,8 +23,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static org.sertia.client.Constants.COULDNT_FETCH_VOUCHER_DATA;
-import static org.sertia.client.Constants.VOUCHER_INFO_ERROR;
+import static org.sertia.client.Constants.*;
 
 public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
@@ -60,8 +59,8 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
                             1, 0, 0));
             VoucherPaymentResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying prepaid tickets from sertia system",
-                        "Your voucher Id is: " + response.voucherId);
+                Utils.popAlert(Alert.AlertType.INFORMATION, VOUCHER_PURCHASING_TITLE,
+                        VOUCHER_ID + response.voucherId);
             } else {
                 Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system",
                         response.failReason);

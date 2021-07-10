@@ -247,7 +247,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 MOVIE_NAME + response.movieName + "\n" +
                 HALL_NUMBER + response.hallNumber + "\n" +
                 SCREENING_TIME + response.screeningTime + "\n" +
-                TICKETS + "\n";
+                FINAL_PRICE + response.finalPrice + "\n";
 
         // Inserting it's tickets info
         for (Map.Entry<Integer, HallSeat> set :

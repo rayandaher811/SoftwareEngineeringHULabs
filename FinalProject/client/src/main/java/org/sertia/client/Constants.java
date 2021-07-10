@@ -59,9 +59,12 @@ public class Constants {
     public static final String STREMING_LINK_INFO = "פרטי הקישור לצפיה ביתית שרכשת: \n לינק: ";
     public static final String START_TIME_END_TIME = "זמן התחלה - זמן סיום: ";
     public static final String PURCHASE_USING_CREDIT_CARD = "רכישה באמצעות כרטיס אשראי";
+    public static final String VOUCHER_PURCHASING_TITLE = "קניית כרטיסיה התבצעה";
     public static final String PURCHASE_SUMMARY = "רכשת כרטיס/ים להקרנות ואלו הם פרטי ההזמנה: \n";
     public static final String CINEMA_NAME = "שם הקולנוע: ";
     public static final String HALL_NUMBER = "מספר האולם: ";
+    public static final String FINAL_PRICE = "מחיר סופי: ";
+    public static final String VOUCHER_ID = "מזהה ווצ'ר: ";
     public static final String TICKETS = "כרטיסים: מספר הכרטיס = <שורה, מספר כיסא>";
     public static final String FATAL_SERVER_ERROR = "שגיאת שרת חמורה";
     public static final String CLIENT_DATA_FOR_STREAMING_LINK_IS_NOT_SET = "לא נקבע מידע לקוח עבור לינק צפיה זה, נא פנה לשירות הלקוחות";
