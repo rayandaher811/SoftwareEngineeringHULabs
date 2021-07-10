@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 
@@ -58,23 +59,14 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
                     ClientCovidRegulationsControl.getInstance().cancelAllScreeningsDueCovid(fromDateLocalDateTime, toDateLocalDateTime);
             if (response != null) {
                 if (response.isSuccessful) {
-                    Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
-                    errorAlert.setTitle("Update covid regulations by date");
-                    errorAlert.setContentText("Covid regulations by date range set successfully!");
-                    errorAlert.showAndWait();
+                    Utils.popAlert(Alert.AlertType.INFORMATION, "Update covid regulations by date", "Covid regulations by date range set successfully!");
                     back();
                 } else {
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Failed to set regulations");
-                    errorAlert.setContentText(response.failReason);
-                    errorAlert.showAndWait();
+                    Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", response.failReason);
                 }
             }
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Failed to set regulations");
-            errorAlert.setContentText("Choose dates in incremental order");
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", "Choose dates in incremental order");
         }
     }
 
@@ -86,23 +78,14 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
                     ClientCovidRegulationsControl.getInstance().updateCovidCrowdingRegulationsRequest(newMaxCapacity);
             if (response != null) {
                 if (response.isSuccessful) {
-                    Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
-                    errorAlert.setTitle("Update covid regulations by max allowed people in hall");
-                    errorAlert.setContentText("Covid regulations by max amount of people set successfully!");
-                    errorAlert.showAndWait();
+                    Utils.popAlert(Alert.AlertType.INFORMATION, "Update covid regulations by max allowed people in hall", "Covid regulations by max amount of people set successfully!");
                     back();
                 } else {
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Failed to set max people in hall regulations");
-                    errorAlert.setContentText(response.failReason);
-                    errorAlert.showAndWait();
+                    Utils.popAlert(Alert.AlertType.ERROR, "Failed to set max people in hall regulations", response.failReason);
                 }
             }
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Failed to set regulations");
-            errorAlert.setContentText("new amount of people in hall must be a number");
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", "new amount of people in hall must be a number");
         }
     }
 
@@ -138,25 +121,11 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
             response = ClientCovidRegulationsControl.getInstance().activeRegulations();
         }
 
-        Alert.AlertType type;
-        String msg;
         if (response.isSuccessful) {
-            type = Alert.AlertType.INFORMATION;
-            msg = "Regulations update has finished successfully!";
-            Alert alert = new Alert(type);
-            alert.setTitle("Update tav sagol regulations");
-            alert.setContentText(msg);
-            alert.showAndWait();
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Update tav sagol regulations", "Regulations update has finished successfully!");
             back();
         } else {
-            type = Alert.AlertType.ERROR;
-            msg = response.failReason;
-            Alert alert = new Alert(type);
-            alert.setTitle("Update tav sagol regulations");
-            alert.setContentText(msg);
-            alert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Update tav sagol regulations", response.failReason);
         }
-
-
     }
 }

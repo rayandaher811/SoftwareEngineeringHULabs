@@ -1,11 +1,7 @@
 package org.sertia.client.communication;
 
-import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.communication.messages.UpdateMovieScreeningTime;
 import org.sertia.contracts.SertiaBasicRequest;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.request.SertiaCatalogRequest;
-import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -58,17 +54,6 @@ public class SertiaClient extends AbstractClient {
         super.connectionClosed();
     }
 
-    public MoviesCatalog getMoviesCatalog() {
-        SertiaCatalogRequest sertiaCatalogRequest = new SertiaCatalogRequest();
-        Optional<SertiaCatalogResponse> res =
-                client.requestAndWaitForResponse(sertiaCatalogRequest, SertiaCatalogResponse.class);
-
-        if (res.isPresent())
-            return sertialCatalogResponseToMoviesCatalog(res.get());
-        else
-            return null;
-    }
-
     public <requestType extends SertiaBasicRequest, responseType extends SertiaBasicResponse> responseType request(requestType request, Class<responseType> responseTypeClass) {
         Optional<responseType> res =
                 client.requestAndWaitForResponse(request, responseTypeClass);
@@ -77,13 +62,5 @@ public class SertiaClient extends AbstractClient {
             return res.get();
         else
             return null;
-    }
-
-    public void requestMovieScreeningTimeChange(UpdateMovieScreeningTime updateMovieScreeningTimeMsg) {
-        client.publishToServer(updateMovieScreeningTimeMsg);
-    }
-
-    private static MoviesCatalog sertialCatalogResponseToMoviesCatalog(SertiaCatalogResponse response){
-        return new MoviesCatalog(response.getMovies());
     }
 }

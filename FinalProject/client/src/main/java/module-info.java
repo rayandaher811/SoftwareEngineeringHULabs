@@ -7,7 +7,6 @@ module org.sertia {
     requires org.joda.time;
     requires org.sertia.contracts;
 
-    opens org.sertia.client.communication.messages to com.google.gson;
     opens org.sertia.client to javafx.fxml, com.google.gson;
     opens org.sertia.client.controllers to javafx.fxml, com.google.gson;
     opens org.sertia.client.views to javafx.fxml, com.google.gson;
@@ -15,8 +14,6 @@ module org.sertia {
     exports org.sertia.client;
     exports org.sertia.client.controllers;
     exports org.sertia.client.views;
-    exports org.sertia.client.boxes;
-    opens org.sertia.client.boxes to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.unauthorized.movies;
     opens org.sertia.client.views.unauthorized.movies to com.google.gson, javafx.fxml;
     exports org.sertia.client.views.unauthorized.complaints;

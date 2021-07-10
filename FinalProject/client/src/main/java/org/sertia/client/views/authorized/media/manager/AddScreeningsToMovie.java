@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientHall;
@@ -45,21 +46,13 @@ public class AddScreeningsToMovie implements Initializable {
 
         SertiaBasicResponse addScreeningResponse =
                 ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, Integer.parseInt(hallNumberTxt.getText()), cinemaId);
-        Alert.AlertType type;
-        String msg = "";
-        if (addScreeningResponse.isSuccessful){
-            type = Alert.AlertType.INFORMATION;
-            msg = "Screening added successfully";
-        } else {
 
+        if (addScreeningResponse.isSuccessful){
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Add screening to movie in sertia", "Screening added successfully");
+        } else {
+            Utils.popAlert(Alert.AlertType.ERROR, "Add screening to movie in sertia", addScreeningResponse.failReason);
             // TODO: fail reason is null
-            type = Alert.AlertType.ERROR;
-            msg = addScreeningResponse.failReason;
         }
-        Alert errorAlert = new Alert(type);
-        errorAlert.setTitle("Add screening to movie in sertia");
-        errorAlert.setContentText(msg);
-        errorAlert.showAndWait();
     }
 
     public void back() {

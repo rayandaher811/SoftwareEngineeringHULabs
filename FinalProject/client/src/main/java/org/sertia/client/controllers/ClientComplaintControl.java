@@ -9,7 +9,6 @@ import org.sertia.contracts.complaints.requests.PurchaseCancellationFromComplain
 import org.sertia.contracts.complaints.responses.AllUnhandledComplaintsResponse;
 import org.sertia.contracts.price.change.ClientTicketType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

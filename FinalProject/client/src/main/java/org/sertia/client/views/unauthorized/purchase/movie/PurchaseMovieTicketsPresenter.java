@@ -6,16 +6,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.sertia.client.App;
-import org.sertia.client.communication.SertiaClient;
-import org.sertia.client.communication.messages.MoviesCatalog;
-import org.sertia.client.controllers.ClientCovidRegulationsControl;
-import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,14 +24,16 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
     @FXML
     private Accordion moviesAccordion;
 
-    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings){
+    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings) {
         HashMap<String, List<ClientScreening>> cinemaToScreenings = new HashMap<>();
 
         for (ClientScreening screening : movieToScreenings.getValue()) {
             if (cinemaToScreenings.containsKey(screening.getCinemaName())) {
                 cinemaToScreenings.get(screening.getCinemaName()).add(screening);
             } else {
-                cinemaToScreenings.put(screening.getCinemaName(), new ArrayList<>(){{add(screening);}});
+                cinemaToScreenings.put(screening.getCinemaName(), new ArrayList<>() {{
+                    add(screening);
+                }});
             }
         }
 
@@ -63,7 +62,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
                         boolean isCovidLimitationsEnbaled = false;
                         System.out.println("number of tickets is: " + numberOfTicketsPurchased);
 //                        if (ClientCovidRegulationsControl.getInstance().areRegulationsActive()){
-                        if (isCovidLimitationsEnbaled){
+                        if (isCovidLimitationsEnbaled) {
                             System.out.println("Need to go to covid view");
                         } else {
                             System.out.println("Need to show available spots");
@@ -96,25 +95,29 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
-        // Need to get movies by start time
-        MoviesCatalog catalog = SertiaClient.getInstance().getMoviesCatalog();
+        SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
+        if (!response.isSuccessful) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fetch movies catalog");
+            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
+            errorAlert.showAndWait();
+        } else {
+            List<SertiaMovie> screeningMovieArrayList = response.movies;
+            HashMap<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
 
-        HashMap<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
+            for (int i = 0; i < screeningMovieArrayList.size(); i++) {
+                final SertiaMovie screeningMovie = screeningMovieArrayList.get(i);
 
-        ArrayList<SertiaMovie> screeningMovieArrayList = (ArrayList<SertiaMovie>) catalog.getMoviesCatalog();
-        for (int i = 0; i < catalog.getMoviesCatalog().size(); i++) {
-            final SertiaMovie screeningMovie = screeningMovieArrayList.get(i);
-
-            if (movieToScreenings.containsKey(screeningMovie)) {
-                movieToScreenings.get(screeningMovie).addAll(screeningMovie.getScreenings());
-            } else {
-                movieToScreenings.put(screeningMovie, screeningMovie.getScreenings());
+                if (movieToScreenings.containsKey(screeningMovie)) {
+                    movieToScreenings.get(screeningMovie).addAll(screeningMovie.getScreenings());
+                } else {
+                    movieToScreenings.put(screeningMovie, screeningMovie.getScreenings());
+                }
             }
+
+            movieToScreenings.entrySet().forEach(specificMovieToScreenings -> list.add(screeningMovieToTilePane(specificMovieToScreenings)));
+
+            moviesAccordion.getPanes().addAll(list);
         }
-
-        movieToScreenings.entrySet().forEach(specificMovieToScreenings -> list.add(screeningMovieToTilePane(specificMovieToScreenings)));
-
-        moviesAccordion.getPanes().addAll(list);
-
     }
 }

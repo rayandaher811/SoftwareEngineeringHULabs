@@ -10,6 +10,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.movies.AbstractMoviesPresenter;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
@@ -209,10 +210,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fetch movies catalog");
-            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> moviesList = response.movies;
             HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();

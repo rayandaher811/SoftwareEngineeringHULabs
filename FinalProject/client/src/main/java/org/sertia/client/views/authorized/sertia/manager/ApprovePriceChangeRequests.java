@@ -7,10 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
-import org.sertia.client.controllers.ClientComplaintControl;
 import org.sertia.client.controllers.ClientPriceChangeControl;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.complaints.ClientOpenComplaint;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
 
@@ -34,7 +33,7 @@ public class ApprovePriceChangeRequests implements Initializable {
         if (response.isSuccessful) {
             initializeForm(response.unapprovedRequests);
         } else {
-            notifyUserForError(response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system", response.failReason);
         }
     }
 
@@ -56,10 +55,10 @@ public class ApprovePriceChangeRequests implements Initializable {
         declineBtn.setStyle("-fx-background-color: #ff1500");
         declineResolveHbox.getChildren().addAll(resolveBtn, declineBtn);
         declineBtn.setOnMouseClicked(mouseEvent -> {
-            responseToChangeRequest(false, priceChangeRequest.requestId, priceChangeRequest.newPrice);
+            responseToChangeRequest(false, priceChangeRequest.requestId);
         });
         resolveBtn.setOnMouseClicked(mouseEvent -> {
-            responseToChangeRequest(true, priceChangeRequest.requestId, priceChangeRequest.newPrice);
+            responseToChangeRequest(true, priceChangeRequest.requestId);
         });
 
 
@@ -100,26 +99,19 @@ public class ApprovePriceChangeRequests implements Initializable {
         return hBox;
     }
 
-    private void responseToChangeRequest(boolean isApproved, int requestId, double newPrice) {
+    private void responseToChangeRequest(boolean isApproved, int requestId) {
         SertiaBasicResponse response = null;
         if (isApproved) {
-            // TODO: PRICE??
-            response = ClientPriceChangeControl.getInstance().tryApprovePriceChange(requestId/*, newPrice*/);
+            response = ClientPriceChangeControl.getInstance().tryApprovePriceChange(requestId);
         } else {
             response = ClientPriceChangeControl.getInstance().tryDisapprovePriceChange(requestId);
         }
 
         if (response != null && response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
-            errorAlert.setTitle("Price change request approval");
-            errorAlert.setContentText("Price change request has been approved and successfully changed price!");
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Price change request approval", "Price change request has been approved and successfully changed price!");
             back();
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Price change request approval");
-            errorAlert.setContentText(response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Price change request approval", response.failReason);
         }
     }
 
@@ -131,14 +123,6 @@ public class ApprovePriceChangeRequests implements Initializable {
             requests.forEach(basicPriceChangeRequest ->
                     priceChangeRequestsAccordion.getPanes().add(parsePriceChangeRequest(basicPriceChangeRequest)));
         }
-    }
-
-    private void notifyUserForError(String failReason) {
-        Alert.AlertType type = Alert.AlertType.ERROR;
-        Alert errorAlert = new Alert(type);
-        errorAlert.setTitle("Buying prepaid tickets from sertia system");
-        errorAlert.setContentText(failReason);
-        errorAlert.showAndWait();
     }
 
     @FXML

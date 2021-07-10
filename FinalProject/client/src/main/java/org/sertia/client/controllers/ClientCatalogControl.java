@@ -2,20 +2,16 @@ package org.sertia.client.controllers;
 
 
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
-import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientCatalogControl extends ClientControl {
 
@@ -31,16 +27,7 @@ public class ClientCatalogControl extends ClientControl {
 
         return instance;
     }
-//
-//    public List<CinemaScreeningMovie> requestSpecificCinemaCatalog(int cinemaId) {
-//        CinemaCatalogResponse response = client.request(new CinemaCatalogRequest(cinemaId), CinemaCatalogResponse.class);
-//        if (response.isSuccessful) {
-//            return response.movies;
-//        }
-//
-//        return Collections.emptyList();
-//    }
-//
+
     public SertiaBasicResponse tryCreateMovie(SertiaMovie movie) {
         return client.request(new AddMovieRequest(movie), SertiaBasicResponse.class);
     }
@@ -74,29 +61,9 @@ public class ClientCatalogControl extends ClientControl {
         return response;
     }
 
-    public List<SertiaMovie> getOnlineMovies() {
-        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-
-        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isStreamable).collect(Collectors.toList());
-    }
-
     public CinemaAndHallsResponse getCinemasAndHalls() {
         return client.request(new RequestCinemasAndHalls(), CinemaAndHallsResponse.class);
     }
-
-    public List<SertiaMovie> getComingSoonMovies() {
-        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-
-        return allMovies.stream().filter(sertiaMovie -> sertiaMovie.isComingSoon).collect(Collectors.toList());
-    }
-
-    public List<SertiaMovie> getAvailableMovies() {
-        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-
-        return allMovies.stream().filter(sertiaMovie -> !sertiaMovie.isComingSoon).collect(Collectors.toList());
-    }
-
-    // TODO: might need getAllBranches endpoint.. I implement it here since i must use it NOW
 
     public List<String> getAllBranchesName() {
         HashSet<String> branches = new HashSet<>();

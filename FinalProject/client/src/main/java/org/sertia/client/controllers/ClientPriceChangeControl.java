@@ -30,5 +30,4 @@ public class ClientPriceChangeControl extends ClientControl {
     public GetUnapprovedPriceChangeResponse getAllOpenedPriceChangeRequests() {
         return client.request(new GetUnapprovedPriceChangeRequest(), GetUnapprovedPriceChangeResponse.class);
     }
-
 }

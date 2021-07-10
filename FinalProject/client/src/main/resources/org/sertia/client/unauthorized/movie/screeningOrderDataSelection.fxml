@@ -17,6 +17,8 @@
         </top>
         <center>
             <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="6">
+                <Label alignment="CENTER" disable="true" text="מספר כרטיסים פנוים באולם"/>
+                <Label fx:id="numberOfFreeSeatsLabel" alignment="CENTER" disable="true"/>
                 <TextField fx:id="numberOfTicketsToPurchase" minWidth="180.0" maxWidth="180.0" maxHeight="300"
                            alignment="CENTER" promptText="מספר כרטיסים רצוי"/>
                 <Label alignment="CENTER" text="שם הסרט"/>

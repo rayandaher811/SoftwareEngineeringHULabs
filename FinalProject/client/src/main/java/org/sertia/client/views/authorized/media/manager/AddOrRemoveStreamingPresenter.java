@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
@@ -48,10 +49,7 @@ public class AddOrRemoveStreamingPresenter implements Initializable {
         alertData = "";
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Fetch movies catalog");
-            errorAlert.setContentText("failed fetch catalog, error msg: " + response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
             movieNameToId = new HashMap<>();
@@ -74,34 +72,19 @@ public class AddOrRemoveStreamingPresenter implements Initializable {
                         ClientCatalogControl.getInstance().tryAddStreaming(movieNameToId.get(observableValue.getValue()).getMovieId(),
                                 Double.parseDouble(streamingPriceTxt.getText()));
             } else {
-                Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
-                missingKeyFieldsAlert.setTitle("Add streaming to movie");
-                missingKeyFieldsAlert.setContentText("Please insert valid number represents link's price");
-                missingKeyFieldsAlert.show();
+                Utils.popAlert(Alert.AlertType.ERROR, "Add streaming to movie", "Please insert valid number represents link's price");
             }
         }
         if (response != null) {
-            Alert.AlertType type;
-            String msg = "";
             if (response.isSuccessful) {
-                type = Alert.AlertType.INFORMATION;
-                msg = "Screening added successfully!";
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Add screening dialog");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Add screening dialog", "Screening added successfully!");
                 try {
                     App.setRoot("authorized/employeesForm");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Add screening dialog");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Add screening dialog", response.failReason);
             }
         }
     }

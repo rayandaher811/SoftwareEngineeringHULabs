@@ -9,9 +9,9 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
-import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 
 import java.io.IOException;
@@ -22,29 +22,14 @@ import java.util.ResourceBundle;
 
 public class EditMovieScreeningTimePresenter implements Initializable {
 
-    @FXML
-    private Label mainLabel;
-
-    @FXML
-    private Label movieNameLabel;
-
-    @FXML
-    private Label actorNameLabel;
-
-    @FXML
-    private Label branchNameLabel;
-
-    @FXML
-    private Label hallNumber;
-
-    @FXML
-    private DatePicker datePickerComp;
-
-    @FXML
-    private TextField screeningTimeTxt;
-
-    @FXML
-    private Button removeScreeningBtn;
+    public Label mainLabel;
+    public Label movieNameLabel;
+    public Label actorNameLabel;
+    public Label branchNameLabel;
+    public Label hallNumber;
+    public DatePicker datePickerComp;
+    public TextField screeningTimeTxt;
+    public Button removeScreeningBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,21 +65,14 @@ public class EditMovieScreeningTimePresenter implements Initializable {
                     inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(newHour), getMin(newHour));
             screening.setScreeningTime(newDateTime);
             SertiaBasicResponse response = ClientCatalogControl.getInstance().tryUpdateScreeningTime(screening);
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful){
-                type = Alert.AlertType.INFORMATION;
-                msg = "operation ended successfully!";
+
+            if (response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
+                App.setRoot("authorized/media.manager/availableMoviesForEdit");
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
+                Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
             }
-            Alert errorAlert = new Alert(type);
-            errorAlert.setTitle("Buying from sertia system");
-            errorAlert.setContentText(msg);
-            errorAlert.showAndWait();
         }
-        App.setRoot("authorized/media.manager/availableMoviesForEdit");
     }
 
     private int getHour(String hour) {
@@ -125,20 +103,14 @@ public class EditMovieScreeningTimePresenter implements Initializable {
                 ClientCatalogControl.getInstance().tryRemoveScreening(screening.getScreeningId());
 
         if (response.isSuccessful) {
-            Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.INFORMATION);
-            missingKeyFieldsAlert.setTitle("Remove screening");
-            missingKeyFieldsAlert.setContentText("Remove operation ended successfully!");
-            missingKeyFieldsAlert.show();
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Remove screening", "Remove operation ended successfully!");
             try {
                 backToPreviousPage();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
-            missingKeyFieldsAlert.setTitle("Remove screening");
-            missingKeyFieldsAlert.setContentText(response.failReason);
-            missingKeyFieldsAlert.show();
+            Utils.popAlert(Alert.AlertType.ERROR, "Remove screening", response.failReason);
         }
     }
 }

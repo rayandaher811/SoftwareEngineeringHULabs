@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.joda.time.DateTime;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
+import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
@@ -16,13 +17,16 @@ import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
+import org.sertia.contracts.screening.ticket.response.ClientSeatMapResponse;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ScreeningOrderDataSelection extends BasicPresenterWithValidations implements Initializable {
+    public Label numberOfFreeSeatsLabel;
     @FXML
     private TextField numberOfTicketsToPurchase;
     @FXML
@@ -36,6 +40,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
     @FXML
     private TextField screeningTimeTxt;
 
+    private int numberOfFreeTickets;
     public void back() {
         try {
             App.setRoot("unauthorized/sertiaCatalogPresenter");
@@ -71,6 +76,14 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ClientScreening screening = ScreeningHolder.getInstance().getScreening();
+        ClientSeatMapResponse seatMapResponse =
+                ClientPurchaseControl.getInstance().getScreeningSeatMap(screening.getScreeningId());
+        numberOfFreeTickets =
+                seatMapResponse
+                        .getHallSeats()
+                        .stream()
+                        .filter(hallSeat -> !hallSeat.isTaken)
+                        .collect(Collectors.toSet()).size();
         CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
         movieNameLabel.setText(movie.getMovieDetails().getName());
         branchNameLabel.setText(screening.getCinemaName());
@@ -80,6 +93,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
         datePickerComp.setValue(LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
         screeningTimeTxt.setText(parseTimeWithoutDate(movieScreeningTime));
         numberOfTicketsToPurchase.setFocusTraversable(false);
+        numberOfFreeSeatsLabel.setText(String.valueOf(numberOfFreeTickets));
     }
 
     private String parseTimeWithoutDate(String dateTime) {
@@ -91,6 +105,13 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
     protected boolean isDataValid() {
         boolean isNumberOfTicketsValid = isItNumber(numberOfTicketsToPurchase.getText(),
                 "Number of tickets must appear and be a number!");
-        return isNumberOfTicketsValid;
+        boolean isEnoughSpaceInHall = false;
+        if (isNumberOfTicketsValid) {
+            isEnoughSpaceInHall = Integer.parseInt(numberOfTicketsToPurchase.getText()) <= numberOfFreeTickets;
+            if (!isEnoughSpaceInHall){
+                userMistakes.add("You requested to buy more tickets than available in hall");
+            }
+        }
+        return isNumberOfTicketsValid && isEnoughSpaceInHall;
     }
 }

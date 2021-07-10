@@ -1,14 +1,13 @@
 package org.sertia.client.views.authorized.media.manager;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
-import org.sertia.client.global.SertiaMovieHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.didntuse.BasicPresenter;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.ClientMovie;
@@ -16,12 +15,11 @@ import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
+// TODO: base validations
 public class AddNewMovie extends BasicPresenter {
     @FXML
     private TextField movieNameTxt;
@@ -51,6 +49,7 @@ public class AddNewMovie extends BasicPresenter {
     private boolean isTicketPriceValid() {
         return ticketPriceTxt != null && !ticketPriceTxt.getText().isEmpty() && !ticketPriceTxt.getText().isBlank();
     }
+
     private boolean validateMovieData() {
         return movieHebrewNameTxt != null && movieHebrewNameTxt.getText().isBlank() && !movieHebrewNameTxt.getText().isEmpty()
                 && movieNameTxt != null && movieNameTxt.getText().isBlank() && !movieNameTxt.getText().isEmpty()
@@ -74,32 +73,19 @@ public class AddNewMovie extends BasicPresenter {
         SertiaBasicResponse response = ClientCatalogControl.getInstance().tryCreateMovie(movie);
 
         try {
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful){
-                type = Alert.AlertType.INFORMATION;
-                msg = "Movie added successfully! Need to add screenings";
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+            if (response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Add movie", "Movie added successfully! Need to add screenings");
                 App.setRoot("authorized/employeesForm");
             } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Add movie");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Add movie", response.failReason);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    public void back(){
+    public void back() {
         try {
             App.setRoot("authorized/media.manager/addOrRemoveMovie");
         } catch (IOException e) {

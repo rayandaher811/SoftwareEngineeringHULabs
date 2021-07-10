@@ -2,25 +2,13 @@ package org.sertia.client.global;
 
 import org.sertia.contracts.user.login.UserRole;
 
-import java.util.UUID;
-
 public class LoggedInUser {
-    // User
-    private String userName;
-    private String uuid;
     private UserRole userRole;
-
-    public String getManagedCinema() {
-        return managedCinema;
-    }
-
     private String managedCinema;
 
     private static LoggedInUser loggedInUser = null;
 
-    private LoggedInUser(String userName, UserRole userRole, String managedCinema) {
-        this.userName = userName;
-        this.uuid = UUID.randomUUID().toString();
+    private LoggedInUser(UserRole userRole, String managedCinema) {
         this.userRole = userRole;
         this.managedCinema = managedCinema;
     }
@@ -37,13 +25,13 @@ public class LoggedInUser {
         return userRole;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getManagedCinema() {
+        return managedCinema;
     }
 
-    public static void setConnectionStatus(String userName, UserRole role, String managedCinema) {
+    public static void setConnectionStatus(UserRole role, String managedCinema) {
         if (loggedInUser == null)
-            loggedInUser = new LoggedInUser(userName, role, managedCinema);
+            loggedInUser = new LoggedInUser(role, managedCinema);
     }
 
     public static void onDisconnection() {

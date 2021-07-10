@@ -109,7 +109,6 @@ public abstract class BasicPresenterWithValidations extends BasicPresenter {
 
     protected boolean isInputValid() {
         userMistakes = new ArrayList<>();
-
         if (isDataValid()) {
             return true;
         } else {

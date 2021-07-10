@@ -8,15 +8,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
-import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 import static org.sertia.client.Constants.*;
 
@@ -87,18 +86,15 @@ public class HandleComplaintsPresenter implements Initializable {
         } catch (Exception e) {
             return false;
         }
-
     }
+
     private void resolveComplaint(boolean isResolved, int complaintId, String refundAmount) {
         SertiaBasicResponse response = null;
         if (isResolved) {
             if (refundAmount != null && isNumber(refundAmount)) {
-                response = ClientComplaintControl.getInstance().tryCloseComplaint(complaintId);
+                response = ClientComplaintControl.getInstance().tryResolveComplaint(complaintId, Double.parseDouble(refundAmount));
             } else {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle("Refund amount error");
-                errorAlert.setContentText("Please insert a number for refund");
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Refund amount error", "Please insert a number for refund");
             }
         } else {
             response = ClientComplaintControl.getInstance().tryCloseComplaint(complaintId);
@@ -106,16 +102,10 @@ public class HandleComplaintsPresenter implements Initializable {
 
         if (response != null) {
             if (response.isSuccessful) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle("Refund process alert");
-                errorAlert.setContentText("Closed complaint successfully!");
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Refund process alert", "Closed complaint successfully!");
                 back();
             } else {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle("Refund process error");
-                errorAlert.setContentText(response.failReason);
-                errorAlert.showAndWait();
+                Utils.popAlert(Alert.AlertType.ERROR, "Refund process error", response.failReason);
             }
         }
     }
@@ -123,7 +113,6 @@ public class HandleComplaintsPresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<ClientOpenComplaint> openedComplaints = ClientComplaintControl.getInstance().getOpenedComplaints();
-
         openedComplaints.forEach(openedComplaint ->
                 complaintsAccordion.getPanes().add(clientOpenComplaintToTiledPane(openedComplaint)));
     }

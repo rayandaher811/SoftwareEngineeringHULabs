@@ -4,17 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientReportsControl;
 import org.sertia.client.global.LoggedInUser;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.contracts.user.login.UserRole;
@@ -49,10 +46,7 @@ public class ReportsViewPresenter implements Initializable {
         }
 
         if (!response.isSuccessful) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Error fetching data from sertia server");
-            errorAlert.setContentText(response.failReason);
-            errorAlert.showAndWait();
+            Utils.popAlert(Alert.AlertType.ERROR, "Error fetching data from sertia server", response.failReason);
         } else {
             ObservableList<ClientReport> clientReports = FXCollections.observableList(new ArrayList<>(response.reports));
 
