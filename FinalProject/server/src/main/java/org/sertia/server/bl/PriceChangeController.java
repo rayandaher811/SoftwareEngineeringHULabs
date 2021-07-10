@@ -24,7 +24,7 @@ public class PriceChangeController {
 				VouchersInfo vouchersInfo = new VouchersInfo();
 				vouchersInfo.setId(VouchersInfo.singleRecordId);
 				vouchersInfo.setVoucherInitialBalance(20);
-				vouchersInfo.setPrice(0);
+				vouchersInfo.setPrice(300);
 
 				session.beginTransaction();
 				session.save(vouchersInfo);
