@@ -1,9 +1,9 @@
 package org.sertia.client.global;
 
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 public class MovieHolder {
-    private CinemaScreeningMovie cinemaScreeningMovie;
+    private SertiaMovie cinemaScreeningMovie;
     private final static MovieHolder instance = new MovieHolder();
     private boolean isOnlineLinkPurchaseRequest;
 
@@ -11,12 +11,12 @@ public class MovieHolder {
         return instance;
     }
 
-    public void setMovie(CinemaScreeningMovie sertiaMovie, boolean isOnlineLinkPurchaseRequest) {
+    public void setMovie(SertiaMovie sertiaMovie, boolean isOnlineLinkPurchaseRequest) {
         cinemaScreeningMovie = sertiaMovie;
         this.isOnlineLinkPurchaseRequest = isOnlineLinkPurchaseRequest;
     }
 
-    public CinemaScreeningMovie getCinemaScreeningMovie() {
+    public SertiaMovie getCinemaScreeningMovie() {
         return cinemaScreeningMovie;
     }
 

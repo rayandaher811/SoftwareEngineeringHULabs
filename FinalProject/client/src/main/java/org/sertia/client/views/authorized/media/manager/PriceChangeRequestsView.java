@@ -31,6 +31,8 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     private TextField movieTicketPriceTxt;
     private String errorMessage;
 
+    private SertiaMovie chosenMovie;
+
     @FXML
     public void requestPriceChange() {
         if (isDataValid()) {
@@ -65,8 +67,8 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     }
 
     public void valueChanged(SertiaMovie sertiaMovie) {
+        chosenMovie = sertiaMovie;
         availableTicketsType.getItems().clear();
-        movieTicketPriceTxt.setText(String.valueOf(sertiaMovie.getTicketPrice()));
         HashSet<ClientTicketType> ticketTypes = new HashSet<>();
         if (sertiaMovie.isStreamable) {
             ticketTypes.add(ClientTicketType.Streaming);
@@ -88,6 +90,13 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             moviesComboBox.getItems().addAll(catalog);
             moviesComboBox.valueProperty().addListener((observableValue, o, t1) -> {
                 valueChanged(t1);
+            });
+            availableTicketsType.valueProperty().addListener((observableValue, clientTicketType, t1) -> {
+                if (t1 != ClientTicketType.Streaming) {
+                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
+                } else {
+                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
+                }
             });
         }
     }

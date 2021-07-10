@@ -28,6 +28,7 @@ public class ApprovePriceChangeRequests implements Initializable {
     public Label noRequestsToApproveLabel;
 
     public void renderForm(boolean isRender) {
+        priceChangeRequestsAccordion.getPanes().clear();
         GetUnapprovedPriceChangeResponse response =
                 ClientPriceChangeControl.getInstance().getAllOpenedPriceChangeRequests();
 

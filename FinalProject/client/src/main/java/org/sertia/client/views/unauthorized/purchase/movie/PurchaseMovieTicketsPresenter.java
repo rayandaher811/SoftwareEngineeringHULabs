@@ -11,7 +11,6 @@ import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.Utils;
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
@@ -26,7 +25,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
     @FXML
     private Accordion moviesAccordion;
 
-    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings) {
+    private HashMap<String, List<ClientScreening>> cinemaToScreenings(Map.Entry<SertiaMovie, List<ClientScreening>> movieToScreenings) {
         HashMap<String, List<ClientScreening>> cinemaToScreenings = new HashMap<>();
 
         for (ClientScreening screening : movieToScreenings.getValue()) {
@@ -42,7 +41,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
         return cinemaToScreenings;
     }
 
-    private TitledPane screeningMovieToTilePane(Map.Entry<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings) {
+    private TitledPane screeningMovieToTilePane(Map.Entry<SertiaMovie, List<ClientScreening>> movieToScreenings) {
         Accordion moviesAccordion = new Accordion();
 
         HashMap<String, List<ClientScreening>> cinemaToScreenings = cinemaToScreenings(movieToScreenings);
@@ -96,7 +95,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
             Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> screeningMovieArrayList = response.movies;
-            HashMap<CinemaScreeningMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
+            HashMap<SertiaMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();
 
             for (int i = 0; i < screeningMovieArrayList.size(); i++) {
                 final SertiaMovie screeningMovie = screeningMovieArrayList.get(i);

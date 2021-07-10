@@ -38,8 +38,8 @@ public class CatalogView implements Initializable {
     private ObservableList<SertiaMovie> filteredMovies;
     private List<SertiaMovie> queriedMoviesSinceLastLaunch;
 
-    private HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
-        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
+    private HashMap<SertiaMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
+        HashMap<SertiaMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
 
         for (SertiaMovie screeningMovie : movies) {
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
@@ -67,9 +67,9 @@ public class CatalogView implements Initializable {
     private TitledPane getCurrentlyPlayingMoviesAsTitledPane(Map.Entry<String, ArrayList<SertiaMovie>> currentlyAvailableMovies) {
         Accordion currentlyPlayingMoviesAccordion = new Accordion();
 
-        HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
+        HashMap<SertiaMovie, HashMap<String, List<ClientScreening>>> branchToMovies = cinemaToScreenings(currentlyAvailableMovies.getValue());
         ArrayList<TitledPane> values = new ArrayList<>();
-        for (Map.Entry<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()) {
+        for (Map.Entry<SertiaMovie, HashMap<String, List<ClientScreening>>> moviesInBranch : branchToMovies.entrySet()) {
             Accordion moviePlayingTimeAccordion = new Accordion();
             ArrayList<TitledPane> specificCinemaList = new ArrayList<>();
             for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()) {

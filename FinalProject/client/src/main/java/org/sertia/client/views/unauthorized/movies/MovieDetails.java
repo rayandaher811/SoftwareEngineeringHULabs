@@ -8,8 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.global.MovieHolder;
-import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientMovie;
+import org.sertia.contracts.movies.catalog.SertiaMovie;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,14 +36,18 @@ public class MovieDetails implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CinemaScreeningMovie cinemaScreeningMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        SertiaMovie cinemaScreeningMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
         ClientMovie movie = cinemaScreeningMovie.getMovieDetails();
         movieNameTxt.setText(movie.getName());
         movieHebrewNameTxt.setText(movie.getHebrewName());
         producerNameTxt.setText(movie.getProducerName());
         mainActorsTxt.setText(movie.getMainActorName());
         movieDescriptionTxt.setText(movie.getDescription());
-        movieTicketPrice.setText(String.valueOf(cinemaScreeningMovie.getTicketPrice()));
+        if (MovieHolder.getInstance().isOnlineLinkPurchaseRequest()) {
+            movieTicketPrice.setText(String.valueOf(cinemaScreeningMovie.extraDayPrice));
+        } else {
+            movieTicketPrice.setText(String.valueOf(cinemaScreeningMovie.getTicketPrice()));
+        }
         setImageView(movie);
     }
 
