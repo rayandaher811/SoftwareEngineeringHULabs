@@ -32,7 +32,7 @@ public class AddScreeningsToMovie implements Initializable {
     private ComboBox branchName;
 
     //  error in add screenings, getting error from server
-    public void addScreenings() {
+    public void addScreenings() throws IOException {
         CinemaScreeningMovie currentMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
         CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
         LocalDate inputDate = datePickerComp.getValue();
@@ -49,6 +49,7 @@ public class AddScreeningsToMovie implements Initializable {
 
         if (addScreeningResponse.isSuccessful){
             Utils.popAlert(Alert.AlertType.INFORMATION, "Add screening to movie in sertia", "Screening added successfully");
+            App.setRoot("authorized/employeesForm");
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, "Add screening to movie in sertia", addScreeningResponse.failReason);
             // TODO: fail reason is null
