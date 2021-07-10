@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.controllers.ClientPriceChangeControl;
+import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
@@ -24,7 +25,7 @@ import java.util.*;
 // TODO: use infra
 public class PriceChangeRequestsView extends BasicPresenterWithValidations implements Initializable {
 
-    public ComboBox<ClientTicketType> availableTicketsType;
+    public ComboBox<TicketType> availableTicketsType;
     @FXML
     private ComboBox<SertiaMovie> moviesComboBox;
     @FXML
@@ -39,7 +40,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             SertiaMovie sertiaMovie = moviesComboBox.getSelectionModel().getSelectedItem();
 
             int movieId = sertiaMovie.getMovieId();
-            ClientTicketType ticketType = availableTicketsType.getValue();
+            ClientTicketType ticketType = availableTicketsType.getValue().ticketType;
             SertiaBasicResponse response =
                     ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
             if (response.isSuccessful) {
@@ -69,14 +70,12 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     public void valueChanged(SertiaMovie sertiaMovie) {
         chosenMovie = sertiaMovie;
         availableTicketsType.getItems().clear();
-        HashSet<ClientTicketType> ticketTypes = new HashSet<>();
+        HashSet<TicketType> ticketTypes = new HashSet<>();
         if (sertiaMovie.isStreamable) {
-            ticketTypes.add(ClientTicketType.Streaming);
+            ticketTypes.add(TicketType.STREAMING);
         }
 
-        // TODO: i'm not sure it's fine
-        ticketTypes.add(ClientTicketType.Voucher);
-        ticketTypes.add(ClientTicketType.Screening);
+        ticketTypes.add(TicketType.SCREENING);
         availableTicketsType.getItems().addAll(ticketTypes);
     }
 
@@ -92,7 +91,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
                 valueChanged(t1);
             });
             availableTicketsType.valueProperty().addListener((observableValue, clientTicketType, t1) -> {
-                if (t1 != ClientTicketType.Streaming) {
+                if (t1.ticketType != ClientTicketType.Streaming) {
                     movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
                 } else {
                     movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));

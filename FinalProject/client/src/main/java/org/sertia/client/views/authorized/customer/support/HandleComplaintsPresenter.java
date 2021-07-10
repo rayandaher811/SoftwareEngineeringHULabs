@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
+import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.complaints.ClientOpenComplaint;
@@ -71,7 +72,12 @@ public class HandleComplaintsPresenter implements Initializable {
         Label description = new Label();
         description.setText(clientOpenComplaint.description);
         Label ticketType = new Label();
-        ticketType.setText(clientOpenComplaint.ticketType.name());
+        TicketType complaintTicketType = TicketType.getFromClientType(clientOpenComplaint.ticketType);
+        if(complaintTicketType != null) {
+            ticketType.setText(complaintTicketType.displayName);
+        } else {
+            ticketType.setText("לא ידוע");
+        }
         vBox.getChildren().addAll(clientName, customerPhoneNumber, customerEmail, description, ticketType);
         hBox.getChildren().addAll(vBox, resolveOrDeclineVBox);
         titledPane.setContent(hBox);

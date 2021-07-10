@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
+import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
@@ -37,7 +38,7 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
     public TextField purchaseIdTextField;
 
     @FXML
-    public ComboBox ticketTypeField;
+    public ComboBox<TicketType> ticketTypeField;
 
     @FXML
     public void toMainMenu() {
@@ -59,11 +60,11 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
                             emailTxTextField.getText(),
                             complaintData.getText(),
                             Integer.parseInt(purchaseIdTextField.getText()),
-                            ClientTicketType.valueOf((String) ticketTypeField.getSelectionModel().getSelectedItem()),
+                            ticketTypeField.getSelectionModel().getSelectedItem().ticketType,
                             clientIdTxt.getText());
 
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Create complaint", "Complaint sent successfully!");
+                Utils.popAlert(Alert.AlertType.INFORMATION, "יצירת תלונה", "תלונתך נשלחה בהצלחה ותטופל תוך 24 שעות!");
                 try {
                     App.setRoot("unauthorized/primary");
                 } catch (IOException e) {
@@ -77,30 +78,20 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
 
     @Override
     protected boolean isDataValid() {
-        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "Customer name is missing");
+        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "אנא הכנס את שמך");
         boolean isPhoneValid = isPhoneValid(phoneTxTextField.getText());
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         boolean isPurchaseIdValid = isPurchaseIdValid(purchaseIdTextField.getText());
-        boolean isTicketTypeValid = isTicketTypeValid();
         boolean isComplaintValid = isStringNotEmpty(complaintData.getText(),
-                "Must write complaint.. that's the whole concept XD");
+                "אנא פרט אודות תלונתך");
         boolean isIdValid = isIdCorrect(clientIdTxt.getText());
         return isNameValid && isPhoneValid && isEmailValid &&
-                isPurchaseIdValid && isTicketTypeValid && isComplaintValid && isIdValid;
-    }
-
-    private boolean isTicketTypeValid() {
-        Object ticketType = ticketTypeField.getSelectionModel().getSelectedItem();
-        if (ticketType == null || ((String) ticketType).isEmpty() || ((String) ticketType).isBlank()) {
-            userMistakes.add("Invalid ticket type");
-            return false;
-        }
-        return true;
+                isPurchaseIdValid  && isComplaintValid && isIdValid;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<String> ticketTypes = FXCollections.observableList(Arrays.stream(ClientTicketType.values()).map(clientTicketType -> clientTicketType.toString()).collect(Collectors.toList()));
+        ObservableList<TicketType> ticketTypes = TicketType.getTypes();
         ticketTypeField.setItems(ticketTypes);
         userMistakes = new ArrayList<>();
     }
