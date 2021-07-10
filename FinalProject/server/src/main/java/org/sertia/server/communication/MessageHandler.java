@@ -24,6 +24,7 @@ import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.contracts.screening.ticket.request.*;
 import org.sertia.contracts.screening.ticket.response.GetStreamingByLinkResponse;
+import org.sertia.contracts.screening.ticket.response.GetVoucherInfoResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
 import org.sertia.contracts.user.login.LoginCredentials;
@@ -122,6 +123,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(CancelStreamingTicketRequest.class, this::handleStreamingTicketCancel);
         messageTypeToHandler.put(VoucherPurchaseRequest.class, this::handleVoucherPurchase);
         messageTypeToHandler.put(VoucherBalanceRequest.class, this::handleVoucherBalanceRequest);
+        messageTypeToHandler.put(GetVoucherInfoRequest.class, this::handleGetVoucherInfoRequest);
 
         messageTypeToHandler.put(ActiveCovidRegulationsRequest.class, this::handleActiveCovidRegulationRequest);
         messageTypeToHandler.put(CancelAllScreeningsDueCovidRequest.class, this::handleCancelAllScreeningsDueCovidRequest);
@@ -269,6 +271,21 @@ public class MessageHandler extends AbstractServer {
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("ארעה שגיאה בעת קבלת מפת אולם");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleGetVoucherInfoRequest(SertiaBasicRequest request, ConnectionToClient client) {
+        GetVoucherInfoResponse response = new GetVoucherInfoResponse(false);
+        try {
+            response = screeningTicketController.getVouchersInfo();
+        } catch (SertiaException e) {
+            e.printStackTrace();
+            response.setFailReason(e.getMessage());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("ארעה שגיאה בעת קבלת מידע על כרטיסיות");
         }
 
         sendResponseToClient(client, response);

@@ -87,6 +87,10 @@ public class ClientPurchaseControl extends ClientControl {
         return failedResponse;
     }
 
+    public GetVoucherInfoResponse getVouchersInfo(){
+        return client.request(new GetVoucherInfoRequest(), GetVoucherInfoResponse.class);
+    }
+
     private ScreeningPaymentResponse failedScreeningPaymentResponse(String reason) {
         ScreeningPaymentResponse response = new ScreeningPaymentResponse(false);
         response.failReason = reason;

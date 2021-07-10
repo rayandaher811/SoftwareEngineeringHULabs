@@ -140,6 +140,21 @@ public class ScreeningTicketController extends Reportable {
         }
     }
 
+    public GetVoucherInfoResponse getVouchersInfo() {
+        GetVoucherInfoResponse response = new GetVoucherInfoResponse(true);
+
+        VouchersInfo vouchersInfo = DbUtils.getById(VouchersInfo.class, VouchersInfo.singleRecordId).orElse(null);
+        if (vouchersInfo == null) {
+            response.isSuccessful = false;
+            response.failReason = "לא קיימים נתוני כרטיסיות במערכת, אנא פנה לשירות לקוחות";
+        } else {
+            response.initialBalance = vouchersInfo.getVoucherInitialBalance();
+            response.price = vouchersInfo.getPrice();
+        }
+
+        return response;
+    }
+
     public SertiaBasicResponse getVoucherBalance(VoucherBalanceRequest request) {
         VoucherBalanceResponse response = new VoucherBalanceResponse(true);
         return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
