@@ -12,6 +12,7 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.ScreeningHolder;
+import org.sertia.client.global.SpecificViewHolder;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
@@ -28,7 +29,7 @@ import static org.sertia.client.Constants.*;
 
 public class CatalogView implements Initializable {
 
-    public ComboBox filterByBranch;
+    public ComboBox<String> filterByBranch;
     public DatePicker fromDatePicker;
     public DatePicker toDatePicker;
     public ListView filteredMoviesLst;
@@ -72,50 +73,55 @@ public class CatalogView implements Initializable {
             Accordion moviePlayingTimeAccordion = new Accordion();
             ArrayList<TitledPane> specificCinemaList = new ArrayList<>();
             for (Map.Entry<String, List<ClientScreening>> cinemaToScreenings : moviesInBranch.getValue().entrySet()) {
-                ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
-                ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
-                cinemaToScreenings.getValue().stream().forEach(cinemaScreeningMovie -> {
-                    Button btn = new Button();
-                    btn.setText(cinemaScreeningMovie.screeningTime.toString());
-                    buttonObservableList.add(btn);
-                    btn.setOnMouseClicked(mouseEvent -> {
-                        try {
-                            ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
-                            MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
-                            App.setRoot("unauthorized/movie/screeningOrderDataSelection");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                if (SpecificViewHolder.instance.isInitialized() && cinemaToScreenings.getKey().equals(SpecificViewHolder.getInstance().getBranchName()) || (!SpecificViewHolder.instance.isInitialized())) {
+                    ListView<Button> allScreeningsInCinemaOfSpecificMovie = new ListView<>();
+                    ObservableList<Button> buttonObservableList = FXCollections.observableArrayList();
+                    cinemaToScreenings.getValue().stream().forEach(cinemaScreeningMovie -> {
+                        Button btn = new Button();
+                        btn.setText(cinemaScreeningMovie.screeningTime.toString());
+                        buttonObservableList.add(btn);
+                        btn.setOnMouseClicked(mouseEvent -> {
+                            try {
+                                ScreeningHolder.getInstance().setScreening(cinemaScreeningMovie);
+                                MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
+                                App.setRoot("unauthorized/movie/screeningOrderDataSelection");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
                     });
-
-                });
-                allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
-                Accordion specificCinema = new Accordion();
-                TitledPane tiledPane = new TitledPane(cinemaToScreenings.getKey(), specificCinema);
-                tiledPane.setAnimated(true);
-                tiledPane.setText(cinemaToScreenings.getKey());
-                tiledPane.setContent(allScreeningsInCinemaOfSpecificMovie);
-                specificCinemaList.add(tiledPane);
-            }
-            moviePlayingTimeAccordion.getPanes().addAll(specificCinemaList);
-            HBox hBox = new HBox();
-            Button bgBtn = new Button();
-            bgBtn.setText(MOVIE_DETAILS);
-            bgBtn.setOnMouseClicked(mouseEvent -> {
-                try {
-                    MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
-                    App.setRoot("unauthorized/movie/movieDetails");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    allScreeningsInCinemaOfSpecificMovie.getItems().setAll(buttonObservableList);
+                    Accordion specificCinema = new Accordion();
+                    TitledPane tiledPane = new TitledPane(cinemaToScreenings.getKey(), specificCinema);
+                    tiledPane.setAnimated(true);
+                    if (!SpecificViewHolder.instance.isInitialized()){
+                        tiledPane.setText(cinemaToScreenings.getKey());
+                    }
+                    tiledPane.setContent(allScreeningsInCinemaOfSpecificMovie);
+                    specificCinemaList.add(tiledPane);
                 }
-            });
-            hBox.getChildren().addAll(moviePlayingTimeAccordion, bgBtn);
-            TitledPane tiledPane = new TitledPane();
-            tiledPane.setAnimated(true);
-            tiledPane.setText(moviesInBranch.getKey().getMovieDetails().getName());
-            tiledPane.setContent(hBox);
-            values.add(tiledPane);
-
+            }
+            if (SpecificViewHolder.getInstance().isInitialized() && moviesInBranch.getValue().keySet().contains(SpecificViewHolder.getInstance().getBranchName()) || !SpecificViewHolder.instance.isInitialized()) {
+                moviePlayingTimeAccordion.getPanes().addAll(specificCinemaList);
+                HBox hBox = new HBox();
+                Button bgBtn = new Button();
+                bgBtn.setText(MOVIE_DETAILS);
+                bgBtn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        MovieHolder.getInstance().setMovie(moviesInBranch.getKey(), false);
+                        App.setRoot("unauthorized/movie/movieDetails");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                hBox.getChildren().addAll(moviePlayingTimeAccordion, bgBtn);
+                TitledPane tiledPane = new TitledPane();
+                tiledPane.setAnimated(true);
+                tiledPane.setText(moviesInBranch.getKey().getMovieDetails().getName());
+                tiledPane.setContent(hBox);
+                values.add(tiledPane);
+            }
         }
         currentlyPlayingMoviesAccordion.getPanes().addAll(values);
         TitledPane tiledPane = new TitledPane("currentlyPlaying", currentlyPlayingMoviesAccordion);
@@ -213,6 +219,10 @@ public class CatalogView implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if (SpecificViewHolder.getInstance().isInitialized()){
+            filterByBranch.setValue(SpecificViewHolder.getInstance().getBranchName());
+            filterByBranch.setVisible(false);
+        }
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
@@ -263,6 +273,7 @@ public class CatalogView implements Initializable {
             fromDatePicker.valueProperty().addListener(this::fromDateValueChanged);
             toDatePicker.valueProperty().addListener(this::toDateValueChanged);
             filterByBranch.valueProperty().addListener(this::onBranchChanged);
+
             CinemaAndHallsResponse cinemaResponse = ClientCatalogControl.getInstance().getCinemasAndHalls();
             if (!cinemaResponse.isSuccessful) {
                 Utils.popAlert(Alert.AlertType.ERROR, "Catalog view", "couldnt fetch cinemas list");

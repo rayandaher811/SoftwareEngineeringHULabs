@@ -1,11 +1,26 @@
 package org.sertia.client.views;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import org.sertia.client.App;
+import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.global.SpecificViewHolder;
+import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class PrimaryController {
+import static org.sertia.client.Constants.AVAILABLE_MOVIES_IN_BRANCH;
+import static org.sertia.client.Constants.VIEW_WORKSTATION;
+
+public class PrimaryController implements Initializable {
+
+    public Button availableMoviesInSertiaBtn;
+    public Label welcomeLabel;
 
     @FXML
     private void toLoginView() throws IOException {
@@ -35,5 +50,22 @@ public class PrimaryController {
     @FXML
     private void toCancelPurchase() throws IOException {
         App.setRoot("unauthorized/cancelPurchaseForm");
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        if (System.getenv("SPECIFIC_BRANCH")!= null && !System.getenv("SPECIFIC_BRANCH").isEmpty()) {
+            CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
+            if (!response.isSuccessful){
+                Utils.popAlert(Alert.AlertType.ERROR, "PrimaryController", "Failed to get cinemas list");
+            } else {
+                String cinemaName = System.getenv("SPECIFIC_BRANCH");
+                if (response.cinemaToHalls.keySet().contains(cinemaName)) {
+                    SpecificViewHolder.getInstance().initializeSpecificBranch(cinemaName);
+                    welcomeLabel.setText(VIEW_WORKSTATION + cinemaName);
+                    availableMoviesInSertiaBtn.setText(AVAILABLE_MOVIES_IN_BRANCH);
+                }
+            }
+        }
     }
 }

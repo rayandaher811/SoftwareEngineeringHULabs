@@ -23,6 +23,7 @@ public class MovieDetails implements Initializable {
     public TextField movieDescriptionTxt;
     public VBox detailsPage;
     public ImageView movieImageView;
+    public TextField movieTicketPrice;
 
     @FXML
     public void back() {
@@ -42,6 +43,7 @@ public class MovieDetails implements Initializable {
         producerNameTxt.setText(movie.getProducerName());
         mainActorsTxt.setText(movie.getMainActorName());
         movieDescriptionTxt.setText(movie.getDescription());
+        movieTicketPrice.setText(String.valueOf(cinemaScreeningMovie.getTicketPrice()));
         setImageView(movie);
 //        detailsPage.getChildren().addAll(movieNameTxt, movieHebrewNameTxt, producerNameTxt,
 //                mainActorsTxt, movieDescriptionTxt, movieImageView);

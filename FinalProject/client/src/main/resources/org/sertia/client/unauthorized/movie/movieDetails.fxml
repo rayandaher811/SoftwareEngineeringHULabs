@@ -8,15 +8,15 @@
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.movies.MovieDetails">
     <BorderPane prefHeight="368.0" prefWidth="618.0">
         <top>
-            <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="פרטי סרט"
+            <Label alignment="TOP_CENTER" prefHeight="25.0" prefWidth="331.0" text="פרטי סרט"
                    BorderPane.alignment="CENTER">
                 <font>
-                    <Font size="26.0"/>
+                    <Font size="25.0"/>
                 </font>
             </Label>
         </top>
         <center>
-            <VBox fx:id="detailsPage" alignment="CENTER" BorderPane.alignment="CENTER" spacing="4" disable="true">
+            <VBox fx:id="detailsPage" alignment="CENTER" BorderPane.alignment="CENTER" spacing="3" disable="true">
                 <Label text="שם הסרט באנגלית"/>
                 <TextField fx:id="movieNameTxt" maxWidth="500" maxHeight="300" alignment="CENTER"/>
                 <Label text="שם הסרט באנגלית"/>
@@ -27,8 +27,10 @@
                 <TextField fx:id="mainActorsTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
                            promptText="שחקנים ראשיים"/>
                 <Label text="תקציר"/>
-                <TextField fx:id="movieDescriptionTxt" maxWidth="500" minHeight="40" maxHeight="150" alignment="CENTER"
+                <TextField fx:id="movieDescriptionTxt" maxWidth="500" minHeight="25" maxHeight="25" alignment="CENTER"
                            promptText="תקציר"/>
+                <Label text="מחיר"/>
+                <TextField fx:id="movieTicketPrice" maxWidth="500" alignment="CENTER" promptText="מחיר"/>
                 <Label text="תמונה"/>
                 <ImageView fx:id="movieImageView"/>
             </VBox>

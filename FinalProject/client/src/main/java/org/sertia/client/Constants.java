@@ -50,6 +50,8 @@ public class Constants {
     public static final String BRANCH_NAME = "שם סניף: ";
     public static final String CHOOSE_VALID_HOUR = "בחר בבקשה שעת התחלה מתוך האפשרויות";
     public static final String CHOOSE_VALID_MIN = "בחר בבקשה דקות בשעה";
+    public static final String VIEW_WORKSTATION = "ברוכה הבאה לתחנת קצה בסניף ";
+    public static final String AVAILABLE_MOVIES_IN_BRANCH = "סרטים המוקרנים בסניף";
 
     public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
     public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());
