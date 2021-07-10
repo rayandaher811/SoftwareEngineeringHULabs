@@ -2,6 +2,7 @@ package org.sertia.server.dl.classes;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="vouchers_info")
@@ -39,5 +40,18 @@ public class VouchersInfo {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VouchersInfo that = (VouchersInfo) o;
+        return id == that.id && voucherInitialBalance == that.voucherInitialBalance && Double.compare(that.price, price) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, voucherInitialBalance, price);
     }
 }

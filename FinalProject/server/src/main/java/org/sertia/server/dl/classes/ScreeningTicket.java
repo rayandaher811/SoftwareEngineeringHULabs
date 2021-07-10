@@ -75,6 +75,10 @@ public class ScreeningTicket {
         this.voucher = voucher;
     }
 
+    public TicketsVoucher getVoucher() {
+        return voucher;
+    }
+    
     public Screening getScreening() {
         return screening;
     }

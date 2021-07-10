@@ -178,15 +178,17 @@ public class MoviesCatalogController extends Reportable {
             Screening screeningToUpdate = session.get(Screening.class, screening.screeningId);
             validateScreeningTime(screening.screeningTime, screeningToUpdate.getScreenableMovie().getMovie(), screeningToUpdate.getHall());
             // Updating
+            LocalDateTime oldScreeningTime = screeningToUpdate.getScreeningTime();
             screeningToUpdate.setScreeningTime(screening.screeningTime);
             session.beginTransaction();
             session.update(screeningToUpdate);
 
             // Notifing ll relevant customers for the update
-            for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
-                notifier.notify(ticket.getPaymentInfo().getEmail(),
-                        "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been rescheduled to " + screening.screeningTime);
-            }
+            screeningToUpdate.getTickets().stream()
+                    .collect(Collectors.groupingBy(ScreeningTicket::getPaymentInfo))
+                    .forEach((paymentDetails, screeningTickets) ->
+                            notifier.notify(paymentDetails.getEmail(),
+                                    "Your screening at " + oldScreeningTime + " in sertia cinema had been rescheduled to " + screening.screeningTime));
 
             session.flush();
             session.clear();
@@ -410,7 +412,22 @@ public class MoviesCatalogController extends Reportable {
         screening.getTickets().stream()
                 .collect(Collectors.groupingBy(ScreeningTicket::getPaymentInfo))
                 .forEach((paymentDetails, screeningTickets) -> {
-                    double refundAmount = screening.getScreenableMovie().getTicketPrice() * screeningTickets.size();
+                    Map<TicketsVoucher, Integer> voucherToUsedAmount = new HashMap<>();
+                    int fromVouchers = 0;
+                    for (ScreeningTicket ticket : screeningTickets) {
+                        if (ticket.isVoucher()) {
+                            voucherToUsedAmount.putIfAbsent(ticket.getVoucher(), 0);
+                            voucherToUsedAmount.put(ticket.getVoucher(), voucherToUsedAmount.get(ticket.getVoucher()) + 1);
+                            fromVouchers++;
+                        }
+                    }
+                    voucherToUsedAmount.forEach((ticketsVoucher, addToBalance) -> {
+                        ticketsVoucher.setTicketsBalance(ticketsVoucher.getTicketsBalance() + addToBalance);
+                        session.saveOrUpdate(ticketsVoucher);
+                        notifier.notify(paymentDetails.getEmail(), "Your voucher " + ticketsVoucher.getId() + " has been refunded with " + addToBalance + ".\n now the balance is " + ticketsVoucher.getTicketsBalance());
+                    });
+
+                    double refundAmount = screening.getScreenableMovie().getTicketPrice() * (screeningTickets.size() - fromVouchers);
                     notifier.notify(paymentDetails.getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
                     creditCardService.refund(paymentDetails, refundAmount, refundReason);
                     screeningTickets.forEach(session::remove);
