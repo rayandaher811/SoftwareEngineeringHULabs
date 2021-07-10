@@ -23,6 +23,7 @@ import org.sertia.contracts.reports.request.GetCinemaReports;
 import org.sertia.contracts.reports.request.GetSertiaReports;
 import org.sertia.contracts.reports.response.ClientReportsResponse;
 import org.sertia.contracts.screening.ticket.request.*;
+import org.sertia.contracts.screening.ticket.response.GetStreamingByLinkResponse;
 import org.sertia.contracts.screening.ticket.response.ScreeningPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
 import org.sertia.contracts.user.login.LoginCredentials;
@@ -101,6 +102,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(RemoveScreeningRequest.class, this::handleScreeningRemoval);
         messageTypeToHandler.put(StreamingAdditionRequest.class, this::handleStreamingAddition);
         messageTypeToHandler.put(StreamingRemovalRequest.class, this::handleStreamingRemoval);
+        messageTypeToHandler.put(GetStreamingByLinkRequest.class, this::handleGetStreamingByLinkRequest);
 
         messageTypeToHandler.put(BasicPriceChangeRequest.class, this::handlePriceChangeRequest);
         messageTypeToHandler.put(GetUnapprovedPriceChangeRequest.class, this::handleAllUnapprovedPriceChangeRequests);
@@ -293,6 +295,22 @@ public class MessageHandler extends AbstractServer {
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("ארעה שגיאה בעת בדיקת יתרת כרטיסיה");
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleGetStreamingByLinkRequest(SertiaBasicRequest request, ConnectionToClient client){
+        GetStreamingByLinkResponse response = new GetStreamingByLinkResponse(false);
+        try {
+            response = streamingTicketController.getStreamingByLink(((GetStreamingByLinkRequest) request).link);
+        } catch (SertiaException e) {
+            e.printStackTrace();
+            response.setSuccessful(false);
+            response.setFailReason(e.getMessage());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("ארעה שגיאה בעת קבלת סרט");
         }
 
         sendResponseToClient(client, response);

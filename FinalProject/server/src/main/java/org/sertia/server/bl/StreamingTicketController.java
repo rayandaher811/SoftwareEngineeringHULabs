@@ -6,8 +6,10 @@ import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketRequest;
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
+import org.sertia.contracts.screening.ticket.response.GetStreamingByLinkResponse;
 import org.sertia.contracts.screening.ticket.response.StreamingPaymentResponse;
 import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
+import org.sertia.server.SertiaException;
 import org.sertia.server.bl.Services.CustomerNotifier;
 import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
@@ -74,6 +76,41 @@ public class StreamingTicketController extends Reportable {
             return response;
         } catch (RuntimeException exception) {
             return Utils.createFailureResponse(response, "רכישת ");
+        }
+    }
+
+    public GetStreamingByLinkResponse getStreamingByLink(String link){
+        GetStreamingByLinkResponse response = new GetStreamingByLinkResponse(false);
+
+        try {
+            List<StreamingLink> links = DbUtils.getAll(StreamingLink.class);
+            LocalDateTime now = LocalDateTime.now();
+            boolean linkFound = false;
+
+            for (StreamingLink streamingLink : links) {
+                if(streamingLink.getLink().equals(link)) {
+                    linkFound = true;
+
+                    // Checking the link's activity
+                    if(now.isAfter(streamingLink.getActivationStart()) && streamingLink.getActivationEnd().isAfter(now)) {
+                        response.setSuccessful(true);
+                        response.movieName = streamingLink.getMovie().getMovie().getName();
+                        break;
+                    } else {
+                        response.setSuccessful(false);
+                        response.setFailReason("The link is not active, its activation duration are " + streamingLink.getActivationStart() + " - " + streamingLink.getActivationEnd());
+                        break;
+                    }
+                }
+            }
+
+            if(!linkFound)
+                response.setFailReason("There are no such link");
+
+            return response;
+        } catch (RuntimeException exception) {
+            exception.printStackTrace();
+            throw new SertiaException("We couldn't get your link due internal technical issues.");
         }
     }
 

@@ -8,6 +8,8 @@ import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
+import org.sertia.contracts.screening.ticket.request.GetStreamingByLinkRequest;
+import org.sertia.contracts.screening.ticket.response.GetStreamingByLinkResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,6 +71,10 @@ public class ClientCatalogControl extends ClientControl {
 
     public CinemaAndHallsResponse getCinemasAndHalls() {
         return client.request(new RequestCinemasAndHalls(), CinemaAndHallsResponse.class);
+    }
+
+    public GetStreamingByLinkResponse getStreamingByLink(String link){
+        return client.request(new GetStreamingByLinkRequest(link), GetStreamingByLinkResponse.class);
     }
 
     public List<String> getAllBranchesName() {
