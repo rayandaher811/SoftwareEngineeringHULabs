@@ -12,6 +12,8 @@ import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsSta
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
+import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
+import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.price.change.request.ApprovePriceChangeRequest;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.request.DissapprovePriceChangeRequest;
@@ -32,6 +34,7 @@ import org.sertia.server.bl.Services.CreditCardService;
 import org.sertia.server.bl.Services.CreditCardServiceRefundsRecorderDecorator;
 import org.sertia.server.bl.Services.ICreditCardService;
 
+import javax.swing.table.TableRowSorter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +90,7 @@ public class MessageHandler extends AbstractServer {
         messageTypeToHandler.put(LogoutRequest.class, this::handleLogoutRequest);
 
         messageTypeToHandler.put(SertiaCatalogRequest.class, this::handleSertiaCatalog);
+        messageTypeToHandler.put(GetMovieByIdRequest.class, this::handleGetMovieById);
         messageTypeToHandler.put(CinemaCatalogRequest.class, this::handleCinemaCatalog);
         messageTypeToHandler.put(ScreeningTimeUpdateRequest.class, this::handleMovieScreeningTimeUpdate);
         messageTypeToHandler.put(AddMovieRequest.class, this::handleMovieAddition);
@@ -148,12 +152,29 @@ public class MessageHandler extends AbstractServer {
     }
 
     private void handleSertiaCatalog(SertiaBasicRequest request, ConnectionToClient client) {
-        SertiaBasicResponse response = new SertiaBasicResponse(false);
+        SertiaCatalogResponse response = new SertiaCatalogResponse(false);
+
         try {
             response = moviesCatalogController.getSertiaCatalog();
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("We couldn't handle get Sertia catalog.");
+        } catch (SertiaException e){
+            e.printStackTrace();
+            response.setFailReason(e.getMessage());
+        }
+
+        sendResponseToClient(client, response);
+    }
+
+    private void handleGetMovieById(SertiaBasicRequest request, ConnectionToClient client){
+        GetMovieByIdResponse response = new GetMovieByIdResponse(false);
+        try {
+            response.movie = moviesCatalogController.getMovieById(((GetMovieByIdRequest) request).movieId);
+            response.setSuccessful(true);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            response.setFailReason("We couldn't handle get Movie by id request.");
         } catch (SertiaException e){
             e.printStackTrace();
             response.setFailReason(e.getMessage());

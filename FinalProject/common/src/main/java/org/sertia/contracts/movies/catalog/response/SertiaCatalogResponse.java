@@ -11,6 +11,10 @@ public class SertiaCatalogResponse extends SertiaBasicResponse {
         this.movies = movies;
     }
 
+    public SertiaCatalogResponse(boolean isSuccessful) {
+        super(isSuccessful);
+    }
+
     public List<SertiaMovie> movies;
 
     public List<SertiaMovie> getMovies() {

@@ -1,13 +1,16 @@
 package org.sertia.server.bl;
 
 import org.hibernate.Session;
+import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.query.Query;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.*;
 import org.sertia.contracts.movies.catalog.request.AddScreeningRequest;
 import org.sertia.contracts.movies.catalog.request.CinemaCatalogRequest;
+import org.sertia.contracts.movies.catalog.request.GetMovieByIdRequest;
 import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.CinemaCatalogResponse;
+import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.server.SertiaException;
@@ -70,7 +73,7 @@ public class MoviesCatalogController extends Reportable {
         }
     }
 
-    public SertiaBasicResponse getSertiaCatalog() throws SertiaException {
+    public SertiaCatalogResponse getSertiaCatalog() throws SertiaException {
         try{
             Map<ScreenableMovie, List<Screening>> screeningMovies = getScreenings();
             Map<Integer, Streaming> streamings = getStreamings();
@@ -97,6 +100,19 @@ public class MoviesCatalogController extends Reportable {
             return new SertiaCatalogResponse(true, sertiaMovieList);
         } catch (Exception e){
             throw new SertiaException("Sertia server couldn't get you our catalog due technical issues... .");
+        }
+    }
+
+    public ClientMovie getMovieById(int movieId) throws SertiaException {
+        try{
+            Optional<Movie> movie = DbUtils.getById(Movie.class, movieId);
+
+            if(!movie.isPresent())
+                throw new SertiaException("There are no such movie with id: " + movieId);
+
+            return movieToClientMovie(movie.get());
+        } catch (JDBCConnectionException e){
+            throw new SertiaException("We couldn't handle your request due internal technical issues.");
         }
     }
 

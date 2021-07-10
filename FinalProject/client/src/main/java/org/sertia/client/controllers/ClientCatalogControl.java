@@ -6,6 +6,7 @@ import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.request.*;
 import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
+import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.time.LocalDateTime;
@@ -58,6 +59,11 @@ public class ClientCatalogControl extends ClientControl {
 
     public SertiaCatalogResponse requestAllMoviesCatalog() {
         SertiaCatalogResponse response = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class);
+        return response;
+    }
+
+    public GetMovieByIdResponse requestMovieById(int movieId) {
+        GetMovieByIdResponse response = client.request(new GetMovieByIdRequest(movieId), GetMovieByIdResponse.class);
         return response;
     }
 
