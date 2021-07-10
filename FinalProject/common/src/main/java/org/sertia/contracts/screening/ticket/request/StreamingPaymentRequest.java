@@ -7,11 +7,19 @@ public class StreamingPaymentRequest extends BasicPaymentRequest {
     public LocalDateTime startTime;
     public int extraDays;
 
-    public StreamingPaymentRequest(String cardHolderId, String cardHolderName, String creditCardNumber, String cardHolderEmail, String cardHolderPhone, String cvv, LocalDateTime expirationDate, int movieId) {
+    public StreamingPaymentRequest(String cardHolderId,
+                                   String cardHolderName,
+                                   String creditCardNumber,
+                                   String cardHolderEmail,
+                                   String cardHolderPhone,
+                                   String cvv,
+                                   LocalDateTime expirationDate,
+                                   int movieId,
+                                   LocalDateTime startTime,
+                                   int extraDays) {
         super(cardHolderId, cardHolderName, creditCardNumber, cardHolderEmail, cardHolderPhone, cvv, expirationDate);
         this.movieId = movieId;
-
-        // TODO: must be removed!!!!!
-        this.startTime = LocalDateTime.now();
+        this.startTime = startTime;
+        this.extraDays = extraDays;
     }
 }

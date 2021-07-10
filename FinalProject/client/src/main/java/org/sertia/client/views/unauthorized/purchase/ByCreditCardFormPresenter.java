@@ -48,12 +48,12 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
     public VBox yearVbox;
     public Label yearLabel;
 
+    private boolean isBuyingStreamingLink;
+
     @FXML
     public void back() {
-        boolean isLinkRequest = MovieHolder.getInstance().isOnlineLinkPurchaseRequest();
-
         try {
-            if (isLinkRequest) {
+            if (isBuyingStreamingLink) {
                 App.setRoot("unauthorized/onlineLink/onlineWatchLinkForm");
             } else {
                 App.setRoot("unauthorized/payment/selectionMethodForm");
@@ -64,35 +64,17 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
     }
 
     private void purchaseWithCovid() {
-        ScreeningTicketWithCovidRequest request;
-        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
-        if (MovieHolder.getInstance().isOnlineLinkPurchaseRequest()) {
-            request = new ScreeningTicketWithCovidRequest(cardHolderId.getText(),
-                    cardHolderName.getText(),
-                    creditCardNumber.getText(),
-                    cardHolderEmailTxt.getText(),
-                    cardHolderPhoneTxt.getText(),
-                    cvv.getText(),
-                    LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                            Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                            1, 0, 0),
-                    NumberOfTicketsHolder.getInstance().getNumberOfTickets(),
-                    // TODO: it's bug in server since when we buy streaming link it cannot be related to any "real" screening
-                    -1);
-        } else {
-            request =
-                    new ScreeningTicketWithCovidRequest(cardHolderId.getText(),
-                            cardHolderName.getText(),
-                            creditCardNumber.getText(),
-                            cardHolderEmailTxt.getText(),
-                            cardHolderPhoneTxt.getText(),
-                            cvv.getText(),
-                            LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                    1, 0, 0),
-                            NumberOfTicketsHolder.getInstance().getNumberOfTickets(),
-                            ScreeningHolder.getInstance().getScreening().getScreeningId());
-        }
+        ScreeningTicketWithCovidRequest request = new ScreeningTicketWithCovidRequest(cardHolderId.getText(),
+                cardHolderName.getText(),
+                creditCardNumber.getText(),
+                cardHolderEmailTxt.getText(),
+                cardHolderPhoneTxt.getText(),
+                cvv.getText(),
+                LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                        Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                        1, 0, 0),
+                NumberOfTicketsHolder.getInstance().getNumberOfTickets(),
+                ScreeningHolder.getInstance().getScreening().getScreeningId());
 
         ScreeningPaymentResponse response =
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
@@ -124,18 +106,62 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
 
     private void purchaseInNormalTime() {
         List<Integer> selectedSeats = SeatsHolder.getInstance().getUserSelection();
-        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
+                new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
+                        cardHolderName.getText(),
+                        creditCardNumber.getText(),
+                        cardHolderEmailTxt.getText(),
+                        cardHolderPhoneTxt.getText(),
+                        cvv.getText(),
+                        LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                1, 0, 0),
+                        selectedSeats,
+                        ScreeningHolder.getInstance().getScreening().getScreeningId());
+        ScreeningPaymentResponse response =
+                ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
+        Alert.AlertType type;
+        String msg = "";
+        if (response.isSuccessful) {
+            type = Alert.AlertType.INFORMATION;
+            msg = "operation ended successfully!";
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+            try {
+                App.setRoot("unauthorized/primary");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            type = Alert.AlertType.ERROR;
+            msg = response.failReason;
+            Alert errorAlert = new Alert(type);
+            errorAlert.setTitle("Buying from sertia system");
+            errorAlert.setContentText(msg);
+            errorAlert.showAndWait();
+        }
+    }
 
-        if (MovieHolder.getInstance().isOnlineLinkPurchaseRequest()) {
-            StreamingPaymentRequest streamingPaymentRequest = new StreamingPaymentRequest(cardHolderId.getText(),
-                    cardHolderName.getText(),
-                    creditCardNumber.getText(),
-                    cardHolderEmailTxt.getText(),
-                    cardHolderPhoneTxt.getText(),
-                    cvv.getText(),
-                    LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                            Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                            1, 0, 0), movie.getMovieId());
+    private void purchaseStreamingLink() {
+        CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
+        BuyOnlineScreeningLinkDataHolder buyOnlineScreeningLinkDataHolder = BuyOnlineScreeningLinkDataHolder.getInstance();
+        if (buyOnlineScreeningLinkDataHolder.isInitialized()) {
+            StreamingPaymentRequest streamingPaymentRequest =
+                    new StreamingPaymentRequest(cardHolderId.getText(),
+                                                cardHolderName.getText(),
+                                                creditCardNumber.getText(),
+                                                cardHolderEmailTxt.getText(),
+                                                cardHolderPhoneTxt.getText(),
+                                                cvv.getText(),
+                                                LocalDateTime.of(
+                                                        Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
+                                                        Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
+                                                1, 0, 0),
+                                                movie.getMovieId(),
+                                                buyOnlineScreeningLinkDataHolder.getStartTime(),
+                                                buyOnlineScreeningLinkDataHolder.getNumberOfDaysForRental());
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
             Alert.AlertType type;
             String msg = "";
@@ -146,6 +172,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 errorAlert.setTitle("Buying streaming link");
                 errorAlert.setContentText(msg);
                 errorAlert.showAndWait();
+                BuyOnlineScreeningLinkDataHolder.getInstance().clear();
                 try {
                     App.setRoot("unauthorized/primary");
                 } catch (IOException e) {
@@ -160,49 +187,20 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 errorAlert.showAndWait();
             }
         } else {
-            ScreeningTicketWithSeatsRequest screeningTicketWithSeatsRequest =
-                    new ScreeningTicketWithSeatsRequest(cardHolderId.getText(),
-                            cardHolderName.getText(),
-                            creditCardNumber.getText(),
-                            cardHolderEmailTxt.getText(),
-                            cardHolderPhoneTxt.getText(),
-                            cvv.getText(),
-                            LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
-                                    Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
-                                    1, 0, 0),
-                            selectedSeats,
-                            ScreeningHolder.getInstance().getScreening().getScreeningId());
-            ScreeningPaymentResponse response =
-                    ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
-            Alert.AlertType type;
-            String msg = "";
-            if (response.isSuccessful) {
-                type = Alert.AlertType.INFORMATION;
-                msg = "operation ended successfully!";
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
-                try {
-                    App.setRoot("unauthorized/primary");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                type = Alert.AlertType.ERROR;
-                msg = response.failReason;
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
-            }
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fatal server error");
+            errorAlert.setContentText("client data for streaming link is not set");
+            errorAlert.showAndWait();
         }
+
     }
 
     @FXML
     public void pay() {
         if (isInputValid()) {
-            if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
+            if (isBuyingStreamingLink) {
+                purchaseStreamingLink();
+            } else if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
                 purchaseWithCovid();
             } else {
                 purchaseInNormalTime();
@@ -212,24 +210,19 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (ClientDataHolder.getInstance().isInitialized()) {
-            cardHolderName.setText(ClientDataHolder.getInstance().getClientName());
+        if (BuyOnlineScreeningLinkDataHolder.getInstance().isInitialized()) {
+            cardHolderName.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getClientName());
             cardHolderName.setEditable(false);
-            cardHolderEmailTxt.setText(ClientDataHolder.getInstance().getEmail());
+            cardHolderEmailTxt.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getEmail());
             cardHolderEmailTxt.setEditable(false);
-            cardHolderPhoneTxt.setText(ClientDataHolder.getInstance().getPhone());
+            cardHolderPhoneTxt.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getPhone());
             cardHolderPhoneTxt.setEditable(false);
         }
         topLabel.setFocusTraversable(true);
         creditCardProviderCombo.getItems().addAll(List.of(CreditCardProvider.values()));
         initializeMonthCombo();
         initializeYearCombo();
-        boolean isLinkRequest = MovieHolder.getInstance().isOnlineLinkPurchaseRequest();
-        if (isLinkRequest) {
-            System.out.println("BG link");
-        } else {
-            System.out.println("BG phisical ticket");
-        }
+        isBuyingStreamingLink = MovieHolder.getInstance().isOnlineLinkPurchaseRequest();
     }
 
     @Override
