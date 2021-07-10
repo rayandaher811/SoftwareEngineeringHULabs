@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Button?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.sertia.client.views.authorized.media.manager.PriceChangeRequestsView"
@@ -24,22 +19,12 @@
             </top>
             <center>
                 <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
-                    <children>
-                        <Label>שם הסרט</Label>
-                    </children>
-                    <children>
-                        <ComboBox fx:id="movieToSet" maxWidth="500" maxHeight="300">
-                        </ComboBox>
-                    </children>
-                    <children>
-                        <Label>מחיר</Label>
-                    </children>
-                    <children>
-                        <TextField fx:id="movieTicketPriceTxt" maxWidth="500" maxHeight="300" alignment="CENTER"></TextField>
-                    </children>
-                    <children>
-                        <Button onMouseClicked="#requestPriceChange">שליחת בקשה</Button>
-                    </children>
+                    <Label>שם הסרט</Label>
+                    <ComboBox fx:id="moviesComboBox" maxWidth="500" maxHeight="300"/>
+                    <ComboBox fx:id="availableTicketsType"/>
+                    <Label>מחיר</Label>
+                    <TextField fx:id="movieTicketPriceTxt" maxWidth="500" maxHeight="300" alignment="CENTER"/>
+                    <Button onMouseClicked="#requestPriceChange">שליחת בקשה</Button>
                 </VBox>
             </center>
         </BorderPane>

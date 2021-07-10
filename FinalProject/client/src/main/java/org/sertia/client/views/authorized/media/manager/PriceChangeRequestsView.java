@@ -19,29 +19,25 @@ import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 // TODO: use infra
 public class PriceChangeRequestsView extends BasicPresenterWithValidations implements Initializable {
 
+    public ComboBox<ClientTicketType> availableTicketsType;
     @FXML
-    private ComboBox movieToSet;
+    private ComboBox<SertiaMovie> moviesComboBox;
     @FXML
     private TextField movieTicketPriceTxt;
-
-    private HashMap<String, SertiaMovie> movieNameToId;
     private String errorMessage;
 
     @FXML
     public void requestPriceChange() {
         if (isDataValid()) {
-            SertiaMovie sertiaMovie = movieNameToId.get(movieToSet.getSelectionModel().getSelectedItem());
+            SertiaMovie sertiaMovie = moviesComboBox.getSelectionModel().getSelectedItem();
+
             int movieId = sertiaMovie.getMovieId();
-            // TODO: how can we know that???
-            ClientTicketType ticketType = ClientTicketType.Screening;
+            ClientTicketType ticketType = availableTicketsType.getValue();
             SertiaBasicResponse response =
                     ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
             if (response.isSuccessful) {
@@ -68,8 +64,19 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
         }
     }
 
-    public void valueChanged(String movieName) {
-        movieTicketPriceTxt.setText(String.valueOf(movieNameToId.get(movieName).getTicketPrice()));
+    public void valueChanged(SertiaMovie sertiaMovie) {
+        availableTicketsType.getItems().clear();
+        movieTicketPriceTxt.setText(String.valueOf(sertiaMovie.getTicketPrice()));
+        HashSet<ClientTicketType> ticketTypes = new HashSet<>();
+        if (sertiaMovie.isStreamable) {
+            ticketTypes.add(ClientTicketType.Streaming);
+        } else if (sertiaMovie.isComingSoon) {
+            ticketTypes.add(ClientTicketType.Screening);
+        }
+
+        // TODO: i'm not sure it's fine
+        ticketTypes.add(ClientTicketType.Voucher);
+        availableTicketsType.getItems().addAll(ticketTypes);
     }
 
     @Override
@@ -79,12 +86,9 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
-            movieNameToId = new HashMap<>();
-            catalog.forEach(sertiaMovie -> movieNameToId.put(sertiaMovie.getMovieDetails().getName(), sertiaMovie));
-            ObservableList<String> ticketTypes = FXCollections.observableList(new ArrayList<>(movieNameToId.keySet()));
-            movieToSet.setItems(ticketTypes);
-            movieToSet.valueProperty().addListener((observableValue, o, t1) -> {
-                valueChanged((String) t1);
+            moviesComboBox.getItems().addAll(catalog);
+            moviesComboBox.valueProperty().addListener((observableValue, o, t1) -> {
+                valueChanged(t1);
             });
         }
     }
@@ -98,7 +102,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
     }
 
     private boolean isMovieSelected() {
-        if (movieToSet.getSelectionModel() != null && movieToSet.getSelectionModel().getSelectedItem() != null) {
+        if (moviesComboBox.getSelectionModel() != null && moviesComboBox.getSelectionModel().getSelectedItem() != null) {
             return true;
         }
         errorMessage += "Please select movie to change it's ticket's price" + "\n";

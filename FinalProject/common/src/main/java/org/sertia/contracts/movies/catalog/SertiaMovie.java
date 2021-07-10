@@ -18,4 +18,9 @@ public class SertiaMovie extends CinemaScreeningMovie  {
 		this.isStreamable = isStreamable;
 		this.isComingSoon = isComingSoon;
 	}
+
+	@Override
+	public String toString() {
+		return movieDetails.name;
+	}
 }

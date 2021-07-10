@@ -7,9 +7,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.sertia.client.App;
+import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.controllers.ClientPriceChangeControl;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
+import org.sertia.contracts.movies.catalog.response.GetMovieByIdResponse;
 import org.sertia.contracts.price.change.request.BasicPriceChangeRequest;
 import org.sertia.contracts.price.change.responses.GetUnapprovedPriceChangeResponse;
 
@@ -67,11 +69,18 @@ public class ApprovePriceChangeRequests implements Initializable {
 
         VBox vBox = new VBox();
         // TODO: get movie name from ID
-        Label movieId = new Label();
-        movieId.setText(String.valueOf(priceChangeRequest.movieId));
+        Label movieName = new Label();
+
+        GetMovieByIdResponse response = ClientCatalogControl.getInstance().requestMovieById(priceChangeRequest.movieId);
+        if (!response.isSuccessful) {
+            Utils.popAlert(Alert.AlertType.ERROR, "Get movie name from server", response.failReason);
+        } else {
+            movieName.setText(String.valueOf(response.movie.getName()));
+        }
+
         Label movieIdTitle = new Label();
         movieIdTitle.setText(MOVIE_NAME);
-        HBox movieIdVerticalBox = getHboxForData(movieIdTitle, movieId);
+        HBox movieIdVerticalBox = getHboxForData(movieIdTitle, movieName);
         Label requestId = new Label();
         requestId.setText(String.valueOf(priceChangeRequest.requestId));
         Label requestIdTitle = new Label();
