@@ -48,7 +48,10 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
         if (!userMistakes.isEmpty())
             userMistakes.clear();
 
-        if (isDataValid()){
+        if (!isDataValid()){
+            notifyClient();
+        }
+        else {
             SertiaBasicResponse response = ClientComplaintControl.getInstance()
                     .tryCreateComplaint(nameTxtField.getText(),
                                         phoneTxTextField.getText(),

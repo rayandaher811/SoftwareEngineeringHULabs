@@ -233,7 +233,7 @@ public class ComplaintsController extends Reportable {
 		T ticket = session.get(ticketType, ticketId);
 
 		if(ticket == null)
-			throw new SertiaException("There are no such streaming/Ticket/Voucher with the id " + ticketId);
+			throw new SertiaException("Wrong ticket info inserted.");
 
 		return ticket;
 	}
