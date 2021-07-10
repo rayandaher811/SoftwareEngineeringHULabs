@@ -55,16 +55,14 @@ public class ComplaintsController extends Reportable {
 					ticketPayerId = complaint.getStreamingLink().getCustomerPaymentDetails().getPayerId();
 					break;
 				case Screening:
+				case Voucher:
 					complaint.setScreeningTicket(getTicketById(clientComplaint.ticketId, session, ScreeningTicket.class));
 					ticketPayerId = complaint.getScreeningTicket().getPaymentInfo().getPayerId();
 					break;
-				case Voucher:
-					complaint.setTicketsVoucher(getTicketById(clientComplaint.ticketId, session, TicketsVoucher.class));
-					ticketPayerId = complaint.getTicketsVoucher().getCustomerPaymentDetails().getPayerId();
-					break;
 			}
 
-			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber))
+			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber) ||
+				(complaint.getTicketType() == TicketType.Voucher && !complaint.getScreeningTicket().isVoucher()))
 				throw new SertiaException("נתונים לא נכונים הוזנו עבור הרכישה");
 
 			// Saving the request
@@ -219,11 +217,10 @@ public class ComplaintsController extends Reportable {
 	private CustomerPaymentDetails extractCustomerPaymentDetails(CostumerComplaint complaint) throws SertiaException {
 		switch (complaint.getTicketType()) {
 			case Screening:
+			case Voucher:
 				return complaint.getScreeningTicket().getPaymentInfo();
 			case Streaming:
 				return complaint.getStreamingLink().getCustomerPaymentDetails();
-			case Voucher:
-				return complaint.getTicketsVoucher().getCustomerPaymentDetails();
 			default:
 				throw new SertiaException("לא קיים סוג כרטיס כזה");
 		}
@@ -250,11 +247,10 @@ public class ComplaintsController extends Reportable {
 	private int extractTicketId(CostumerComplaint complaint) throws SertiaException {
 		switch (complaint.getTicketType()) {
 			case Screening:
+			case Voucher:
 				return complaint.getScreeningTicket().getId();
 			case Streaming:
 				return complaint.getStreamingLink().getId();
-			case Voucher:
-				return complaint.getTicketsVoucher().getId();
 			default:
 				throw new SertiaException("לא קיים סוג כרטיס כזה");
 		}

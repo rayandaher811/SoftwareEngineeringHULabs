@@ -26,10 +26,6 @@ public class CostumerComplaint {
     @JoinColumn(nullable=true)
     private StreamingLink streamingLink;
 
-    @OneToOne
-    @JoinColumn(nullable=true)
-    private TicketsVoucher ticketsVoucher;
-
     @ManyToOne
     private User handler;
 
@@ -86,14 +82,6 @@ public class CostumerComplaint {
 
     public void setStreamingLink(StreamingLink streamingLink) {
         this.streamingLink = streamingLink;
-    }
-
-    public TicketsVoucher getTicketsVoucher() {
-        return ticketsVoucher;
-    }
-
-    public void setTicketsVoucher(TicketsVoucher ticketsVoucher) {
-        this.ticketsVoucher = ticketsVoucher;
     }
 
     public User getHandler() {
