@@ -22,6 +22,8 @@ public class Movie {
     private String name;
     private boolean isComingSoon;
     private String description;
+
+    @Column(length = Integer.MAX_VALUE)
     private String imageUrl;
     private Duration duration;
 
