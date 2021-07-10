@@ -156,6 +156,8 @@ public class MessageHandler extends AbstractServer {
 
         try {
             response = moviesCatalogController.getSertiaCatalog();
+        } catch (SertiaException e) {
+            response.setFailReason(e.getMessage());
         } catch (RuntimeException e) {
             e.printStackTrace();
             response.setFailReason("ארעה שגיאה בעת קבלת קטלוג סרטיה");

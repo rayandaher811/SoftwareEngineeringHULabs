@@ -65,7 +65,7 @@ public class ComplaintsController extends Reportable {
 			}
 
 			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber))
-				throw new SertiaException("Wrong ticket info inserted.");
+				throw new SertiaException("נתונים לא נכונים הוזנו עבור הרכישה");
 
 			// Saving the request
 			session.beginTransaction();
@@ -74,10 +74,10 @@ public class ComplaintsController extends Reportable {
 			session.getTransaction().commit();
 
 			// Notifying our client
-			notifier.notify(clientComplaint.customerEmail, "You had opened an complaint in sertia server, we will contact you within 24 hours.");
+			notifier.notify(clientComplaint.customerEmail, "תלונתך נפתחה במערכת הסרטיה ותיפתר תוך 24 שעות לכל היותר");
 		} catch (JDBCConnectionException e){
 			e.printStackTrace();
-			throw new SertiaException("We couldn't add your complaint due internal technical issues.");
+			throw new SertiaException("תלונתך לא נשלחה עקב תקלה טכנית");
 		}
 		catch (Exception e){
 			session.getTransaction().rollback();
@@ -117,10 +117,10 @@ public class ComplaintsController extends Reportable {
 
 				// Notifying our client
 				notifier.notify(extractCustomerPaymentDetails(complaint).getEmail(),
-						"Your complaint in sertia cinema has been closed.");
+						"תלונתך בסרטיה טופלה ונסגרה");
 			}
 			else {
-				throw new SertiaException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
+				throw new SertiaException("לא ניתן לטפל בתלונה לאחר 24 שעות מפתיחתה");
 			}
 
 			session.beginTransaction();
@@ -162,7 +162,7 @@ public class ComplaintsController extends Reportable {
 				}
 			}
 			else {
-				throw new OperationNotSupportedException("More than 24 hours passed since the complaint had been opened, we cannot close it.");
+				throw new OperationNotSupportedException("לא ניתן לטפל בתלונה שעברו יותר מ-24 שעות מפתיחתה");
 			}
 
 			session.beginTransaction();
@@ -225,7 +225,7 @@ public class ComplaintsController extends Reportable {
 			case Voucher:
 				return complaint.getTicketsVoucher().getCustomerPaymentDetails();
 			default:
-				throw new SertiaException("There are no such ticket");
+				throw new SertiaException("לא קיים סוג כרטיס כזה");
 		}
 	}
 
@@ -233,7 +233,7 @@ public class ComplaintsController extends Reportable {
 		T ticket = session.get(ticketType, ticketId);
 
 		if(ticket == null)
-			throw new SertiaException("Wrong ticket info inserted.");
+			throw new SertiaException("לא קיים כרטיס עבור הנתונים שהוזנו");
 
 		return ticket;
 	}
@@ -242,7 +242,7 @@ public class ComplaintsController extends Reportable {
 		CostumerComplaint complaint = session.get(CostumerComplaint.class, complaintId);
 
 		if(complaint == null)
-			throw new SertiaException("There are no such complaint with the Id " + complaintId);
+			throw new SertiaException("לא קיימת תלונה בעלת המזהה " + complaintId);
 
 		return complaint;
 	}
@@ -256,7 +256,7 @@ public class ComplaintsController extends Reportable {
 			case Voucher:
 				return complaint.getTicketsVoucher().getId();
 			default:
-				throw new SertiaException("There are no such ticket");
+				throw new SertiaException("לא קיים סוג כרטיס כזה");
 		}
 	}
 }

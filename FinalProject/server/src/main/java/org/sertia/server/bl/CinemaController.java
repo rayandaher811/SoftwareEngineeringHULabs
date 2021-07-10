@@ -19,6 +19,6 @@ public class CinemaController {
             }
         }
 
-        throw new SertiaException("There are no cinemas under the management of the user " + managerUsername);
+        throw new SertiaException("לא קיימים בתי קולנוע תחת ניהולו של המשתמש " + managerUsername);
     }
 }

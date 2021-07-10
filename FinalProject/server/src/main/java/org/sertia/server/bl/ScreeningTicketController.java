@@ -42,7 +42,7 @@ public class ScreeningTicketController extends Reportable {
             Optional<Screening> optionalScreening = DbUtils.getById(Screening.class, request.screeningId);
             if (!optionalScreening.isPresent()) {
                 response.isSuccessful = false;
-                response.failReason = "screening doesn't exist";
+                response.failReason = "ההקרנה אינה קיימת";
 
                 return response;
             }
@@ -69,7 +69,7 @@ public class ScreeningTicketController extends Reportable {
     public ScreeningPaymentResponse buyTicketWithSeatChose(ScreeningTicketWithSeatsRequest request) {
         if (!isPaymentRequestValid(request)) {
             ScreeningPaymentResponse paymentResponse = new ScreeningPaymentResponse(false);
-            paymentResponse.failReason = "Payment details are invalid";
+            paymentResponse.failReason = "נתוני חיוב אינם תקינים";
 
             return paymentResponse;
         }
@@ -339,7 +339,7 @@ public class ScreeningTicketController extends Reportable {
             return new ClientSeatMapResponse(true, hallSeatList);
         }).orElseGet(() -> {
             ClientSeatMapResponse response = new ClientSeatMapResponse(false, Collections.emptyList());
-            response.setFailReason("screening doesn't exist");
+            response.setFailReason("הקרנה אינה קיימת");
             return response;
         });
     }
@@ -351,7 +351,7 @@ public class ScreeningTicketController extends Reportable {
                         .orElseThrow(() -> new IllegalArgumentException("seat doesn't exist"));
 
         if (!isSeatFree(screening.getId(), hallSeat, session)) {
-            throw new IllegalArgumentException("seat isn't free");
+            throw new IllegalArgumentException("אחד הכיסאות אינם פנויים כבר, אנא רענן את העמוד ובחר מחדש");
         }
 
         ticket.setScreening(screening);
@@ -375,7 +375,7 @@ public class ScreeningTicketController extends Reportable {
             }
         }
 
-        throw new IllegalArgumentException("can't choose seats for desired screening");
+        throw new IllegalArgumentException("לא היה ניתן לבחור כיסאות עבור ההקרנה");
     }
 
     private boolean isSeatFree(int screeningId, int seatId, Session session) {

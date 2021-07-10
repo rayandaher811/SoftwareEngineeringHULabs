@@ -46,7 +46,7 @@ public class StreamingTicketController extends Reportable {
         Streaming streaming = getStreaming(request.movieId).orElse(null);
         StreamingPaymentResponse response = new StreamingPaymentResponse(true);
         if (streaming == null) {
-            return Utils.createFailureResponse(response, "no streaming exist for movie " + request.movieId);
+            return Utils.createFailureResponse(response, "לא קיימת חבילת צפייה עבור הסרט " + request.movieId);
         }
 
         StreamingLink streamingLink = new StreamingLink();
@@ -73,7 +73,7 @@ public class StreamingTicketController extends Reportable {
 
             return response;
         } catch (RuntimeException exception) {
-            return Utils.createFailureResponse(response, "failed to purchase link");
+            return Utils.createFailureResponse(response, "רכישת ");
         }
     }
 

@@ -48,7 +48,7 @@ public class CovidRegulationsController extends Reportable {
 
     public void updateCovidCrowdingRegulations(int maxNumberOfPeople) throws SertiaException {
         if (maxNumberOfPeople <= 0)
-            throw new SertiaException("max number of people cannot be less or equal to 0.");
+            throw new SertiaException("מספר אנשים מקסימלי חייב להיות יותר מ-0");
         Session session = null;
 
         try {
@@ -91,9 +91,9 @@ public class CovidRegulationsController extends Reportable {
 
     public void cancelAllScreeningsDueCovid(LocalDateTime startDate, LocalDateTime endDate) throws SertiaException {
         if(startDate.isBefore(LocalDateTime.now()))
-            throw new SertiaException("You cannot cancel screenings that already screened.");
+            throw new SertiaException("לא ניתן לבטל הקרנות שכבר הסתיימו");
         if (startDate.isAfter(endDate))
-            throw new SertiaException("Screenings cancellation request dateTime ranges aren't valid");
+            throw new SertiaException("טווח הזמנים שנבחר אינו תקין");
 
         Session session = null;
 

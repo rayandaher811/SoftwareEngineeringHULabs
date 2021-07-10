@@ -33,7 +33,7 @@ public class UserLoginController {
     public LoginResult login(LoginCredentials credentials) throws SertiaException {
         if (credentials.username == null || credentials.username.length() == 0 ||
                 credentials.password == null || credentials.password.length() == 0)
-            throw new SertiaException("Username/password cannot be empty or null");
+            throw new SertiaException("חובה להזין שם משתמש וסיסמא");
 
         List<User> users = getAllUsers();
         LoginResult result = new LoginResult();

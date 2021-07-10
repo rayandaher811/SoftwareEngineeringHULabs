@@ -99,7 +99,7 @@ public class MoviesCatalogController extends Reportable {
 
             return new SertiaCatalogResponse(true, sertiaMovieList);
         } catch (Exception e){
-            throw new SertiaException("Sertia server couldn't get you our catalog due technical issues... .");
+            throw new SertiaException("ארעה שגיאה בעת קבלת קטלוג הסרטיה");
         }
     }
 
@@ -108,18 +108,18 @@ public class MoviesCatalogController extends Reportable {
             Optional<Movie> movie = DbUtils.getById(Movie.class, movieId);
 
             if(!movie.isPresent())
-                throw new SertiaException("There are no such movie with id: " + movieId);
+                throw new SertiaException("הסרט המתבקש אינו קיים");
 
             return movieToClientMovie(movie.get());
         } catch (JDBCConnectionException e){
-            throw new SertiaException("We couldn't handle your request due internal technical issues.");
+            throw new SertiaException("נתלקנו בתקלה בעת ביצוע בקשתך לנתוני סרט");
         }
     }
 
     public SertiaBasicResponse addMovie(SertiaMovie movieData) {
         Session session = null;
         if (!isMovieValid(movieData)) {
-            return new SertiaBasicResponse(false).setFailReason("movie is invalid");
+            return new SertiaBasicResponse(false).setFailReason("נתוני הסרט אינם תקינים");
         }
 
         try {
@@ -167,7 +167,7 @@ public class MoviesCatalogController extends Reportable {
 
     public void updateScreeningTime(ClientScreening screening) throws SertiaException {
         if(screening.screeningTime.isBefore(LocalDateTime.now()))
-            throw new SertiaException("The new screening time is before the current time");
+            throw new SertiaException("שעת ההקרנה החדשה היא בעבר");
 
         Session session = null;
 
@@ -184,7 +184,7 @@ public class MoviesCatalogController extends Reportable {
             // Notifing ll relevant customers for the update
             for (ScreeningTicket ticket : screeningToUpdate.getTickets()) {
                 notifier.notify(ticket.getPaymentInfo().getEmail(),
-                        "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been postponed to " + screening.screeningTime);
+                        "Your screening at " + screeningToUpdate.getScreeningTime() + " in sertia cinema had been rescheduled to " + screening.screeningTime);
             }
 
             session.flush();
@@ -200,7 +200,7 @@ public class MoviesCatalogController extends Reportable {
 
     public void addMovieScreenings(AddScreeningRequest addScreeningRequest) throws SertiaException {
         if(addScreeningRequest.screeningTime.isBefore(LocalDateTime.now()))
-            throw new SertiaException("The new screening time is before the current time");
+            throw new SertiaException("זמן ההקרנה שהוזן הוא בעבר");
 
 
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
@@ -242,7 +242,7 @@ public class MoviesCatalogController extends Reportable {
                     movieEndTime.isAfter(hallScreeningEndTime) && movieEndTime.isAfter(hallScreeningStartTime)) ||
                  (movieStartTime.isBefore(hallScreeningEndTime) && movieStartTime.isBefore(hallScreeningStartTime) &&
                     movieEndTime.isBefore(hallScreeningEndTime) && movieEndTime.isBefore(hallScreeningStartTime))))
-                throw new SertiaException("The screening time conflict an other screening's time in the current hall.");
+                throw new SertiaException("הזמן שהזנת מתנגש עם הקרנה אחרת באותו האולם");
         }
     }
 
@@ -261,7 +261,7 @@ public class MoviesCatalogController extends Reportable {
             session = HibernateSessionFactory.getInstance().openSession();
             Screening screening = session.get(Screening.class, screeningId);
             if(screening == null)
-                throw new SertiaException("There are no such screening.");
+                throw new SertiaException("הקרנה אינה קיימת");
 
             session.beginTransaction();
 
@@ -328,13 +328,13 @@ public class MoviesCatalogController extends Reportable {
 
     public void addStreaming(int movieId, double pricePerStream) throws SertiaException {
         if(pricePerStream < 0)
-            throw new SertiaException("Price cannot be negative number.");
+            throw new SertiaException("מחר אינו יכול להיות שלילי");
         Session session = null;
 
         try {
             session = HibernateSessionFactory.getInstance().openSession();
             if(getMovieStreaming(session, movieId) != null)
-                throw new SertiaException("The movie is already being streamed.");
+                throw new SertiaException("לסרט יש חבילת צפייה קיימת");
 
             Movie movie = getMovieById(movieId, session);
             Streaming newStreaming = new Streaming(movie, pricePerStream);
@@ -524,7 +524,7 @@ public class MoviesCatalogController extends Reportable {
         Movie movie = session.get(Movie.class, movieId);
 
         if(movie == null)
-            throw new SertiaException("There are no such movie with the " + movieId + " Id.");
+            throw new SertiaException("לא קיים סרט שכזה");
 
         return movie;
     }

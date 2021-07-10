@@ -31,15 +31,13 @@ public class PriceChangeController {
 				session.flush();
 				session.clear();
 				session.getTransaction().commit();
-			} finally {
-
 			}
 		}
 	}
 
 	public void requestPriceChange(BasicPriceChangeRequest priceChangeRequest, String username) throws Exception {
 		if(priceChangeRequest.newPrice < 0)
-			throw new SertiaException("Price cannot be negative number.");
+			throw new SertiaException("המחיר החדש שהוזן הוא שלילי");
 
 		Session session = null;
 
@@ -105,7 +103,7 @@ public class PriceChangeController {
 					// Updating the streaming properly
 					Streaming streaming = session.get(Streaming.class, request.getMovie().getId());
 					if(streaming == null)
-						throw new SertiaException("There are no such streaming with the id " + request.getMovie().getId());
+						throw new SertiaException("אין חבילת צפייה עבור הסרט " + request.getMovie().getId());
 
 					streaming.setExtraDayPrice(request.getNewPrice());
 					session.update(streaming);
@@ -126,7 +124,7 @@ public class PriceChangeController {
 					session.update(vouchersInfo);
 					break;
 				default:
-					throw new NotSupportedException("There are such not ticket type to update it's price");
+					throw new NotSupportedException("לא קיים סוג כרטיס כזה");
 			}
 
 			session.update(request);
