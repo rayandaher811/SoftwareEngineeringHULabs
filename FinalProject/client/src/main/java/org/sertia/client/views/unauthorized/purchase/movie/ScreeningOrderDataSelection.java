@@ -92,8 +92,9 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
         ClientCovidRegulationsStatus response = ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus();
         if (response.isActive) {
             int hallCapacity = seatMapResponse.hallSeats.size();
+            int allowedCapacity = getMaxTicketsForHall(hallCapacity, response.maxNumberOfPeople);
             int usedTickets = hallCapacity - numberOfFreeTickets;
-            int allowedToBuy = response.maxNumberOfPeople - usedTickets;
+            int allowedToBuy = allowedCapacity - usedTickets;
             numberOfFreeSeatsLabel.setText(String.valueOf(allowedToBuy));
         } else {
             numberOfFreeSeatsLabel.setText(String.valueOf(numberOfFreeTickets));
@@ -103,6 +104,18 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
     private String parseTimeWithoutDate(String dateTime) {
         int pivotIndex = dateTime.indexOf(":");
         return dateTime.substring(pivotIndex - 2, pivotIndex + 3);
+    }
+
+    private int getMaxTicketsForHall(int hallCapacity, int maxNumberOfPeople) {
+        if (hallCapacity > 1.2 * maxNumberOfPeople) {
+            return maxNumberOfPeople;
+        }
+
+        if (hallCapacity > 0.8 * maxNumberOfPeople) {
+            return (int) Math.floor(0.8 * maxNumberOfPeople);
+        }
+
+        return Math.floorDiv(hallCapacity, 2);
     }
 
     @Override
