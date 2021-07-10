@@ -70,12 +70,11 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
         HashSet<ClientTicketType> ticketTypes = new HashSet<>();
         if (sertiaMovie.isStreamable) {
             ticketTypes.add(ClientTicketType.Streaming);
-        } else if (sertiaMovie.isComingSoon) {
-            ticketTypes.add(ClientTicketType.Screening);
         }
 
         // TODO: i'm not sure it's fine
         ticketTypes.add(ClientTicketType.Voucher);
+        ticketTypes.add(ClientTicketType.Screening);
         availableTicketsType.getItems().addAll(ticketTypes);
     }
 
