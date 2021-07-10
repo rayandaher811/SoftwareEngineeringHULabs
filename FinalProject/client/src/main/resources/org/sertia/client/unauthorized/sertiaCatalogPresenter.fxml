@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sertia.client.views.unauthorized.movies.CatalogView">
-    <children>
-        <BorderPane prefHeight="368.0" prefWidth="618.0">
-            <top>
-                <Label alignment="TOP_CENTER" prefHeight="38.0" prefWidth="331.0" text="קטלוג הסרטים ברשת"
+<VBox alignment="CENTER" spacing="40" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.sertia.client.views.unauthorized.movies.CatalogView">
+    <BorderPane>
+        <top>
+            <Label alignment="TOP_CENTER" prefWidth="700.0" text="קטלוג הסרטים ברשת" BorderPane.alignment="CENTER">
+                <font>
+                    <Font size="26.0"/>
+                </font>
+            </Label>
+        </top>
+        <center>
+            <VBox alignment="CENTER">
+                <Accordion fx:id="moviesKindAndDataAccordion" BorderPane.alignment="CENTER_RIGHT"/>
+                <Label alignment="CENTER" text="חפש ברשת הסרטיה"
                        BorderPane.alignment="CENTER">
                     <font>
                         <Font size="26.0"/>
                     </font>
                 </Label>
-            </top>
-            <center>
-                <Accordion fx:id="moviesKindAndDataAccordion" BorderPane.alignment="CENTER_RIGHT">
-                </Accordion>
-            </center>
-        </BorderPane>
-        <Button fx:id="backBtn" layoutX="293.0" layoutY="365.0" mnemonicParsing="false" onAction="#backToClientsView"
-                text="חזרה"/>
-    </children>
-</AnchorPane>
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                    <ComboBox fx:id="filterByBranch"/>
+                    <DatePicker fx:id="fromDatePicker" promptText="סינון לפי תאריך התחלה"/>
+                    <DatePicker fx:id="toDatePicker" promptText="סינון לפי תאריך סיום"/>
+                </HBox>
+                <ListView fx:id="filteredMoviesLst"/>
+            </VBox>
+        </center>
+        <bottom>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
+                <Button fx:id="backBtn" onAction="#backToClientsView" text="חזרה" alignment="CENTER"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</VBox>

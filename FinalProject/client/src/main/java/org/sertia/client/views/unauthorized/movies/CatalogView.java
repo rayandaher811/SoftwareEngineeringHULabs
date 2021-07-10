@@ -1,11 +1,13 @@
 package org.sertia.client.views.unauthorized.movies;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.global.MovieHolder;
@@ -14,18 +16,26 @@ import org.sertia.client.views.Utils;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.movies.catalog.response.CinemaAndHallsResponse;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.sertia.client.Constants.*;
 
 public class CatalogView implements Initializable {
 
+    public ComboBox filterByBranch;
+    public DatePicker fromDatePicker;
+    public DatePicker toDatePicker;
+    public ListView filteredMoviesLst;
     @FXML
     private Accordion moviesKindAndDataAccordion;
+    private ObservableList<SertiaMovie> filteredMovies;
+    private List<SertiaMovie> queriedMoviesSinceLastLaunch;
 
     private HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> cinemaToScreenings(ArrayList<SertiaMovie> movies) {
         HashMap<CinemaScreeningMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
@@ -208,7 +218,8 @@ public class CatalogView implements Initializable {
         if (!response.isSuccessful) {
             Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
         } else {
-            List<SertiaMovie> moviesList = response.movies;
+            queriedMoviesSinceLastLaunch = response.movies;
+            List<SertiaMovie> moviesList = List.copyOf(queriedMoviesSinceLastLaunch);
             HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();
             moviesList.forEach(sertiaMovie -> {
                 if (sertiaMovie.isComingSoon) {
@@ -249,7 +260,195 @@ public class CatalogView implements Initializable {
                 }
             });
             moviesKindAndDataAccordion.getPanes().addAll(list);
+            fromDatePicker.valueProperty().addListener(this::fromDateValueChanged);
+            toDatePicker.valueProperty().addListener(this::toDateValueChanged);
+            filterByBranch.valueProperty().addListener(this::onBranchChanged);
+            CinemaAndHallsResponse cinemaResponse = ClientCatalogControl.getInstance().getCinemasAndHalls();
+            if (!cinemaResponse.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.ERROR, "Catalog view", "couldnt fetch cinemas list");
+            } else {
+                filterByBranch.getItems().addAll(cinemaResponse.cinemaToHalls.keySet());
+            }
+
+            filteredMovies = filteredMoviesLst.getItems();
         }
+    }
+
+    private void renderMoviesList() {
+        filteredMoviesLst.getItems().clear();
+        boolean isBranchSelected = filterByBranch.getSelectionModel().getSelectedItem() != null;
+        boolean isFromDateSelected = fromDatePicker.getValue() != null;
+        boolean isToDateSelected = toDatePicker.getValue() != null;
+
+        if (isBranchSelected) {
+            if (isFromDateSelected) {
+                if (isToDateSelected) {
+                    filterByBranchStartDateAndEndDate();
+                } else {
+                    filterByBranchAndStartDate();
+                }
+            } else {
+                if (isToDateSelected) {
+                    filterByBranchAndEndDate();
+                } else {
+                    filterByBranchOnly(); //
+                }
+            }
+        } else {
+            if (isFromDateSelected) {
+                if (isToDateSelected) {
+                    filterByStartAndEndDate(); //
+                } else {
+                    filterByStartDate(); //
+                }
+            } else {
+                if (isToDateSelected) {
+                    filterByEndDate(); //
+                } else {
+                    Utils.popAlert(Alert.AlertType.ERROR, "Search movies error", "must specify search parameters");
+                }
+            }
+        }
+    }
+
+    private void filterByBranchOnly() {
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (screening.getCinemaName().equals(filterByBranch.getSelectionModel().getSelectedItem())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByStartAndEndDate() {
+        LocalDate startDate = fromDatePicker.getValue();
+        LocalDate endDate = toDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (startDate.isBefore(screening.getScreeningTime().toLocalDate()) &&
+                        endDate.isAfter(screening.getScreeningTime().toLocalDate())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByBranchAndEndDate() {
+        LocalDate endDate = toDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (endDate.isAfter(screening.getScreeningTime().toLocalDate()) &&
+                        screening.getCinemaName().equals(filterByBranch.getSelectionModel().getSelectedItem())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByEndDate() {
+        LocalDate endDate = toDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (endDate.isAfter(screening.getScreeningTime().toLocalDate())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByStartDate() {
+        LocalDate startDate = fromDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (startDate.isBefore(screening.getScreeningTime().toLocalDate())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByBranchStartDateAndEndDate() {
+        LocalDate startDate = fromDatePicker.getValue();
+        LocalDate endDate = toDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (startDate.isBefore(screening.getScreeningTime().toLocalDate()) &&
+                        endDate.isAfter(screening.getScreeningTime().toLocalDate()) &&
+                        filterByBranch.getSelectionModel().getSelectedItem().equals(screening.getCinemaName())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private void filterByBranchAndStartDate() {
+        LocalDate startDate = fromDatePicker.getValue();
+
+        int count = 0;
+        for (SertiaMovie moviesSinceLastLaunch : queriedMoviesSinceLastLaunch) {
+            for (ClientScreening screening : moviesSinceLastLaunch.getScreenings()) {
+                if (startDate.isBefore(screening.getScreeningTime().toLocalDate()) &&
+                        filterByBranch.getSelectionModel().getSelectedItem().equals(screening.getCinemaName())) {
+                    count++;
+                    filteredMoviesLst.getItems().add(clientScreeningToTitledPane(moviesSinceLastLaunch, screening, count));
+                }
+            }
+        }
+    }
+
+    private HBox toHbox(String key, String value) {
+        HBox values = new HBox();
+        Label keyLabel = new Label();
+        keyLabel.setText(key);
+        Label valueLabel = new Label();
+        valueLabel.setText(value);
+        values.getChildren().addAll(valueLabel, keyLabel);
+        return values;
+    }
+
+    private TitledPane clientScreeningToTitledPane(SertiaMovie sertiaMovie, ClientScreening clientScreening,
+                                                   int count) {
+        TitledPane titledPane = new TitledPane();
+        VBox vBox = new VBox();
+
+        HBox nameHbox = toHbox(MOVIE_NAME, sertiaMovie.getMovieDetails().getName());
+        HBox hebrewNameHbox = toHbox(HEBREW_MOVIE_NAME, sertiaMovie.getMovieDetails().getHebrewName());
+        HBox screeningTimeHbox = toHbox(SCREENING_TIME, clientScreening.screeningTime.toString());
+        HBox branchNameHbox = toHbox(BRANCH_NAME, clientScreening.getCinemaName());
+        vBox.getChildren().addAll(nameHbox, hebrewNameHbox, screeningTimeHbox, branchNameHbox);
+        titledPane.setContent(vBox);
+        titledPane.setText(RESULT_NUMBER + count);
+        return titledPane;
+    }
+
+    private void onBranchChanged(Observable observable) {
+        renderMoviesList();
+    }
+
+    private void fromDateValueChanged(Observable observable) {
+        renderMoviesList();
+    }
+
+    private void toDateValueChanged(Observable observable) {
+        renderMoviesList();
     }
 
     @FXML

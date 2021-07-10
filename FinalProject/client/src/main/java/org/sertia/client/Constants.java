@@ -42,6 +42,11 @@ public class Constants {
     public static final String CANCEL_PURCHASE_TITLE = "ביטול רכישה";
     public static final String SPCIFY_PURCHASE_TYPE = "אנא ציין סוג רכישה";
     public static final String NO_NEW_REQUESTS = "אין בקשות נוספות לאישור";
+    public static final String SCREENING_TIME = "שעת הקרנה: ";
+    public static final String HEBREW_MOVIE_NAME = "שם הסרט בעברית: ";
+    public static final String RESULT_NUMBER = "תוצאה מספר: ";
+    public static final String BRANCH_NAME = "שם סניף: ";
+
 
     public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS =
             new HashMap<>(){{put(ClientTicketType.Screening.name(), "הקרנה");
