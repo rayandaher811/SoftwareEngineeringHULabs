@@ -65,7 +65,7 @@ public class ComplaintsController extends Reportable {
 			}
 
 			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber))
-				throw new SertiaException("Client's id: " + createComplaintRequest.clientIdNumber + " isn't the real ticket payer Id.");
+				throw new SertiaException("Wrong ticket info inserted.");
 
 			// Saving the request
 			session.beginTransaction();
