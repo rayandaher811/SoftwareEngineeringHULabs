@@ -4,6 +4,7 @@ package org.sertia.server.dl.classes;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "screenings")
@@ -25,7 +26,7 @@ public class Screening {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "screening_screening_id")
-    private List<ScreeningTicket> tickets;
+    private Set<ScreeningTicket> tickets;
 
     public Screening() {
     }
@@ -66,7 +67,7 @@ public class Screening {
         this.screeningTime = screeningTime;
     }
 
-    public List<ScreeningTicket> getTickets() {
+    public Set<ScreeningTicket> getTickets() {
         return tickets;
     }
 }

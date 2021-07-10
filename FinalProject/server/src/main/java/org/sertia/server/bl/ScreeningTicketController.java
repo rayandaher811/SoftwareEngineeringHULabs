@@ -194,6 +194,7 @@ public class ScreeningTicketController extends Reportable {
                         paymentResponse.cinemaName = screening.getHall().getCinema().getName();
                         paymentResponse.finalPrice = screening.getScreenableMovie().getTicketPrice() * request.chosenSeats.size();
                         paymentResponse.movieName = screening.getScreenableMovie().getMovie().getName();
+                        paymentResponse.screeningTime = screening.getScreeningTime();
                         return request.chosenSeats.stream()
                                 .map(hallSeat -> createScreeningTicket(hallSeat, screening, session))
                                 .collect(Collectors.toSet());
@@ -225,12 +226,18 @@ public class ScreeningTicketController extends Reportable {
 
     private String getScreeningMail(ScreeningPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nסרט:").append(response.movieName)
-                .append("\nקולנוע:").append(response.cinemaName)
-                .append("\nאולם:").append(response.hallNumber)
-                .append("\nכרטיסים:");
-        response.ticketIdToSeat.forEach((integer, hallSeat) ->
-                stringBuilder.append(hallSeat.row).append(", ").append(hallSeat.numberInRow).append(" כיסא ").append(" :מספר הזמנה ,").append(integer.toString()));
+        stringBuilder.append("\nסרט: ").append(response.movieName)
+                .append("\nקולנוע: ").append(response.cinemaName)
+                .append("\nאולם: ").append(response.hallNumber)
+                .append("\nשעת הקרנה: ").append(response.screeningTime)
+                .append("\n")
+                .append(":כרטיסים").append("\n");
+        response.ticketIdToSeat.forEach((ticketId, hallSeat) -> stringBuilder
+                .append(" :מזהה כרטיס ").append(ticketId.toString())
+                .append("\n")
+                .append(" שורה ").append(hallSeat.row)
+                .append(" כיסא ").append(hallSeat.numberInRow)
+        .append("\n"));
 
         return stringBuilder.toString();
     }
