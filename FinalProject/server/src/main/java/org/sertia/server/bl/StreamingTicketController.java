@@ -139,7 +139,10 @@ public class StreamingTicketController extends Reportable {
             }
 
             try (Session session = HibernateSessionFactory.getInstance().openSession()) {
+                session.beginTransaction();
                 session.delete(streamingTicket);
+                session.flush();
+                session.getTransaction().commit();
                 creditCardService.refund(streamingTicket.getCustomerPaymentDetails(), streamingTicket.getPaidPrice() / 2, RefundReason.StreamingService);
                 return new SertiaBasicResponse(true);
             } catch (RuntimeException exception) {
