@@ -13,6 +13,7 @@ import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.VoucherPurchaseRequest;
+import org.sertia.contracts.screening.ticket.response.GetVoucherInfoResponse;
 import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 
 import java.io.IOException;
@@ -21,6 +22,9 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static org.sertia.client.Constants.COULDNT_FETCH_VOUCHER_DATA;
+import static org.sertia.client.Constants.VOUCHER_INFO_ERROR;
 
 public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
@@ -32,6 +36,10 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
     public ComboBox expirationMonthCombo;
     public ComboBox expirationYearCombo;
     public Label topLabel;
+    public TextField futureBalanceTxt;
+    public TextField voucherPrice;
+    public Label futurePrice;
+    public Label futureBalanceLabel;
 
     @FXML
     public void toMain() throws IOException {
@@ -73,6 +81,17 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
         creditCardProviderCombo.getItems().addAll(List.of(CreditCardProvider.values()));
         initializeMonthCombo();
         initializeYearCombo();
+        GetVoucherInfoResponse response = ClientPurchaseControl.getInstance().getVouchersInfo();
+        if (!response.isSuccessful) {
+            Utils.popAlert(Alert.AlertType.ERROR, VOUCHER_INFO_ERROR, COULDNT_FETCH_VOUCHER_DATA + response.failReason);
+        } else {
+            futureBalanceTxt.setVisible(true);
+            futureBalanceLabel.setVisible(true);
+            futureBalanceTxt.setText(String.valueOf(response.initialBalance));
+            voucherPrice.setVisible(true);
+            futurePrice.setVisible(true);
+            voucherPrice.setText(String.valueOf(response.price));
+        }
     }
 
     @Override

@@ -67,6 +67,8 @@ public class Constants {
     public static final String CLIENT_DATA_FOR_STREAMING_LINK_IS_NOT_SET = "לא נקבע מידע לקוח עבור לינק צפיה זה, נא פנה לשירות הלקוחות";
     public static final String CVV_HINT = "מלא בבקשה את ה-CVV שלך, באורך 3 תווים";
     public static final String CREDIT_CARD_PROVIDER_HINT = "בחר את ספק כרטיס האשראי שלך מבין האפשרויות";
+    public static final String VOUCHER_INFO_ERROR = "בירור מידע כרטיסיה";
+    public static final String COULDNT_FETCH_VOUCHER_DATA = "שגיאה בקריאת פרטי מידע על הכרטיסייה, פירוט השגיאה: ";
 
     public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
     public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());
