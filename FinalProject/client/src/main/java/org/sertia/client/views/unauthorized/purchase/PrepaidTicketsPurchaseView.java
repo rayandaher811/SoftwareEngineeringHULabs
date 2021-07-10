@@ -13,6 +13,7 @@ import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.VoucherPurchaseRequest;
+import org.sertia.contracts.screening.ticket.response.VoucherPaymentResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,10 +50,10 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
                     LocalDateTime.of(Integer.parseInt(expirationYearCombo.getSelectionModel().getSelectedItem().toString()),
                             Integer.parseInt(expirationMonthCombo.getSelectionModel().getSelectedItem().toString()),
                             1, 0, 0));
-            SertiaBasicResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
+            VoucherPaymentResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
             if (response.isSuccessful) {
                 Utils.popAlert(Alert.AlertType.INFORMATION, "Buying prepaid tickets from sertia system",
-                        "Prepaid tickets bought successfully!");
+                        "Your voucher Id is: \" + response.voucherId");
             } else {
                 Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system",
                         response.failReason);

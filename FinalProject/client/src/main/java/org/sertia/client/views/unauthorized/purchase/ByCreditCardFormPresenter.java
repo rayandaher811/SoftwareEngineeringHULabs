@@ -16,6 +16,7 @@ import org.sertia.client.global.*;
 import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
+import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithSeatsRequest;
@@ -28,7 +29,9 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.SplittableRandom;
 
 public class ByCreditCardFormPresenter extends BasicPresenterWithValidations implements Initializable {
 
@@ -81,7 +84,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithCovid(request);
 
         if (response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", buildSuccessfulScreeningTicketPurchasingMessage(response));
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
@@ -111,7 +114,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 ClientPurchaseControl.getInstance().purchaseScreeningTicketsWithSeats(screeningTicketWithSeatsRequest);
         
         if (response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
+            Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", buildSuccessfulScreeningTicketPurchasingMessage(response));
             try {
                 App.setRoot("unauthorized/primary");
             } catch (IOException e) {
@@ -143,7 +146,10 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
 
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying streaming link", "operation ended successfully!");
+                String msg = "You streaming link info:\n" +
+                                "Streaming link: " + response.streamingLink + "\n" +
+                        "Start time - End time: " + response.startTime + " - " + response.endTime;
+                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying streaming link", msg);
                 BuyOnlineScreeningLinkDataHolder.getInstance().clear();
                 try {
                     App.setRoot("unauthorized/primary");
@@ -244,5 +250,22 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             return false;
         }
         return true;
+    }
+
+    private String buildSuccessfulScreeningTicketPurchasingMessage(ScreeningPaymentResponse response){
+        String msg =  "You've purchased a screening ticket/s and here is it's info:\n"+
+                "Cinema name: " + response.cinemaName + "\n" +
+                "Movie name: " + response.movieName + "\n" +
+                "Hall number: " + response.hallNumber + "\n" +
+                "Screening time: " + response.screeningTime + "\n" +
+                "Tickets : <Ticket Id> = <row, number in row>\n";
+
+        // Inserting it's tickets info
+        for (Map.Entry<Integer, HallSeat> set:
+                response.ticketIdToSeat.entrySet()) {
+            msg += set.getKey() + " = " +set.getValue().row + ", " + set.getValue().getNumberInRow() + "\n";
+        }
+
+        return msg;
     }
 }
