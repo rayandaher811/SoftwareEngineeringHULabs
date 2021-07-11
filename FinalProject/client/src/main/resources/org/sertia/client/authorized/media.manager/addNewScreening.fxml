@@ -18,8 +18,7 @@
             <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7" maxHeight="300">
                 <ComboBox fx:id="branchName" minWidth="250" maxWidth="250" promptText="שם הסניף"
                           BorderPane.alignment="CENTER"/>
-                <TextField fx:id="hallNumberTxt" minWidth="250" maxWidth="250" promptText="מספר אולם"
-                           alignment="CENTER"/>
+                <ComboBox fx:id="hallNumberCombo" minWidth="250" maxWidth="250" promptText="מספר אולם"/>
                 <DatePicker fx:id="datePickerComp" minWidth="250" maxWidth="250" promptText="תאריך הקרנה"/>
                 <TextField fx:id="screeningTimeTxt" minWidth="250" maxWidth="250" alignment="CENTER"
                            promptText="שעת הקרנה"/>

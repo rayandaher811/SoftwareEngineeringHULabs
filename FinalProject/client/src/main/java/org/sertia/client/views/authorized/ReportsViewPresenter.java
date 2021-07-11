@@ -41,7 +41,8 @@ public class ReportsViewPresenter implements Initializable {
         UserRole userRole = LoggedInUser.getInstance().getUserRole();
         ClientReportsResponse response = null;
         if (userRole == UserRole.BranchManager) {
-            // TODO: how to know cinema id, it's not related to role
+            // BG TODO: how to know cinema id, it's not related to role
+
             response = ClientReportsControl.getInstance().getCinemaReports(1);
         } else if (userRole == UserRole.CinemaManager) {
             response = ClientReportsControl.getInstance().getSertiaReports();

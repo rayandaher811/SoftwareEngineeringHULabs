@@ -10,4 +10,9 @@ public class ClientHall implements Serializable {
         this.hallId = hallId;
         this.hallNumber = hallNumber;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(hallNumber);
+    }
 }
