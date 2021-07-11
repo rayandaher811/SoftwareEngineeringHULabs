@@ -128,7 +128,11 @@ public class ApprovePriceChangeRequests implements Initializable {
         }
 
         if (response != null && response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, APPROVE_PRICE_CHANGE_REQUEST, PRICE_CHANGE_REQUEST_APPROVAL_FINISHED_SUCCESSFULLY);
+            if(isApproved) {
+                Utils.popAlert(Alert.AlertType.INFORMATION, APPROVE_PRICE_CHANGE_REQUEST, PRICE_CHANGE_REQUEST_APPROVAL_FINISHED_SUCCESSFULLY);
+            } else {
+                Utils.popAlert(Alert.AlertType.INFORMATION, APPROVE_PRICE_CHANGE_REQUEST, PRICE_CHANGE_REQUEST_DISAPPROVAL_FINISHED_SUCCESSFULLY);
+            }
             renderForm(true);
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, APPROVE_PRICE_CHANGE_REQUEST, response.failReason);

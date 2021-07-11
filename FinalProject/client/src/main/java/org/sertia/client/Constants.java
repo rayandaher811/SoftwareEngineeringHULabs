@@ -46,6 +46,7 @@ public class Constants {
     public static final String RESULT_NUMBER = "תוצאה מספר: ";
     public static final String BRANCH_NAME = "שם סניף: ";
     public static final String CHOOSE_VALID_HOUR = "בחרי בבקשה שעת התחלה מתוך האפשרויות";
+    public static final String BEFORE_NOW_TIME = "בחר בבקשה זמן לפני הזמן הנוכחי";
     public static final String CHOOSE_VALID_MIN = "בחרי בבקשה דקות בשעה";
     public static final String VIEW_WORKSTATION = "ברוכה הבאה לתחנת קצה בסניף ";
     public static final String AVAILABLE_MOVIES_IN_BRANCH = "סרטים המוקרנים בסניף";
@@ -56,7 +57,9 @@ public class Constants {
     public static final String BUY_ONLINE_STREAMING_LINK = "רכישת לינק לצפיה ביתית";
     public static final String DATES_RANGE_INVALID_ERROR_MSG = "נא בחרי טווח תקין של תאריכים, תאריך ההתחלה חייב להיות לפני תאריך הסוף";
     public static final String PLEASE_CHOOSE_START_DATE_GREATER_THAN_TODAY = "נא בחרי תאריך התחלה מתקדם יותר מהיום";
+    public static final String PLEAS_ENTER_VALID_HOURS = "אנא הכנס כמות שעות תקנית";
     public static final String STREMING_LINK_INFO = "פרטי הקישור לצפיה ביתית שרכשת: \n לינק: ";
+    public static final String PRICE = "מחיר כולל: ";
     public static final String START_TIME_END_TIME = "זמן התחלה - זמן סיום: ";
     public static final String PURCHASE_USING_CREDIT_CARD = "רכישה באמצעות כרטיס אשראי";
     public static final String PURCHASE_SUMMARY = "רכשת כרטיס/ים להקרנות ואלו הם פרטי ההזמנה: \n";
@@ -97,6 +100,7 @@ public class Constants {
     public static final String FETCH_MOVIE_ERROR = "נסיון שליפת סרטי הרשת נכשל";
     public static final String CATALOG_FETCH_ERROR = "נסיון שליפת קטלוג הסרטים נכשל, להלן הסיבה: ";
     public static final String PRICE_CHANGE_REQUEST_APPROVAL_FINISHED_SUCCESSFULLY = "בקשת שינוי מחיר אושרה והשתנתה בהצלחה";
+    public static final String PRICE_CHANGE_REQUEST_DISAPPROVAL_FINISHED_SUCCESSFULLY = "בקשת שינוי מחיר בוטלה בהצלחה";
     public static final String PRICE_CHANGE_REQUEST = "בקשת שינוי מחיר";
     public static final String PRICE_CHANGE_REQUEST_ENDED_SUCCESSFULLY = "בקשת שינוי מחיר נשלחה בהצלחה";
     public static final String TAV_SAGOL_REGULATIONS_SET_SUCCESSFULLY = "תקנות תו סגול עודנו בהצלחה!";

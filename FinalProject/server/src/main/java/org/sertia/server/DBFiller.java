@@ -97,7 +97,7 @@ public class    DBFiller {
     private void fillMovies() {
         movies = new ArrayList<Movie>();
         movies.add(new Movie(producers.get(0), actors.get(0), "בלתי נשכחים", "The expendables", false, "Action movie with many players", "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSY_srgO8S_8bCAg9pK_PMs2JreMvJKJK6LqExxP2tyfDEJkMb3", Duration.ofHours(1)));
-        movies.add(new Movie(producers.get(1), actors.get(1), "אנטמםן", "Antman", false, "Action movie with many ants", "https://media.titanbooks.com/catalog/products/9709/Ant-Man.jpg", Duration.ofHours(1)));
+        movies.add(new Movie(producers.get(1), actors.get(1), "אנטמםן", "Antman", false, "Action movie with many ants", "https://media.titanbooks.com/catalog/products/9709/Ant-Man.jpg", Duration.ofMinutes(110)));
         movies.add(new Movie(producers.get(2), actors.get(2), "קפטן אמריקה", "captin America", false, "Action movie with many americans", "https://terrigen-cdn-dev.marvel.com/content/prod/1x/71xqtzkf-ml.jpg", Duration.ofHours(1)));
         movies.add(new Movie(producers.get(3), actors.get(3), "עלי באבא", "Ali baba", true, "Action movie with many thieves", "https://images-na.ssl-images-amazon.com/images/I/61%2BUMLQW3AS._SY445_.jpg", Duration.ofHours(1)));
     }

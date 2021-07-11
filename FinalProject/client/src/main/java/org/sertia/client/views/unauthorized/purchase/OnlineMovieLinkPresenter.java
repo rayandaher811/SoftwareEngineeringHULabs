@@ -13,6 +13,7 @@ import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,17 +25,18 @@ import static org.sertia.client.Constants.*;
 public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations implements Initializable {
     @FXML
     public TextField movieName;
+    public TextField movieLength;
     public TextField nameTxtField;
     public TextField phoneTxTextField;
     public TextField emailTxTextField;
-    public Label numberOfRentalDays;
-    public Label numberOfRentalDaysLabel;
-    public DatePicker datePickerTo;
+    public TextField extraHoursTextField;
+    public Label numberOfAvailabilityHours;
+    public Label numberOfAvailabilityHoursLabel;
     public DatePicker datePickerFrom;
     public ComboBox<Integer> hourPicker;
     public ComboBox<Integer> minutePicker;
     boolean isFromDateSet;
-    long totalDays;
+    long totalHours;
 
     @FXML
     public void back() throws IOException {
@@ -44,65 +46,73 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        totalDays = -1;
+        totalHours = -1;
         isFromDateSet = false;
-        if (BuyOnlineScreeningLinkDataHolder.getInstance().isInitialized()) {
-            nameTxtField.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getClientName());
-            phoneTxTextField.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getPhone());
-            emailTxTextField.setText(BuyOnlineScreeningLinkDataHolder.getInstance().getEmail());
-            LocalDateTime chosenStartDateTime = BuyOnlineScreeningLinkDataHolder.getInstance().getStartDateTime();
+        BuyOnlineScreeningLinkDataHolder linkDataHolder = BuyOnlineScreeningLinkDataHolder.getInstance();
+        if (linkDataHolder.isInitialized()) {
+            nameTxtField.setText(linkDataHolder.getClientName());
+            phoneTxTextField.setText(linkDataHolder.getPhone());
+            emailTxTextField.setText(linkDataHolder.getEmail());
+            LocalDateTime chosenStartDateTime = linkDataHolder.getStartDateTime();
             hourPicker.setValue(chosenStartDateTime.getHour());
             minutePicker.setValue(chosenStartDateTime.getMinute());
             datePickerFrom.setValue(chosenStartDateTime.toLocalDate());
             LocalDate incrementedDateTime = chosenStartDateTime.toLocalDate();
-            incrementedDateTime.plusDays(BuyOnlineScreeningLinkDataHolder.getInstance().getNumberOfDaysForRental());
-            datePickerTo.setValue(incrementedDateTime);
-            totalDays = ChronoUnit.DAYS.between(chosenStartDateTime.toLocalDate(), incrementedDateTime);
-            numberOfRentalDaysLabel.setVisible(true);
-            numberOfRentalDays.setText(String.valueOf(totalDays));
+            incrementedDateTime.plusDays(linkDataHolder.getNumberOfDaysForRental());
+            totalHours = ChronoUnit.DAYS.between(chosenStartDateTime.toLocalDate(), incrementedDateTime);
+            numberOfAvailabilityHoursLabel.setVisible(true);
+            numberOfAvailabilityHours.setText(String.valueOf(totalHours));
         }
+
         CinemaScreeningMovie movie = MovieHolder.getInstance().getCinemaScreeningMovie();
         movieName.setText(movie.getMovieDetails().getName());
-        datePickerTo.valueProperty().addListener(this::changed);
-        datePickerTo.setEditable(false);
-        datePickerFrom.setEditable(false);
+        Duration duration = MovieHolder.getInstance().getCinemaScreeningMovie().getMovieDetails().duration;
+        numberOfAvailabilityHours.setText(String.valueOf(getBaseHours()));
+        movieLength.setText(duration.toMinutes() + " דקות ");
+        extraHoursTextField.setText("0");
+        extraHoursTextField.textProperty().addListener(this::changed);
         datePickerFrom.valueProperty().addListener((observableValue, date, t1) -> {
             LocalDate nowDate = LocalDate.now();
             if (t1.isBefore(nowDate)) {
                 datePickerFrom.setStyle("-fx-background-color: #ff1500");
+                extraHoursTextField.setStyle("-fx-background-color: #ff1500");
                 Utils.popAlert(Alert.AlertType.ERROR, BUY_ONLINE_STREAMING_LINK, PLEASE_CHOOSE_START_DATE_GREATER_THAN_TODAY);
-                totalDays = -1;
+                totalHours = -1;
             } else {
                 datePickerFrom.setStyle("");
-                datePickerTo.setEditable(true);
-                totalDays = -1;
+                extraHoursTextField.setStyle("");
+                totalHours = -1;
             }
         });
-
 
         hourPicker.getItems().addAll(HOURS);
         minutePicker.getItems().addAll(MINUTES);
     }
 
-    private void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate date, LocalDate newDate) {
-        LocalDate fromDate = datePickerFrom.getValue();
-        totalDays = -1;
-        numberOfRentalDaysLabel.setVisible(false);
-        numberOfRentalDays.setVisible(false);
-        if (fromDate.isBefore(newDate)) {
-            totalDays = ChronoUnit.DAYS.between(fromDate, newDate);
-            numberOfRentalDaysLabel.setVisible(true);
-            numberOfRentalDays.setText(String.valueOf(totalDays));
-            numberOfRentalDays.setVisible(true);
-            datePickerFrom.setStyle("");
-            datePickerTo.setStyle("");
-
+    private void changed(ObservableValue<? extends String> observable, String oldHours, String newHours) {
+        int hours = 0;
+        if (newHours.isBlank() || newHours.isEmpty()) {
+            totalHours = 0;
+            extraHoursTextField.setText("0");
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, BUY_ONLINE_STREAMING_LINK, DATES_RANGE_INVALID_ERROR_MSG);
-            datePickerTo.setStyle("-fx-background-color: #ff1500");
-            isFromDateSet = false;
-            totalDays = -1;
+            try {
+                hours = Integer.parseInt(newHours);
+                extraHoursTextField.setText(String.valueOf(hours));
+            } catch (NumberFormatException ignored) {
+                Utils.popAlert(Alert.AlertType.ERROR, BUY_ONLINE_STREAMING_LINK, PLEAS_ENTER_VALID_HOURS);
+                totalHours = 0;
+                extraHoursTextField.setText("0");
+                return;
+            }
         }
+
+        int baseHours = getBaseHours();
+        totalHours = baseHours + hours;
+        numberOfAvailabilityHours.setText(String.valueOf(totalHours));
+    }
+
+    private int getBaseHours() {
+        return (int) Math.ceil((double) MovieHolder.getInstance().getCinemaScreeningMovie().movieDetails.duration.toMinutes() / 60);
     }
 
     @FXML
@@ -114,10 +124,9 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
                         .setClientData(nameTxtField.getText(),
                                 emailTxTextField.getText(),
                                 phoneTxTextField.getText(),
-                                Integer.parseInt(String.valueOf(totalDays)),
+                                Integer.parseInt(extraHoursTextField.getText()),
                                 LocalDateTime.of(datePickerFrom.getValue(),
-                                        LocalTime.of((int)hourPicker.getSelectionModel().getSelectedItem(),
-                                                (int)minutePicker.getSelectionModel().getSelectedItem()))
+                                        LocalTime.of(hourPicker.getSelectionModel().getSelectedItem(), minutePicker.getSelectionModel().getSelectedItem()))
                         );
                 App.setRoot("unauthorized/payment/byCreditCardForm");
             } catch (IOException e) {
@@ -133,10 +142,17 @@ public class OnlineMovieLinkPresenter extends BasicPresenterWithValidations impl
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         boolean isHourValid = hourPicker.getSelectionModel().getSelectedItem() != null;
         boolean isMinuteValid = minutePicker.getSelectionModel().getSelectedItem() != null;
+        LocalDateTime startTime = LocalDateTime.of(datePickerFrom.getValue(),
+                LocalTime.of(hourPicker.getSelectionModel().getSelectedItem(), minutePicker.getSelectionModel().getSelectedItem()));
+        boolean isStartTimeValid = startTime.isAfter(LocalDateTime.now());
+        if(!isStartTimeValid) {
+            userMistakes.add(BEFORE_NOW_TIME);
+        }
+
         if (!isHourValid)
             userMistakes.add(CHOOSE_VALID_HOUR);
         if (!isMinuteValid)
             userMistakes.add(CHOOSE_VALID_MIN);
-        return isEmailValid && isPhoneValid && isNameValid && isHourValid && isMinuteValid;
+        return isEmailValid && isPhoneValid && isNameValid && isHourValid && isMinuteValid && isStartTimeValid;
     }
 }

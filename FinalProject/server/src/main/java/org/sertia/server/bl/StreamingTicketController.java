@@ -2,7 +2,6 @@ package org.sertia.server.bl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.reports.ClientReport;
 import org.sertia.contracts.screening.ticket.request.CancelStreamingTicketRequest;
 import org.sertia.contracts.screening.ticket.request.StreamingPaymentRequest;
@@ -56,9 +55,10 @@ public class StreamingTicketController extends Reportable {
         streamingLink.setCustomerPaymentDetails(paymentDetails);
         LocalDateTime startTime = request.startTime;
         streamingLink.setActivationStart(startTime);
-        int availabilityDays = request.extraDays;
-        streamingLink.setActivationEnd(startTime.plusDays(availabilityDays));
-        streamingLink.setPaidPrice(streaming.getExtraDayPrice() * availabilityDays);
+        int baseHours = (int) Math.ceil((double) streaming.getMovie().getDuration().toMinutes()/ 60);
+        int availabilityHours = baseHours + request.extraHours;
+        streamingLink.setActivationEnd(startTime.plusHours(availabilityHours));
+        streamingLink.setPaidPrice(streaming.getExtraHourPrice() * (request.extraHours + 1));
         streamingLink.setLink("http://Sertia/link=" + UUID.randomUUID());
         streamingLink.setPurchaseDate(LocalDateTime.now());
         streamingLink.setMovie(streaming);
@@ -165,7 +165,7 @@ public class StreamingTicketController extends Reportable {
             if (between == 59) {
                 CustomerNotifier.getInstance().notify(
                         streamingLink.getCustomerPaymentDetails().getEmail(),
-                        "הלינק לחבילת הצפייה שלך  זמין בעוד שעה");
+                          streamingLink.getLink()+ " הלינק לחבילת הצפייה שלך  זמין בעוד שעה\n ");
             }
         });
     }

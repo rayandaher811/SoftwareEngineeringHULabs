@@ -145,7 +145,8 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             StreamingPaymentResponse response = ClientPurchaseControl.getInstance().purchaseStreaming(streamingPaymentRequest);
 
             if (response.isSuccessful) {
-                String msg = STREMING_LINK_INFO + response.streamingLink + "\n" +
+                String msg = PRICE + response.streamingLink + "\n" +
+                        PRICE + response.price + "\n" +
                         START_TIME_END_TIME + response.startTime + " - " + response.endTime;
                 Utils.popAlert(Alert.AlertType.INFORMATION, BUY_ONLINE_STREAMING_LINK, msg);
                 BuyOnlineScreeningLinkDataHolder.getInstance().clear();

@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static org.sertia.client.Constants.ADD_SCREENING_TO_MOVIE;
 import static org.sertia.client.Constants.SCREENING_ADDED_SUCCESSFULLY;
@@ -61,8 +63,8 @@ public class AddScreeningsToMovie implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<String> ticketTypes = FXCollections.observableList(ClientCatalogControl.getInstance().getAllBranchesName());
-        branchName.setItems(ticketTypes);
+        ObservableList<String> branches = FXCollections.observableList(new ArrayList<>(ClientCatalogControl.getInstance().getCinemasAndHalls().cinemaToHalls.keySet()));
+        branchName.setItems(branches);
         CinemaScreeningMovie currentMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
         movieNameLabel.setText(movieNameLabel.getText() + " " + currentMovie.getMovieDetails().getHebrewName());
         branchName.valueProperty().addListener(this::onBranchSelection);

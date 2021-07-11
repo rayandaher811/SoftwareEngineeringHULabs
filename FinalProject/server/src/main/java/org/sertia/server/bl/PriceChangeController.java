@@ -113,7 +113,7 @@ public class PriceChangeController {
 					if(streaming == null)
 						throw new SertiaException("אין חבילת צפייה עבור הסרט " + request.getMovie().getId());
 
-					streaming.setExtraDayPrice(request.getNewPrice());
+					streaming.setExtraHourPrice(request.getNewPrice());
 					session.update(streaming);
 					break;
 				case Screening:

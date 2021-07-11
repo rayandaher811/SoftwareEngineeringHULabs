@@ -78,7 +78,9 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
         Object selectedItem = movieToRemove.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             alertData = MUST_SPECIFIY_A_MOVIE_TO_REMOVE;
+            return false;
         }
-        return false;
+
+        return true;
     }
 }

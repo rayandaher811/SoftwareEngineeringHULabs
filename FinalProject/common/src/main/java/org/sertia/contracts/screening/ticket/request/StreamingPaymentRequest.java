@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class StreamingPaymentRequest extends BasicPaymentRequest {
     public int movieId;
     public LocalDateTime startTime;
-    public int extraDays;
+    public int extraHours;
 
     public StreamingPaymentRequest(String cardHolderId,
                                    String cardHolderName,
@@ -20,6 +20,6 @@ public class StreamingPaymentRequest extends BasicPaymentRequest {
         super(cardHolderId, cardHolderName, creditCardNumber, cardHolderEmail, cardHolderPhone, cvv, expirationDate);
         this.movieId = movieId;
         this.startTime = startTime;
-        this.extraDays = extraDays;
+        this.extraHours = extraDays;
     }
 }

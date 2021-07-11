@@ -93,7 +93,7 @@ public class MoviesCatalogController extends Reportable {
                         Optional.ofNullable(streamings.get(movie.getId()))
                                 .ifPresent(streaming -> {
                                     sertiaMovie.isStreamable = true;
-                                    sertiaMovie.extraDayPrice = streaming.extraDayPrice;
+                                    sertiaMovie.extraDayPrice = streaming.extraHourPrice;
                                 });
                         sertiaMovieList.add(sertiaMovie);
                     });

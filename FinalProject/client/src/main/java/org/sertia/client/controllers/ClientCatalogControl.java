@@ -76,16 +76,4 @@ public class ClientCatalogControl extends ClientControl {
     public GetStreamingByLinkResponse getStreamingByLink(String link){
         return client.request(new GetStreamingByLinkRequest(link), GetStreamingByLinkResponse.class);
     }
-
-    public List<String> getAllBranchesName() {
-        HashSet<String> branches = new HashSet<>();
-        List<SertiaMovie> allMovies = client.request(new SertiaCatalogRequest(), SertiaCatalogResponse.class).movies;
-        allMovies.stream().forEach(sertiaMovie -> {
-            sertiaMovie.getScreenings().forEach(screening -> {
-                branches.add(screening.getCinemaName());
-            });
-        });
-        ArrayList<String> values = new ArrayList<>(branches);
-        return values;
-    }
 }

@@ -20,6 +20,8 @@
             <VBox alignment="CENTER" spacing="5">
                 <Label text="שם הסרט"/>
                 <TextField fx:id="movieName" maxWidth="180" disable="true" alignment="CENTER"/>
+                <Label text="אורך הסרט"/>
+                <TextField fx:id="movieLength" maxWidth="180" disable="true" alignment="CENTER"/>
                 <Label text="שם הלקוח"/>
                 <TextField fx:id="nameTxtField" maxWidth="180" maxHeight="300" alignment="CENTER"/>
                 <Label>טלפון</Label>
@@ -29,13 +31,12 @@
 
                 <HBox alignment="CENTER" spacing="5">
                     <VBox alignment="CENTER" spacing="5">
-                        <Label fx:id="numberOfRentalDaysLabel" visible="false" text="מספר ימי השכרה"/>
-                        <Label fx:id="numberOfRentalDays" visible="false" prefHeight="25.0"/>
+                        <Label fx:id="numberOfAvailabilityHoursLabel" text="בסך הכל שעות זמינות"/>
+                        <Label fx:id="numberOfAvailabilityHours" prefHeight="25.0"/>
                     </VBox>
                     <VBox alignment="CENTER" spacing="5">
-                        <Label>השכרה עד ל-תאריך</Label>
-                        <DatePicker fx:id="datePickerTo" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0"
-                                    prefWidth="120.0" BorderPane.alignment="CENTER"/>
+                        <Label>כמות שעות נוספת (מעבר לאורך הסרט)</Label>
+                        <TextField fx:id="extraHoursTextField" maxWidth="180" maxHeight="300" alignment="CENTER"/>
                     </VBox>
                     <VBox alignment="CENTER" spacing="5">
                         <Label>בשעה</Label>

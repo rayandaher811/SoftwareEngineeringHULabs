@@ -26,12 +26,12 @@ public class BuyOnlineScreeningLinkDataHolder {
         this.startDateTime = null;
     }
 
-    public void setClientData(String clientName, String email, String phone, int numberOfDaysForRental, LocalDateTime startDateTime) {
+    public void setClientData(String clientName, String email, String phone, int numberOfExtraHours, LocalDateTime startDateTime) {
         this.clientName = clientName;
         this.email = email;
         this.phone = phone;
         this.isInitialized = true;
-        this.numberOfDaysForRental = numberOfDaysForRental;
+        this.numberOfDaysForRental = numberOfExtraHours;
         this.startDateTime = startDateTime;
     }
 
