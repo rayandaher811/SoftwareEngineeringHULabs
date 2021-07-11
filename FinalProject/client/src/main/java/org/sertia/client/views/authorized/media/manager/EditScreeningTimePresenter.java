@@ -43,6 +43,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         HashMap<SertiaMovie, HashMap<String, List<ClientScreening>>> movieToCinemaAndScreenings = new HashMap<>();
 
         for (SertiaMovie screeningMovie : movies) {
+            movieToCinemaAndScreenings.put(screeningMovie, new HashMap());
             for (ClientScreening specificScreening : screeningMovie.getScreenings()) {
                 if (movieToCinemaAndScreenings.containsKey(screeningMovie)) {
                     if (movieToCinemaAndScreenings.get(screeningMovie).containsKey(specificScreening.getCinemaName())) {
@@ -52,12 +53,6 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                             add(specificScreening);
                         }});
                     }
-                } else {
-                    movieToCinemaAndScreenings.put(screeningMovie, new HashMap() {{
-                        put(specificScreening.getCinemaName(), new ArrayList<>() {{
-                            add(specificScreening);
-                        }});
-                    }});
                 }
             }
         }
@@ -225,16 +220,15 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                         }});
                     }
                 }
-                
-                if(!sertiaMovie.getScreenings().isEmpty()){
-                    if (moviesByType.containsKey("CURRENTLY-PLAYING")) {
-                        moviesByType.get("CURRENTLY-PLAYING").add(sertiaMovie);
-                    } else {
-                        moviesByType.put("CURRENTLY-PLAYING", new ArrayList<>() {{
-                            add(sertiaMovie);
-                        }});
-                    }
+
+                if (moviesByType.containsKey("CURRENTLY-PLAYING")) {
+                    moviesByType.get("CURRENTLY-PLAYING").add(sertiaMovie);
+                } else {
+                    moviesByType.put("CURRENTLY-PLAYING", new ArrayList<>() {{
+                        add(sertiaMovie);
+                    }});
                 }
+
                 // TODO: what's about movies which can be streamable and also have screenings? they will appear twice... what do you think we have to do?
                 if (sertiaMovie.isStreamable) {
                     if (moviesByType.containsKey("STREAMABLE")) {
