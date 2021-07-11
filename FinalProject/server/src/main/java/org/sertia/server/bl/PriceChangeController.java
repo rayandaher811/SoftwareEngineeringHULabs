@@ -57,7 +57,7 @@ public class PriceChangeController {
 			// Making sure the requests is valid if streaming
 			if(request.getTicketType() == TicketType.Streaming)
 				if(!DbUtils.getById(Streaming.class, priceChangeRequest.movieId).isPresent())
-					throw new SertiaException("You are requesting to change streaming price to non-streamable movie");
+					throw new SertiaException("הינך מבקש לשנות מחיר של סטרימינג לסרט שלא ניתן לסטרימינג.");
 
 			// Saving the request
 			session.beginTransaction();
@@ -120,7 +120,7 @@ public class PriceChangeController {
 					// Updating the screenable movie properly
 					ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, request.getMovie().getId());
 					if(screenableMovie == null)
-						throw new SertiaException("There are no such screenable movie with the id " + request.getMovie().getId());
+						throw new SertiaException("לא קיים סרט ניתן להקרנה עם המזהה " + request.getMovie().getId());
 
 					screenableMovie.setTicketPrice(request.getNewPrice());
 					session.update(screenableMovie);
@@ -176,7 +176,7 @@ public class PriceChangeController {
 		PriceChangeRequest request = session.get(PriceChangeRequest.class, priceChangeRequestId);
 
 		if(request == null)
-			throw new SertiaException("THere are no such requests with the " + priceChangeRequestId + " Id");
+			throw new SertiaException("אין בקשוה לשינוי מחיר עם המזהה " + priceChangeRequestId + ".");
 		return request;
 	}
 

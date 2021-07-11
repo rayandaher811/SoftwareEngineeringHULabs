@@ -98,19 +98,19 @@ public class StreamingTicketController extends Reportable {
                         break;
                     } else {
                         response.setSuccessful(false);
-                        response.setFailReason("The link is not active, its activation duration are " + streamingLink.getActivationStart() + " - " + streamingLink.getActivationEnd());
+                        response.setFailReason("הלינק אינו פעיל ושעות פעילותו הינם: " + streamingLink.getActivationStart() + " - " + streamingLink.getActivationEnd());
                         break;
                     }
                 }
             }
 
             if(!linkFound)
-                response.setFailReason("There are no such link");
+                response.setFailReason("לא קיים לינק שכזה.");
 
             return response;
         } catch (RuntimeException exception) {
             exception.printStackTrace();
-            throw new SertiaException("We couldn't get your link due internal technical issues.");
+            throw new SertiaException("לא היה ביכולתנו להשיג את לינק המבוקש בעקבות תקלוץ טכניות.");
         }
     }
 

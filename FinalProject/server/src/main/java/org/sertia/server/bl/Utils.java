@@ -39,7 +39,7 @@ public final class Utils {
             case Streaming: return ClientTicketType.Streaming;
             case Screening: return ClientTicketType.Screening;
             case Voucher: return ClientTicketType.Voucher;
-            default: throw new SertiaException("There are no such ticket type");
+            default: throw new SertiaException("לא קיים סוג כרטיס שכזה.");
         }
     }
 
@@ -48,7 +48,7 @@ public final class Utils {
             case Streaming: return TicketType.Streaming;
             case Screening: return TicketType.Screening;
             case Voucher: return TicketType.Voucher;
-            default: throw new SertiaException("There are no such ticket type");
+            default: throw new SertiaException("לא קיים סוג כרטיס שכזה.");
         }
     }
 }

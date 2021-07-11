@@ -227,7 +227,7 @@ public class MoviesCatalogController extends Reportable {
     private Hall getHall(int hallId, Session session) throws SertiaException {
         Optional<Hall> hall = DbUtils.getById(Hall.class, hallId, session);
         if (!hall.isPresent())
-            throw new SertiaException("Hall with id : " + hallId + " not found.");
+            throw new SertiaException("האולם עם המזהה : " + hallId + " לא נמצא במערכת.");
 
         return hall.get();
     }
@@ -302,7 +302,7 @@ public class MoviesCatalogController extends Reportable {
             ScreenableMovie screenableMovie = session.get(ScreenableMovie.class, movieId);
 
             if (movie == null)
-                throw new SertiaException("There are no such movie with the " + movieId + " Id.");
+                throw new SertiaException("אין סרט במערכת עם המזהה " + movieId + ".");
 
             if (screenableMovie != null) {
                 List<Screening> screenings = DbUtils.getAll(Screening.class);
