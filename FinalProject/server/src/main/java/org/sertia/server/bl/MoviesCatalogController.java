@@ -137,7 +137,7 @@ public class MoviesCatalogController extends Reportable {
                     actor,
                     movieData.movieDetails.hebrewName,
                     movieData.movieDetails.name,
-                    movieData.isComingSoon,
+                    true,
                     movieData.movieDetails.description,
                     movieData.movieDetails.posterImageUrl,
                     movieData.movieDetails.duration);

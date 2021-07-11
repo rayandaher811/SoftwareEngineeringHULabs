@@ -22,6 +22,8 @@
                            promptText="שם הסרט באנגלית"/>
                 <TextField fx:id="movieHebrewNameTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
                            promptText="שם הסרט בעברית"/>
+                <TextField fx:id="movieLengthTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="אורך הסרט בדקות"/>
                 <TextField fx:id="producerNameTxt" maxWidth="500" maxHeight="300" promptText="מפיק"
                            alignment="CENTER"/>
                 <TextField fx:id="mainActorsTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
@@ -35,15 +37,11 @@
                             <CheckBox fx:id="availableOnline"/>
                         </VBox>
                     </Group>
-                    <Group>
-                        <VBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="7">
-                            <Label>בקרוב?</Label>
-                            <CheckBox fx:id="isComingSoonCb"/>
-                        </VBox>
-                    </Group>
                 </HBox>
                 <TextField fx:id="ticketPriceTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
                            promptText="מחיר כרטיס"/>
+                <TextField fx:id="streamingPriceTxt" maxWidth="500" maxHeight="300" alignment="CENTER"
+                           promptText="מחיר חבילת צפייה"/>
                 <TextField fx:id="moviePhotoUrl" maxWidth="500" maxHeight="300" alignment="CENTER"
                            promptText="לינק לתמונה"/>
                 <Button onMouseClicked="#addMovie" minHeight="26.0"

@@ -14,10 +14,10 @@ public class SertiaMovie extends CinemaScreeningMovie  {
 	public SertiaMovie(ClientMovie movieDetails, List<ClientScreening> screenings,
 					   double ticketPrice,
 					   boolean isStreamable,
-					   boolean isComingSoon) {
+					   double streamingPrice) {
 		super(movieDetails, screenings, ticketPrice);
 		this.isStreamable = isStreamable;
-		this.isComingSoon = isComingSoon;
+		this.extraDayPrice = streamingPrice;
 	}
 
 	@Override

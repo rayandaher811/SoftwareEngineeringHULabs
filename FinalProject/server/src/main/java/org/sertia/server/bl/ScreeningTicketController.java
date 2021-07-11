@@ -129,6 +129,7 @@ public class ScreeningTicketController extends Reportable {
             voucher.setTicketsBalance(vouchersInfo.getVoucherInitialBalance());
             voucher.setPurchaseDate(LocalDateTime.now());
             response.voucherId = (int) session.save(voucher);
+            response.initialBalance = voucher.getTicketsBalance();
             CustomerNotifier.getInstance().notify(paymentDetails.cardHolderEmail, getVoucherMail(response));
 
             return response;
@@ -155,11 +156,14 @@ public class ScreeningTicketController extends Reportable {
         return response;
     }
 
-    public SertiaBasicResponse getVoucherBalance(VoucherBalanceRequest request) {
+    public VoucherBalanceResponse getVoucherBalance(VoucherBalanceRequest request) {
         VoucherBalanceResponse response = new VoucherBalanceResponse(true);
         return DbUtils.getById(TicketsVoucher.class, request.voucherId).map(ticketsVoucher -> {
-            response.balance = ticketsVoucher.getTicketsBalance();
+            if(!request.clientId.equals(ticketsVoucher.getCustomerPaymentDetails().getPayerId())) {
+                return Utils.createFailureResponse(response, "לא קיימת כרטיסיה עבור הנתונים שהוזנו");
+            }
 
+            response.balance = ticketsVoucher.getTicketsBalance();
             return response;
         }).orElseGet(() -> {
             response.isSuccessful = false;
@@ -275,9 +279,8 @@ public class ScreeningTicketController extends Reportable {
     }
 
     private boolean isVoucherUsageValid(VoucherDetails voucherDetails, int numberOfTickets) {
-        SertiaBasicResponse voucherBalance = getVoucherBalance(new VoucherBalanceRequest(voucherDetails.voucherId));
-        return voucherBalance.isSuccessful &&
-                (((VoucherBalanceResponse) voucherBalance).balance >= numberOfTickets);
+        VoucherBalanceResponse voucherBalance = getVoucherBalance(new VoucherBalanceRequest(voucherDetails.voucherId, voucherDetails.buyerId));
+        return voucherBalance.isSuccessful && (voucherBalance.balance >= numberOfTickets);
     }
 
     private boolean doesVoucherExist(VoucherDetails voucherDetails) {
@@ -316,7 +319,8 @@ public class ScreeningTicketController extends Reportable {
 
     private String getVoucherMail(VoucherPaymentResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nמזהה כרטיסיה:").append(response.voucherId);
+        stringBuilder.append("\nמזהה כרטיסיה:").append(response.voucherId).append("\n")
+        .append("\nיתרה:").append(response.initialBalance).append("\n");
         return stringBuilder.toString();
     }
 

@@ -76,7 +76,7 @@ public class ClientPurchaseControl extends ClientControl {
     }
 
     public VoucherBalanceResponse requestVoucherBalance(int voucherId, String clientId) {
-        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId), VoucherBalanceResponse.class);
+        VoucherBalanceResponse response = client.request(new VoucherBalanceRequest(voucherId, clientId), VoucherBalanceResponse.class);
         if (response.isSuccessful) {
             return response;
         }
