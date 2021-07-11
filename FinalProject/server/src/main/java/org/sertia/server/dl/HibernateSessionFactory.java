@@ -11,15 +11,31 @@ import javax.persistence.PersistenceContext;
 public class HibernateSessionFactory {
     @PersistenceContext
     private static SessionFactory sessionFactory;
+    private static String dbHost;
+    private static String dbPort;
+    private static String dbName;
+    private static String dbUser;
+    private static String dbPassword;
 
     private HibernateSessionFactory() {
+    }
+
+    public static void initConfig(String dbInsertedHost, String dbInsertedPort, String dbInsertedName, String dbInsertedUser, String dbInsertedPassword){
+        dbName = dbInsertedName;
+        dbPassword = dbInsertedPassword;
+        dbUser = dbInsertedUser;
+        dbPort = dbInsertedPort;
+        dbHost = dbInsertedHost;
     }
 
     public static SessionFactory getInstance() {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
-
+                // Setting the db configs
+                configuration.setProperty("hibernate.connection.url", "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?serverTimezone=UTC");
+                configuration.setProperty("hibernate.connection.username", dbUser);
+                configuration.setProperty("hibernate.connection.password", dbPassword);
                 // Adding the data objects package.
                 configuration.addAnnotatedClass(Actor.class);
                 configuration.addAnnotatedClass(Cinema.class);

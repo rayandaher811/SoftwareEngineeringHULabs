@@ -1,14 +1,23 @@
 package org.sertia.server;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.sertia.server.communication.MessageHandler;
 import org.sertia.server.dl.HibernateSessionFactory;
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
+        String dbHost = args[0];
+        String dbPort = args[1];
+        String dbName = args[2];
+        String dbUser = args[3];
+        String dbPassword = args[4];
+
+        HibernateSessionFactory.initConfig(dbHost, dbPort, dbName, dbUser, dbPassword);
+
         fillDb();
-        MessageHandler messageHandler = new MessageHandler(1325);
+        MessageHandler messageHandler = new MessageHandler(1235);
         try {
             messageHandler.startListening();
         } catch (IOException e) {
