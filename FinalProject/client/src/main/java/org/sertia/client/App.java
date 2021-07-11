@@ -34,7 +34,10 @@ public class App extends Application {
 
     public static void run(String[] args) {
         SertiaClient client;
-        if (SertiaClient.initializeClientServerConnection("127.0.0.1", 1325)) {
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
+
+        if (SertiaClient.initializeClientServerConnection(host, port)) {
             client = SertiaClient.getInstance();
             try {
                 client.openConnection();
