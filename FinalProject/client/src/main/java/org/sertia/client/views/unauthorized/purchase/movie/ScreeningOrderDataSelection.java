@@ -43,6 +43,8 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
 
     private int numberOfFreeTickets;
 
+    private int usedTickets;
+
     public void back() {
         try {
             App.setRoot("unauthorized/sertiaCatalogPresenter");
@@ -93,7 +95,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
         if (response.isActive) {
             int hallCapacity = seatMapResponse.hallSeats.size();
             int allowedCapacity = getMaxTicketsForHall(hallCapacity, response.maxNumberOfPeople);
-            int usedTickets = hallCapacity - numberOfFreeTickets;
+            usedTickets = hallCapacity - numberOfFreeTickets;
             int allowedToBuy = allowedCapacity - usedTickets;
             numberOfFreeSeatsLabel.setText(String.valueOf(allowedToBuy));
         } else {
@@ -136,7 +138,7 @@ public class ScreeningOrderDataSelection extends BasicPresenterWithValidations i
 
                 int numOfTicketsToPurchase = Integer.parseInt(numberOfTicketsToPurchase.getText());
                 boolean isNotOverTheLimit = true;
-                if (numberOfFreeTickets - numOfTicketsToPurchase >= response.maxNumberOfPeople){
+                if (usedTickets + numOfTicketsToPurchase > response.maxNumberOfPeople){
                     isNotOverTheLimit = false;
                     userMistakes.add("You exceeded max allowed seats in hall");
                 }
