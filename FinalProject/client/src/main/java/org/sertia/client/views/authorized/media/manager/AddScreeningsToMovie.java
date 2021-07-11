@@ -29,20 +29,19 @@ public class AddScreeningsToMovie implements Initializable {
     public Label movieNameLabel;
     public DatePicker datePickerComp;
     public TextField screeningTimeTxt;
-    public ComboBox<Integer> hallNumberCombo;
+    public ComboBox<ClientHall> hallNumberCombo;
     @FXML
     private ComboBox<String> branchName;
     private int cinemaId;
 
     public void addScreenings() throws IOException {
-        if (cinemaId != -1) {
             CinemaScreeningMovie currentMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
             LocalDate inputDate = datePickerComp.getValue();
             String screeningHour = screeningTimeTxt.getText();
             LocalDateTime screeningTime = LocalDateTime.of(inputDate.getYear(),
                     inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(screeningHour), getMin(screeningHour));
             SertiaBasicResponse addScreeningResponse =
-                    ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, hallNumberCombo.getValue(), cinemaId);
+                    ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, hallNumberCombo.getValue().hallId, cinemaId);
 
             if (addScreeningResponse.isSuccessful) {
                 Utils.popAlert(Alert.AlertType.INFORMATION, ADD_SCREENING_TO_MOVIE, SCREENING_ADDED_SUCCESSFULLY);
@@ -50,9 +49,6 @@ public class AddScreeningsToMovie implements Initializable {
             } else {
                 Utils.popAlert(Alert.AlertType.ERROR, ADD_SCREENING_TO_MOVIE, addScreeningResponse.failReason);
             }
-        } else {
-            System.out.println("BGBGBGBGB EERRRORORR!!");
-        }
     }
 
     public void back() {
@@ -76,7 +72,7 @@ public class AddScreeningsToMovie implements Initializable {
         hallNumberCombo.getItems().clear();
         CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
         List<ClientHall> clientHallsInCinema = response.cinemaToHalls.get(branchName.getSelectionModel().getSelectedItem());
-        clientHallsInCinema.forEach(clientHall -> hallNumberCombo.getItems().add(clientHall.hallNumber));
+        clientHallsInCinema.forEach(clientHall -> hallNumberCombo.getItems().add(clientHall));
     }
 
     private int getHour(String hour) {
