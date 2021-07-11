@@ -25,8 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static org.sertia.client.Constants.ADD_STREAMING_LINK;
-import static org.sertia.client.Constants.REMOVE_STREAMING_LINK;
+import static org.sertia.client.Constants.*;
 
 public class AddOrRemoveStreamingPresenter implements Initializable {
     public ComboBox availableMovies;
@@ -49,7 +48,7 @@ public class AddOrRemoveStreamingPresenter implements Initializable {
         alertData = "";
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, MOVIES_CATALOG_FETCH + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
             movieNameToId = new HashMap<>();
@@ -72,19 +71,19 @@ public class AddOrRemoveStreamingPresenter implements Initializable {
                         ClientCatalogControl.getInstance().tryAddStreaming(movieNameToId.get(observableValue.getValue()).getMovieId(),
                                 Double.parseDouble(streamingPriceTxt.getText()));
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Add streaming to movie", "Please insert valid number represents link's price");
+                Utils.popAlert(Alert.AlertType.ERROR, ADD_STREAMING_TO_MOVIE, ENTER_VALID_STREAMING_PRICE);
             }
         }
         if (response != null) {
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Add screening dialog", "Screening added successfully!");
+                Utils.popAlert(Alert.AlertType.INFORMATION, ADD_STREAMING_TO_MOVIE, STREAMING_ADDED_SUCCESSFULLY);
                 try {
                     App.setRoot("authorized/employeesForm");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Add screening dialog", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, ADD_STREAMING_TO_MOVIE, response.failReason);
             }
         }
     }

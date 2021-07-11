@@ -1,6 +1,5 @@
 package org.sertia.client.views;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -15,11 +14,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static org.sertia.client.Constants.AVAILABLE_MOVIES_IN_BRANCH;
-import static org.sertia.client.Constants.VIEW_WORKSTATION;
+import static org.sertia.client.Constants.*;
 
 public class PrimaryController implements Initializable {
-
     public Button availableMoviesInSertiaBtn;
     public Label welcomeLabel;
 
@@ -60,12 +57,12 @@ public class PrimaryController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (System.getenv("SPECIFIC_BRANCH")!= null && !System.getenv("SPECIFIC_BRANCH").isEmpty()) {
+        if (System.getenv(SPECIFIC_BRANCH) != null && !System.getenv(SPECIFIC_BRANCH).isEmpty()) {
             CinemaAndHallsResponse response = ClientCatalogControl.getInstance().getCinemasAndHalls();
-            if (!response.isSuccessful){
-                Utils.popAlert(Alert.AlertType.ERROR, "PrimaryController", "Failed to get cinemas list");
+            if (!response.isSuccessful) {
+                Utils.popAlert(Alert.AlertType.ERROR, PRIMARY_CONTROLLER, CINIMAS_LIST_FETCH_ERROR);
             } else {
-                String cinemaName = System.getenv("SPECIFIC_BRANCH");
+                String cinemaName = System.getenv(SPECIFIC_BRANCH);
                 if (response.cinemaToHalls.keySet().contains(cinemaName)) {
                     SpecificViewHolder.getInstance().initializeSpecificBranch(cinemaName);
                     welcomeLabel.setText(VIEW_WORKSTATION + cinemaName);

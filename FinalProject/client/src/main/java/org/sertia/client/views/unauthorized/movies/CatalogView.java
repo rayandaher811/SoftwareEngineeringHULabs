@@ -226,7 +226,7 @@ public class CatalogView implements Initializable {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, MOVIES_CATALOG_FETCH, CATALOG_FETCH_ERROR + response.failReason);
         } else {
             queriedMoviesSinceLastLaunch = response.movies;
             List<SertiaMovie> moviesList = List.copyOf(queriedMoviesSinceLastLaunch);
@@ -276,7 +276,7 @@ public class CatalogView implements Initializable {
 
             CinemaAndHallsResponse cinemaResponse = ClientCatalogControl.getInstance().getCinemasAndHalls();
             if (!cinemaResponse.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.ERROR, "Catalog view", "couldnt fetch cinemas list");
+                Utils.popAlert(Alert.AlertType.ERROR, CINIMA_BRANCHES_QUERY, CINIMAS_LIST_FETCH_ERROR);
             } else {
                 filterByBranch.getItems().addAll(cinemaResponse.cinemaToHalls.keySet());
             }
@@ -316,7 +316,7 @@ public class CatalogView implements Initializable {
                 if (isToDateSelected) {
                     filterByEndDate(); //
                 } else {
-                    Utils.popAlert(Alert.AlertType.ERROR, "Search movies error", "must specify search parameters");
+                    Utils.popAlert(Alert.AlertType.ERROR, SEARCH_MOVIES_QUERY, MUST_SPECIFY_SEARCH_PARAMS);
                 }
             }
         }

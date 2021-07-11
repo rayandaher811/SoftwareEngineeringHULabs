@@ -59,11 +59,9 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
                             1, 0, 0));
             VoucherPaymentResponse response = ClientPurchaseControl.getInstance().purchaseVoucher(request);
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, VOUCHER_PURCHASING_TITLE,
-                        VOUCHER_ID + response.voucherId);
+                Utils.popAlert(Alert.AlertType.INFORMATION, BUYING_PREPAID_TICKETS_FROM_SERTIA, VOUCHER_ID + response.voucherId);
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system",
-                        response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, BUYING_PREPAID_TICKETS_FROM_SERTIA, response.failReason);
             }
 
             try {
@@ -112,7 +110,7 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
     private boolean isCvvCorrect() {
         if (cvv.getText() == null || cvv.getText().isBlank() || cvv.getText().isEmpty() || cvv.getText().length() != 3) {
-            userMistakes.add("Please fill your cvv, it's in size 3 exactly");
+            userMistakes.add(CVV_HINT);
             return false;
         }
         return true;
@@ -120,7 +118,7 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
     private boolean isIdCorrcet() {
         if (cardHolderId.getText() == null || cardHolderId.getText().isBlank() || cardHolderId.getText().isEmpty() || cardHolderId.getText().length() != 9) {
-            userMistakes.add("Please fill your ID number, it should be in length of 9");
+            userMistakes.add(ID_EXCEPTION_EXPLANATION);
             return false;
         }
         return true;
@@ -128,7 +126,7 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
     private boolean isCreditCardProviderCorrect() {
         if (creditCardProviderCombo.getSelectionModel().getSelectedItem() == null || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isEmpty() || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isBlank()) {
-            userMistakes.add("Please specify credit card provider from the list");
+            userMistakes.add(CREDIT_CARD_PROVIDER_HINT);
             return false;
         }
         if (CreditCardProvider.valueOf(creditCardProviderCombo.getSelectionModel().getSelectedItem().toString()) != null) {
@@ -153,7 +151,7 @@ public class PrepaidTicketsPurchaseView extends ByCreditCardFormPresenter {
 
     protected boolean isFullNameValid(String fullName) {
         if (fullName.split(" ").length != 2) {
-            userMistakes.add("Please write down your full name, first name + last name");
+            userMistakes.add(FULL_NAME_EXCEPTION_EXPLANATION);
             return false;
         }
         return true;

@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static org.sertia.client.Constants.FETCH_MOVIE_ERROR;
+import static org.sertia.client.Constants.MOVIES_CATALOG_FETCH;
+
 public class PurchaseMovieTicketsPresenter implements Initializable {
     @FXML
     private TextField amountOfTicketsTxt;
@@ -92,7 +95,7 @@ public class PurchaseMovieTicketsPresenter implements Initializable {
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, MOVIES_CATALOG_FETCH + response.failReason);
         } else {
             List<SertiaMovie> screeningMovieArrayList = response.movies;
             HashMap<SertiaMovie, List<ClientScreening>> movieToScreenings = new HashMap<>();

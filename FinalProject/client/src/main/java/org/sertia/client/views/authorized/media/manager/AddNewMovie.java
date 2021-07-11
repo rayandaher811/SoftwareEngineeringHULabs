@@ -19,6 +19,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.sertia.client.Constants.*;
+
 // TODO: base validations
 public class AddNewMovie extends BasicPresenterWithValidations {
     @FXML
@@ -45,7 +47,7 @@ public class AddNewMovie extends BasicPresenterWithValidations {
     @Override
     protected boolean isDataValid() {
         boolean isStreamingValid = true;
-        if(availableOnline.isSelected() && !isPriceValid(streamingPriceTxt.getText())) {
+        if (availableOnline.isSelected() && !isPriceValid(streamingPriceTxt.getText())) {
             isStreamingValid = false;
         }
 
@@ -60,7 +62,7 @@ public class AddNewMovie extends BasicPresenterWithValidations {
     }
 
     public void addMovie(MouseEvent mouseEvent) {
-        if(isInputValid()) {
+        if (isInputValid()) {
             ClientMovie clientMovie = new ClientMovie(movieHebrewNameTxt.getText(), movieNameTxt.getText(),
                     movieDescriptionTxt.getText(), mainActorsTxt.getText(),
                     producerNameTxt.getText(), moviePhotoUrl.getText(), Duration.ZERO);
@@ -80,16 +82,16 @@ public class AddNewMovie extends BasicPresenterWithValidations {
 
             try {
                 if (response.isSuccessful) {
-                    Utils.popAlert(Alert.AlertType.INFORMATION, "הוספת סרט", "הסרט התווסף בהצלחה וכעת ניתן להוסיף הקרנות");
+                    Utils.popAlert(Alert.AlertType.INFORMATION, ADD_MOVIE, ADD_MOVIE_COMPLETED_SUCCESSFULLY);
                     App.setRoot("authorized/employeesForm");
                 } else {
-                    Utils.popAlert(Alert.AlertType.ERROR, "הוספת סרט", response.failReason);
+                    Utils.popAlert(Alert.AlertType.ERROR, ADD_MOVIE, response.failReason);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR,"הוספת סרט", "נתוני הסרט אינם תקינים");
+            Utils.popAlert(Alert.AlertType.ERROR, ADD_MOVIE, MOVIE_DETAILS_INVALID);
         }
     }
 

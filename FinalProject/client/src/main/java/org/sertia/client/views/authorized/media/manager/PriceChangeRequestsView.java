@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static org.sertia.client.Constants.*;
+
 // TODO: use infra
 public class PriceChangeRequestsView extends BasicPresenterWithValidations implements Initializable {
 
@@ -54,9 +56,9 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             SertiaBasicResponse response =
                     ClientPriceChangeControl.getInstance().requestPriceChange(movieId, ticketType, Double.parseDouble(movieTicketPriceTxt.getText()));
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
+                Utils.popAlert(Alert.AlertType.INFORMATION, PRICE_CHANGE_REQUEST, PRICE_CHANGE_REQUEST_ENDED_SUCCESSFULLY);
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, PRICE_CHANGE_REQUEST, response.failReason);
             }
             try {
                 App.setRoot("authorized/employeesForm");
@@ -64,7 +66,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
                 e.printStackTrace();
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Price change request validation failure", errorMessage);
+            Utils.popAlert(Alert.AlertType.ERROR, PRICE_CHANGE_REQUEST, errorMessage);
         }
     }
 
@@ -99,7 +101,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
         });
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, MOVIES_CATALOG_FETCH + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
             moviesComboBox.getItems().addAll(catalog);
@@ -135,7 +137,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
         if (moviesComboBox.getSelectionModel() != null && moviesComboBox.getSelectionModel().getSelectedItem() != null) {
             return true;
         }
-        errorMessage += "Please select movie to change it's ticket's price" + "\n";
+        errorMessage += "אנא בחרי סרט לשינוי מחירו" + "\n";
         return false;
     }
 
@@ -144,7 +146,7 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             Double.parseDouble(movieTicketPriceTxt.getText());
             return true;
         } catch (Exception e) {
-            errorMessage += "Please set valid non-empty ticket price value" + "\n";
+            errorMessage += "אנא מלאי מחיר לשינוי" + "\n";
             return false;
         }
     }

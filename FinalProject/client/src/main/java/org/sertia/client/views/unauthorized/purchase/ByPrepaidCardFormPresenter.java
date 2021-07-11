@@ -10,6 +10,7 @@ import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.global.SeatsHolder;
+import org.sertia.client.views.Utils;
 import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
 import org.sertia.contracts.screening.ticket.VoucherDetails;
 import org.sertia.contracts.screening.ticket.request.ScreeningTicketWithCovidRequest;
@@ -19,6 +20,8 @@ import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.sertia.client.Constants.*;
 
 public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
     public TextField voucherIdTxt;
@@ -32,10 +35,7 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
             if (response.isSuccessful) {
                 int currentBalance = response.balance;
                 if (currentBalance < NumberOfTicketsHolder.getInstance().getNumberOfTickets()) {
-                    Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
-                    missingKeyFieldsAlert.setTitle("אין מספיק יתרה בכרטיסיה");
-                    missingKeyFieldsAlert.setContentText("אנו מתנצלים, איך היתרה בכרטיסיה הוא כרגע " + currentBalance);
-                    missingKeyFieldsAlert.show();
+                    Utils.popAlert(Alert.AlertType.ERROR, PAYMENT_WITH_VOUCHER, PAYMENT_WITH_VOUCHER_FAILED + currentBalance);
                 } else {
                     VoucherDetails voucherDetails = new VoucherDetails(voucherClientId.getText(), voucherId);
                     if (ClientCovidRegulationsControl.getInstance().getCovidRegulationsStatus().isActive) {
@@ -45,13 +45,10 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
                     }
                 }
             } else {
-                Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
-                missingKeyFieldsAlert.setTitle("שגיאה בעת שימוש בכרטיסיה");
-                missingKeyFieldsAlert.setContentText("אנו מתנצלים, לא הצלחנו לקבל מידע על הכרטיסיה:\n " + response.failReason);
-                missingKeyFieldsAlert.show();
+                Utils.popAlert(Alert.AlertType.ERROR, PAYMENT_WITH_VOUCHER, COULDNT_FETCH_VOUCHER_DATA);
             }
         } else {
-            notifyClient();
+            Utils.popAlert(Alert.AlertType.ERROR, PAYMENT_WITH_VOUCHER, PLEASE_INSERT_VALID_VOUCHER_ID);
         }
     }
 
@@ -105,13 +102,6 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
                 isPurchaseIdValid(voucherIdTxt.getText());
     }
 
-    public void notifyClient() {
-        Alert missingKeyFieldsAlert = new Alert(Alert.AlertType.ERROR);
-        missingKeyFieldsAlert.setTitle("Payment with voucher");
-        missingKeyFieldsAlert.setContentText("Please insert valid voucher id");
-        missingKeyFieldsAlert.show();
-    }
-
     public void toMain(ActionEvent actionEvent) {
         try {
             App.setRoot("unauthorized/payment/selectionMethodForm");
@@ -119,29 +109,4 @@ public class ByPrepaidCardFormPresenter extends BasicPresenterWithValidations {
             e.printStackTrace();
         }
     }
-    /*
-        @FXML
-    private void checkBalance(){
-        if (isInputValid()) {
-
-            if (!response.isSuccessful) {
-                Alert.AlertType type;
-                String msg = "";
-                if (response.isSuccessful){
-                    type = Alert.AlertType.INFORMATION;
-                    msg = "Prepaid tickets bought successfully!";
-                } else {
-                    type = Alert.AlertType.ERROR;
-                    msg = response.failReason;
-                }
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying prepaid tickets from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
-            } else {
-                balanceTxt.setText(String.valueOf(response.balance));
-            }
-        }
-    }
-     */
 }

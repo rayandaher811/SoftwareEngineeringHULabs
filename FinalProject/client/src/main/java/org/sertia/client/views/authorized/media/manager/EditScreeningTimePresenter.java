@@ -210,7 +210,7 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
         ObservableList<TitledPane> list = FXCollections.observableArrayList();
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies catalog", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, MOVIES_CATALOG_FETCH + response.failReason);
         } else {
             List<SertiaMovie> moviesList = response.movies;
             HashMap<String, ArrayList<SertiaMovie>> moviesByType = new HashMap<>();

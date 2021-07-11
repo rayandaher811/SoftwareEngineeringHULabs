@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static org.sertia.client.Constants.FETCH_MOVIE_ERROR;
+
 public class ReportsViewPresenter implements Initializable {
     public Group paneData;
     public ComboBox reportsToShow;
@@ -46,7 +48,7 @@ public class ReportsViewPresenter implements Initializable {
         }
 
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Error fetching data from sertia server", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, response.failReason);
         } else {
             ObservableList<ClientReport> clientReports = FXCollections.observableList(new ArrayList<>(response.reports));
 

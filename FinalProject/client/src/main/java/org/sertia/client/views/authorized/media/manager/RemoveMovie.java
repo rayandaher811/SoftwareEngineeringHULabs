@@ -21,35 +21,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static org.sertia.client.Constants.*;
+
 public class RemoveMovie extends BasicPresenterWithValidations implements Initializable {
 
     @FXML
-    private ComboBox movieToRemove;
+    private ComboBox<String> movieToRemove;
     private HashMap<String, SertiaMovie> movieNameToId;
-    private boolean isBug;
     protected String alertData;
 
     @FXML
     public void requestRemove() {
-        if (isDataValid()) {
+        if (isInputValid()) {
             int movieId = movieNameToId.get(movieToRemove.getSelectionModel().getSelectedItem()).getMovieId();
             SertiaBasicResponse response = ClientCatalogControl.getInstance().tryRemoveMovie(movieId);
 
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Buying from sertia system", "operation ended successfully!");
+                Utils.popAlert(Alert.AlertType.INFORMATION, REMOVE_FROM_SERTIA_SYSTEM, REMOVE_ENDED_SUCCESSFULLY);
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Buying from sertia system", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, REMOVE_FROM_SERTIA_SYSTEM, response.failReason);
             }
             try {
                 App.setRoot("authorized/employeesForm");
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        } else {
-            if (isBug) {
-                Utils.popAlert(Alert.AlertType.ERROR, "Bug!", alertData);
-            } else {
-                Utils.popAlert(Alert.AlertType.WARNING, "Bug!", "Invalid using popup");
             }
         }
     }
@@ -65,11 +60,10 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        isBug = false;
         alertData = "";
         SertiaCatalogResponse response = ClientCatalogControl.getInstance().requestAllMoviesCatalog();
         if (!response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.ERROR, "Fetch movies list", "failed fetch catalog, error msg: " + response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, MOVIES_CATALOG_FETCH, FETCH_MOVIE_ERROR + response.failReason);
         } else {
             List<SertiaMovie> catalog = response.movies;
             movieNameToId = new HashMap<>();
@@ -82,15 +76,8 @@ public class RemoveMovie extends BasicPresenterWithValidations implements Initia
     @Override
     protected boolean isDataValid() {
         Object selectedItem = movieToRemove.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            if (selectedItem instanceof String) {
-                return true;
-            } else {
-                isBug = true;
-                alertData = "FATAL ERROR - BUG - Couldn't deserialize combobox option from object to sertia moview";
-            }
-        } else {
-            alertData = "You should choose a movie to remove";
+        if (selectedItem == null) {
+            alertData = MUST_SPECIFIY_A_MOVIE_TO_REMOVE;
         }
         return false;
     }

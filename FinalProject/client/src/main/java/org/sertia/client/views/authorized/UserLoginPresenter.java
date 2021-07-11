@@ -12,6 +12,8 @@ import org.sertia.contracts.user.login.LoginCredentials;
 import org.sertia.contracts.user.login.UserRole;
 import org.sertia.contracts.user.login.response.LoginResult;
 
+import static org.sertia.client.Constants.*;
+
 public class UserLoginPresenter {
 
     @FXML
@@ -23,11 +25,11 @@ public class UserLoginPresenter {
     private boolean isInputValid(String userName, String password) {
         if (userName.isEmpty() || password.isEmpty()) {
             if (userName.isEmpty() && password.isEmpty())
-                Utils.popAlert(Alert.AlertType.ERROR, "Missing required fields alert", "Must insert both user name and password");
+                Utils.popAlert(Alert.AlertType.ERROR, LOGIN_ATTEMPT_TITLE, MUST_INSERT_USER_NAME_AND_PASSWORD);
             else if (userName.isEmpty())
-                Utils.popAlert(Alert.AlertType.ERROR, "Missing required fields alert", "Must insert user name");
+                Utils.popAlert(Alert.AlertType.ERROR, LOGIN_ATTEMPT_TITLE, MUST_INSERT_USER_NAME);
             else
-                Utils.popAlert(Alert.AlertType.ERROR, "Missing required fields alert", "Must insert password");
+                Utils.popAlert(Alert.AlertType.ERROR, LOGIN_ATTEMPT_TITLE, MUST_INSERT_PASSWORD);
             return false;
         }
         return true;
@@ -46,7 +48,7 @@ public class UserLoginPresenter {
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "התחברות נכשלה", "שם משתמש או סיסמא אינם נכונים");
+                Utils.popAlert(Alert.AlertType.ERROR, LOGIN_ATTEMPT_TITLE, LOGIN_FAILED);
             }
         }
     }

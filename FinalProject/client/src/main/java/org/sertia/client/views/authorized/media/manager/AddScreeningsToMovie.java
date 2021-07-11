@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.time.LocalDateTime;
 
+import static org.sertia.client.Constants.ADD_SCREENING_TO_MOVIE;
+import static org.sertia.client.Constants.SCREENING_ADDED_SUCCESSFULLY;
+
 public class AddScreeningsToMovie implements Initializable {
     public Label movieNameLabel;
     public TextField hallNumberTxt;
@@ -48,10 +51,10 @@ public class AddScreeningsToMovie implements Initializable {
                 ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, Integer.parseInt(hallNumberTxt.getText()), cinemaId);
 
         if (addScreeningResponse.isSuccessful){
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Add screening to movie in sertia", "Screening added successfully");
+            Utils.popAlert(Alert.AlertType.INFORMATION, ADD_SCREENING_TO_MOVIE, SCREENING_ADDED_SUCCESSFULLY);
             App.setRoot("authorized/employeesForm");
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Add screening to movie in sertia", addScreeningResponse.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, ADD_SCREENING_TO_MOVIE, addScreeningResponse.failReason);
             // TODO: fail reason is null
         }
     }

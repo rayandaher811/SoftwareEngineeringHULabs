@@ -36,9 +36,10 @@ public class ApprovePriceChangeRequests implements Initializable {
         if (response.isSuccessful) {
             initializeForm(response.unapprovedRequests, isRender);
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Buying prepaid tickets from sertia system", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, APPROVE_PRICE_CHANGE_REQUEST, response.failReason);
         }
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         renderForm(false);
@@ -73,10 +74,10 @@ public class ApprovePriceChangeRequests implements Initializable {
         // TODO: get movie name from ID
         Label movieName = new Label();
 
-        if(priceChangeRequest.clientTicketType != ClientTicketType.Voucher) {
+        if (priceChangeRequest.clientTicketType != ClientTicketType.Voucher) {
             GetMovieByIdResponse response = ClientCatalogControl.getInstance().requestMovieById(priceChangeRequest.movieId);
             if (!response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.ERROR, "Get movie name from server", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, response.failReason);
             } else {
                 movieName.setText(String.valueOf(response.movie.getName()));
             }
@@ -127,10 +128,10 @@ public class ApprovePriceChangeRequests implements Initializable {
         }
 
         if (response != null && response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Price change request approval", "Price change request has been approved and successfully changed price!");
+            Utils.popAlert(Alert.AlertType.INFORMATION, APPROVE_PRICE_CHANGE_REQUEST, PRICE_CHANGE_REQUEST_APPROVAL_FINISHED_SUCCESSFULLY);
             renderForm(true);
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Price change request approval", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, APPROVE_PRICE_CHANGE_REQUEST, response.failReason);
         }
     }
 

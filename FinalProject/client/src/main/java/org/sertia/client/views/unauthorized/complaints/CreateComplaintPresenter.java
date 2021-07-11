@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static org.sertia.client.Constants.*;
+
 public class CreateComplaintPresenter extends BasicPresenterWithValidations implements Initializable {
 
     public TextField clientIdTxt;
@@ -64,26 +66,25 @@ public class CreateComplaintPresenter extends BasicPresenterWithValidations impl
                             clientIdTxt.getText());
 
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "יצירת תלונה", "תלונתך נשלחה בהצלחה ותטופל תוך 24 שעות!");
+                Utils.popAlert(Alert.AlertType.INFORMATION, CREATE_COMPLAINT, COMLAINT_SENT_SUCCESSFULLY);
                 try {
                     App.setRoot("unauthorized/primary");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Create complaint", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, CREATE_COMPLAINT, response.failReason);
             }
         }
     }
 
     @Override
     protected boolean isDataValid() {
-        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), "אנא הכנס את שמך");
+        boolean isNameValid = isStringNotEmpty(nameTxtField.getText(), FULL_NAME_EXCEPTION_EXPLANATION);
         boolean isPhoneValid = isPhoneValid(phoneTxTextField.getText());
         boolean isEmailValid = isEmailValid(emailTxTextField.getText());
         boolean isPurchaseIdValid = isPurchaseIdValid(purchaseIdTextField.getText());
-        boolean isComplaintValid = isStringNotEmpty(complaintData.getText(),
-                "אנא פרט אודות תלונתך");
+        boolean isComplaintValid = isStringNotEmpty(complaintData.getText(), COMPLAINT_DESCRIPTION_MISSING);
         boolean isIdValid = isIdCorrect(clientIdTxt.getText());
         return isNameValid && isPhoneValid && isEmailValid &&
                 isPurchaseIdValid  && isComplaintValid && isIdValid;

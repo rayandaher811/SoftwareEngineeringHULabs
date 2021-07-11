@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static org.sertia.client.Constants.*;
+
 public class CancelPurhcasePresenter extends BasicPresenterWithValidations implements Initializable {
     @FXML
     public TextField purchaseId;
@@ -29,8 +31,8 @@ public class CancelPurhcasePresenter extends BasicPresenterWithValidations imple
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<PurchaseType> purchaseTypes = FXCollections.observableArrayList();
-        purchaseTypes.add(new PurchaseType(ClientTicketType.Screening, "הקרנה"));
-        purchaseTypes.add(new PurchaseType(ClientTicketType.Streaming, "חבילת צפייה ביתית"));
+        purchaseTypes.add(new PurchaseType(ClientTicketType.Screening, SCREENING));
+        purchaseTypes.add(new PurchaseType(ClientTicketType.Streaming, STREAMING));
         purchaseTypeCombo.setItems(purchaseTypes);
     }
 
@@ -61,21 +63,21 @@ public class CancelPurhcasePresenter extends BasicPresenterWithValidations imple
             }
 
             if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "ביטול רכישה", "ביטול הרכישה הסתיים בהצלחה, להלן סכום הזיכוי: " + response.refundAmount);
+                Utils.popAlert(Alert.AlertType.INFORMATION, CANCEL_PURCHASE, CANCEL_PURCHASE_ENDED_SUCCESSFULLY + response.refundAmount);
                 try {
                     App.setRoot("unauthorized/primary");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "ביטול רכישה", response.failReason);
+                Utils.popAlert(Alert.AlertType.ERROR, CANCEL_PURCHASE, response.failReason);
             }
         }
     }
 
     private boolean isPurchaseTypeValid() {
         if (purchaseTypeCombo.getSelectionModel().getSelectedItem() == null || purchaseTypeCombo.getSelectionModel().getSelectedItem().toString().isEmpty() || purchaseTypeCombo.getSelectionModel().getSelectedItem().toString().isBlank()) {
-            userMistakes.add("אנא ציין סוג רכישה");
+            userMistakes.add(PLEASE_CHOOSE_PURCHASE_OPTION);
             return false;
         }
 

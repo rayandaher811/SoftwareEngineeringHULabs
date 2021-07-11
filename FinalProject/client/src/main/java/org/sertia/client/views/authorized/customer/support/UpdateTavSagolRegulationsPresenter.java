@@ -45,7 +45,7 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
     }
 
     private LocalDateTime localDateToLocalDateTime(LocalDate date) {
-        return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 0, 0 ,0);
+        return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 0, 0, 0);
     }
 
     @FXML
@@ -59,14 +59,14 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
                     ClientCovidRegulationsControl.getInstance().cancelAllScreeningsDueCovid(fromDateLocalDateTime, toDateLocalDateTime);
             if (response != null) {
                 if (response.isSuccessful) {
-                    Utils.popAlert(Alert.AlertType.INFORMATION, "Update covid regulations by date", "Covid regulations by date range set successfully!");
+                    Utils.popAlert(Alert.AlertType.INFORMATION, UPDATE_TAV_SAGOL_REGULATIONS, TAV_SAGOL_REGULATIONS_SET_SUCCESSFULLY);
                     back();
                 } else {
-                    Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", response.failReason);
+                    Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, response.failReason);
                 }
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", "Choose dates in incremental order");
+            Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, CHOOSE_DATES_IN_INCEREMENTAL_ORDER);
         }
     }
 
@@ -78,14 +78,14 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
                     ClientCovidRegulationsControl.getInstance().updateCovidCrowdingRegulationsRequest(newMaxCapacity);
             if (response != null) {
                 if (response.isSuccessful) {
-                    Utils.popAlert(Alert.AlertType.INFORMATION, "Update covid regulations by max allowed people in hall", "Covid regulations by max amount of people set successfully!");
+                    Utils.popAlert(Alert.AlertType.INFORMATION, UPDATE_TAV_SAGOL_REGULATIONS, TAV_SAGOL_REGULATIONS_SET_SUCCESSFULLY);
                     back();
                 } else {
-                    Utils.popAlert(Alert.AlertType.ERROR, "Failed to set max people in hall regulations", response.failReason);
+                    Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, response.failReason);
                 }
             }
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Failed to set regulations", "new amount of people in hall must be a number");
+            Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, MAX_AMOUNT_OF_PEOPLE_ERROR);
         }
     }
 
@@ -122,10 +122,10 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
         }
 
         if (response.isSuccessful) {
-            Utils.popAlert(Alert.AlertType.INFORMATION, "Update tav sagol regulations", "Regulations update has finished successfully!");
+            Utils.popAlert(Alert.AlertType.INFORMATION, UPDATE_TAV_SAGOL_REGULATIONS, TAV_SAGOL_REGULATIONS_SET_SUCCESSFULLY);
             back();
         } else {
-            Utils.popAlert(Alert.AlertType.ERROR, "Update tav sagol regulations", response.failReason);
+            Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, response.failReason);
         }
     }
 }

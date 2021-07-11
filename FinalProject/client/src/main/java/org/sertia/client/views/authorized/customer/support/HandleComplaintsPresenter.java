@@ -73,7 +73,7 @@ public class HandleComplaintsPresenter implements Initializable {
         description.setText(clientOpenComplaint.description);
         Label ticketType = new Label();
         TicketType complaintTicketType = TicketType.getFromClientType(clientOpenComplaint.ticketType);
-        if(complaintTicketType != null) {
+        if (complaintTicketType != null) {
             ticketType.setText(complaintTicketType.displayName);
         } else {
             ticketType.setText("לא ידוע");
@@ -100,19 +100,17 @@ public class HandleComplaintsPresenter implements Initializable {
             if (refundAmount != null && isNumber(refundAmount)) {
                 response = ClientComplaintControl.getInstance().tryResolveComplaint(complaintId, Double.parseDouble(refundAmount));
             } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Refund amount error", "Please insert a number for refund");
+                Utils.popAlert(Alert.AlertType.ERROR, COMPLAINTS_APPROVAL_PROCESS, REFUND_AMOUNT_VALIDATION);
             }
         } else {
             response = ClientComplaintControl.getInstance().tryCloseComplaint(complaintId);
         }
 
-        if (response != null) {
-            if (response.isSuccessful) {
-                Utils.popAlert(Alert.AlertType.INFORMATION, "Refund process alert", "Closed complaint successfully!");
-                back();
-            } else {
-                Utils.popAlert(Alert.AlertType.ERROR, "Refund process error", response.failReason);
-            }
+        if (response != null && response.isSuccessful) {
+            Utils.popAlert(Alert.AlertType.INFORMATION, COMPLAINTS_APPROVAL_PROCESS, COMPLAINT_APPROVED);
+            back();
+        } else {
+            Utils.popAlert(Alert.AlertType.ERROR, COMPLAINTS_APPROVAL_PROCESS, response.failReason);
         }
     }
 

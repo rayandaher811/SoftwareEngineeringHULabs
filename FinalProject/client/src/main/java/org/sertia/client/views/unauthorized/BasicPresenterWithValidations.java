@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.sertia.client.Constants.*;
+
 public abstract class BasicPresenterWithValidations {
     protected ArrayList<String> userMistakes;
 
@@ -31,7 +33,7 @@ public abstract class BasicPresenterWithValidations {
         if (isStringMatchesPattern(email, p)) {
             return true;
         } else {
-            userMistakes.add("Invalid email. it must contain latin characters");
+            userMistakes.add(EMAIL_EXCEPTION_EXPANATION);
             return false;
         }
     }
@@ -49,12 +51,12 @@ public abstract class BasicPresenterWithValidations {
     }
 
     protected boolean isPurchaseIdValid(String purchaseId) {
-        return isItNumber(purchaseId, "Invalid purchase id, must be a number");
+        return isItNumber(purchaseId, INVALID_PURCHASE_ID);
     }
 
     protected boolean isIdCorrect(String id) {
         if (id == null || id.isBlank() || id.length() != 9) {
-            userMistakes.add("Please fill your ID number, it should be in length of 9");
+            userMistakes.add(ID_EXCEPTION_EXPLANATION);
             return false;
         }
         return true;
@@ -66,7 +68,7 @@ public abstract class BasicPresenterWithValidations {
         if (isStringMatchesPattern(phoneNumber, p)) {
             return true;
         } else {
-            userMistakes.add("Invalid phone number, expecting 10 digits number, without -");
+            userMistakes.add(PHONE_VALIDATION_EXPLANATION);
             return false;
         }
     }
@@ -79,7 +81,7 @@ public abstract class BasicPresenterWithValidations {
         if (isStringMatchesPattern(userName, p)) {
             return true;
         } else {
-            userMistakes.add("Invalid user name, expecting user name longer than 5 shorter than 29, without numbers or spaces");
+            userMistakes.add(INVALID_USERNAME);
             return false;
         }
     }
@@ -94,7 +96,7 @@ public abstract class BasicPresenterWithValidations {
     }
 
     protected void notifyClient() {
-        Utils.popAlert(Alert.AlertType.ERROR, "Input validations failure", String.join("\n", userMistakes));
+        Utils.popAlert(Alert.AlertType.ERROR, INPUT_VALIDATIONS_ERROR, String.join("\n", userMistakes));
     }
 
     protected boolean isInputValid() {
@@ -124,14 +126,14 @@ public abstract class BasicPresenterWithValidations {
         try {
             return matcher.group(creditCardProvider.name()) != null;
         } catch (IllegalStateException e) {
-            userMistakes.add("Please re-type your credit card number and provider");
+            userMistakes.add(CREDIT_CARD_FAILURE);
             return false;
         }
     }
 
     protected boolean isFullNameValid(String fullName) {
         if (fullName.split(" ").length != 2) {
-            userMistakes.add("Please write down your full name, first name + last name");
+            userMistakes.add(FULL_NAME_EXCEPTION_EXPLANATION);
             return false;
         }
         return true;
