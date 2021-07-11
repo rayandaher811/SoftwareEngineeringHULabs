@@ -280,8 +280,8 @@ public class MoviesCatalogController extends Reportable {
             // Refunding all relevant costumers and deleting the tickets
             RefundAndRemoveAllScreeningTickets(session, screening, refundReason);
 
+            session.flush();
             session.remove(screening);
-
             session.flush();
             session.clear();
             session.getTransaction().commit();
@@ -441,6 +441,18 @@ public class MoviesCatalogController extends Reportable {
                     double refundAmount = screening.getScreenableMovie().getTicketPrice() * (screeningTickets.size() - fromVouchers);
                     notifier.notify(paymentDetails.getEmail(), "Your screening at " + screening.getScreeningTime() + " in sertia cinema has been canceled.");
                     creditCardService.refund(paymentDetails, refundAmount, refundReason);
+
+                    // Deleting all relevant complaints (They have been refunded)
+                    for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+                        if((complaint.getTicketType() == TicketType.Screening || complaint.getTicketType() == TicketType.Voucher)){
+                            for (ScreeningTicket ticket:screeningTickets) {
+                                if(complaint.getScreeningTicket().getId() == ticket.getId())
+                                    session.remove(complaint);
+                            }
+                        }
+                    }
+
+                    session.flush();
                     screeningTickets.forEach(session::remove);
                 });
     }
