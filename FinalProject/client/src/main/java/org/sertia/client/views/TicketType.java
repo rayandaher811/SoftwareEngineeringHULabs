@@ -28,11 +28,21 @@ public class TicketType {
     }
 
     public static TicketType getFromClientType(ClientTicketType clientTicketType) {
-        return switch (clientTicketType) {
-            case Screening -> SCREENING;
-            case Streaming -> STREAMING;
-            case Voucher -> VOUCHER;
+        TicketType ticketType;
+        switch (clientTicketType) {
+            case Screening:
+                ticketType = SCREENING;
+                break;
+            case Streaming:
+                ticketType = STREAMING;
+                break;
+            case Voucher:
+                ticketType = VOUCHER;
+                break;
+            default:
+                ticketType = null;
         };
+        return ticketType;
     }
 
     @Override

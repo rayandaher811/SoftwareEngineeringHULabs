@@ -74,6 +74,10 @@ public class Constants {
     public static final String COULDNT_FETCH_VOUCHER_DATA = "שגיאה בקריאת פרטי מידע על הכרטיסייה, פירוט השגיאה: ";
     public static final String PURCHASE_MOVIE_TICKETS = "רכישת כרטיסים לסרט";
     public static final String HALL_IS_FULL = "האולם מלא, לא ניתן לסיים את תהליך הרכישה";
+    public static final String PREPAID_BALANCE_CHECK = "בירור יתרת כרטיסיה";
+    public static final String PREPAID_BALANCE_CHECK_FAILED = PREPAID_BALANCE_CHECK + " נכשל, הסיבה: ";
+    public static final String STREAMING_LINK_TITLE = "צפיה בלינק צפיה ביתית";
+    public static final String STREAMING_LINK_ERROR_MSG = "הלינק עוד לא זמין לצפיה, הוא זמין בזמנים הבאים: ";
 
     public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
     public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());

@@ -8,10 +8,17 @@ public class Utils {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(msg);
-        alert.getDialogPane().setMinHeight(250);
-        alert.getDialogPane().setMaxHeight(250);
-        alert.getDialogPane().setMinWidth(250);
-        alert.getDialogPane().setMinWidth(250);
+        if (msg.length() > 100) {
+            alert.getDialogPane().setMinHeight(600);
+            alert.getDialogPane().setMaxHeight(600);
+            alert.getDialogPane().setMinWidth(600);
+            alert.getDialogPane().setMinWidth(600);
+        } else {
+            alert.getDialogPane().setMinHeight(250);
+            alert.getDialogPane().setMaxHeight(250);
+            alert.getDialogPane().setMinWidth(250);
+            alert.getDialogPane().setMinWidth(250);
+        }
         alert.showAndWait();
     }
 }

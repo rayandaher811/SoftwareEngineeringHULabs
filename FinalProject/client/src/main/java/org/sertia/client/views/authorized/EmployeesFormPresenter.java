@@ -72,10 +72,18 @@ public class EmployeesFormPresenter implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         UserRole userRole = LoggedInUser.getInstance().getUserRole();
         switch (userRole) {
-            case MediaManager -> initializeMediaManagerView();
-            case BranchManager -> initializeCinemaManagerView();
-            case CinemaManager -> initializeSertiaManagerView();
-            case CostumerSupport -> initializeCustomerSupportView();
+            case MediaManager:
+                initializeMediaManagerView();
+                break;
+            case BranchManager:
+                initializeCinemaManagerView();
+                break;
+            case CinemaManager:
+                initializeSertiaManagerView();
+                break;
+            case CostumerSupport:
+                initializeCustomerSupportView();
+                break;
         }
         String helloSentence;
         if (userRole.equals(UserRole.BranchManager)) {

@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 public class SeatChooseView implements Initializable {
 
+    public Button applyBtn;
     @FXML
     private GridPane movietheater;
     private static int num_row;
@@ -39,6 +40,7 @@ public class SeatChooseView implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        applyBtn.setDisable(true);
         amoutOfTickets = NumberOfTicketsHolder.getInstance().getNumberOfTickets();
         ClientScreening screening = ScreeningHolder.getInstance().getScreening();
         ClientSeatMapResponse seatMapResponse =
@@ -73,6 +75,7 @@ public class SeatChooseView implements Initializable {
                             seat.setStyle("-fx-background-color: #00ff00");
                             order.remove(seat.getId());
                             amoutOfTickets++;
+                            applyBtn.setDisable(true);
                             continueSelection();
                         } else {
                             seat.setStyle("-fx-background-color: #FF0000");
@@ -101,6 +104,7 @@ public class SeatChooseView implements Initializable {
             if (b.getStyle() == "-fx-background-color: #00ff00")
                 b.setDisable(true);
         }
+        applyBtn.setDisable(false);
     }
 
     private void continueSelection() {
@@ -135,6 +139,7 @@ public class SeatChooseView implements Initializable {
                 order.clear();
             }
         }
+        applyBtn.setDisable(true);
     }
 
     @FXML

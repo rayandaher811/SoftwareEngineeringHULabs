@@ -6,11 +6,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static org.sertia.client.Constants.PREPAID_BALANCE_CHECK;
+import static org.sertia.client.Constants.PREPAID_BALANCE_CHECK_FAILED;
 
 public class CurrentPrePaidBalance extends BasicPresenterWithValidations implements Initializable {
 
@@ -24,19 +28,8 @@ public class CurrentPrePaidBalance extends BasicPresenterWithValidations impleme
             VoucherBalanceResponse response =
                     ClientPurchaseControl.getInstance().requestVoucherBalance(Integer.parseInt(voucherIdTxt.getText()), voucherBuyerId.getText());
             if (!response.isSuccessful) {
-                Alert.AlertType type;
-                String msg = "";
-                if (response.isSuccessful) {
-                    type = Alert.AlertType.INFORMATION;
-                    msg = "Prepaid tickets bought successfully!";
-                } else {
-                    type = Alert.AlertType.ERROR;
-                    msg = response.failReason;
-                }
-                Alert errorAlert = new Alert(type);
-                errorAlert.setTitle("Buying prepaid tickets from sertia system");
-                errorAlert.setContentText(msg);
-                errorAlert.showAndWait();
+                balanceTxt.setText("");
+                Utils.popAlert(Alert.AlertType.ERROR, PREPAID_BALANCE_CHECK, PREPAID_BALANCE_CHECK_FAILED + response.failReason);
             } else {
                 balanceTxt.setText(String.valueOf(response.balance));
             }
