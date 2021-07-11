@@ -224,7 +224,9 @@ public class EditScreeningTimePresenter extends AbstractMoviesPresenter implemen
                             add(sertiaMovie);
                         }});
                     }
-                } else {
+                }
+                
+                if(!sertiaMovie.getScreenings().isEmpty()){
                     if (moviesByType.containsKey("CURRENTLY-PLAYING")) {
                         moviesByType.get("CURRENTLY-PLAYING").add(sertiaMovie);
                     } else {

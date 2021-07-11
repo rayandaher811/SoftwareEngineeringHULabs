@@ -240,7 +240,8 @@ public class CatalogView implements Initializable {
                             add(sertiaMovie);
                         }});
                     }
-                } else {
+                }
+                if(!sertiaMovie.getScreenings().isEmpty()) {
                     if (moviesByType.containsKey("CURRENTLY-PLAYING")) {
                         moviesByType.get("CURRENTLY-PLAYING").add(sertiaMovie);
                     } else {
@@ -249,6 +250,7 @@ public class CatalogView implements Initializable {
                         }});
                     }
                 }
+                
                 if (sertiaMovie.isStreamable) {
                     if (moviesByType.containsKey("STREAMABLE")) {
                         moviesByType.get("STREAMABLE").add(sertiaMovie);
