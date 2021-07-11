@@ -28,34 +28,40 @@ public class CustomerNotifier implements ICustomerNotifier {
 
     @Override
     public void notify(String email, String messageToSend) {
-        // Setting up the authenticator
-        Session session = Session.getInstance(getGmailServerProperties(), new javax.mail.Authenticator() {
+        String receiverEmail = email;
+        String message = messageToSend;
 
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(serverEmail, serverEmailPass);
+        new Thread(() -> {
+            // Setting up the authenticator
+            Session session = Session.getInstance(getGmailServerProperties(), new Authenticator() {
+
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(serverEmail, serverEmailPass);
+                }
+
+            });
+
+            try {
+                // Create The message.
+                MimeMessage sentMessage = new MimeMessage(session);
+
+                // Setting the from header field
+                sentMessage.setFrom(new InternetAddress(serverEmail));
+
+                // Defining the Recipient
+                sentMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
+
+                // Setting the email content
+                sentMessage.setSubject("Sertia Cinema Notification");
+                sentMessage.setText(message);
+
+                Transport.send(sentMessage);
+                System.out.println("An email sent to " + receiverEmail + " with the message - " + message);
+            } catch (Exception e) {
+                System.out.println("The server couldn't send the email to " + receiverEmail);
+                e.printStackTrace();
             }
-
-        });
-
-        try {
-            // Create The message.
-            MimeMessage message = new MimeMessage(session);
-
-            // Setting the from header field
-            message.setFrom(new InternetAddress(serverEmail));
-
-            // Defining the Recipient
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-
-            // Setting the email content
-            message.setSubject("Sertia Cinema Notification");
-            message.setText(messageToSend);
-
-            Transport.send(message);
-        } catch (MessagingException mex) {
-            System.out.println("The server couldn't send the email to " + email);
-            mex.printStackTrace();
-        }
+        }).start();
     }
 
     private Properties getGmailServerProperties() {
