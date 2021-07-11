@@ -63,7 +63,7 @@ public class ComplaintsController extends Reportable {
 
 			if(!ticketPayerId.equals(createComplaintRequest.clientIdNumber) ||
 				(complaint.getTicketType() == TicketType.Voucher && !complaint.getScreeningTicket().isVoucher()) ||
-				(complaint.getTicketType() != TicketType.Voucher && complaint.getScreeningTicket().isVoucher()))
+				(complaint.getTicketType() == TicketType.Screening && complaint.getScreeningTicket().isVoucher()))
 				throw new SertiaException("נתונים לא נכונים הוזנו עבור הרכישה");
 
 			// Saving the request
