@@ -8,16 +8,17 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        String dbHost = args[0];
-        String dbPort = args[1];
-        String dbName = args[2];
-        String dbUser = args[3];
-        String dbPassword = args[4];
+        int serverPort = Integer.parseInt(args[0]);
+        String dbHost = args[1];
+        String dbPort = args[2];
+        String dbName = args[3];
+        String dbUser = args[4];
+        String dbPassword = args[5];
 
         HibernateSessionFactory.initConfig(dbHost, dbPort, dbName, dbUser, dbPassword);
 
         fillDb();
-        MessageHandler messageHandler = new MessageHandler(1235);
+        MessageHandler messageHandler = new MessageHandler(serverPort);
         try {
             messageHandler.startListening();
         } catch (IOException e) {
