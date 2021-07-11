@@ -108,9 +108,9 @@ public class PriceChangeRequestsView extends BasicPresenterWithValidations imple
             });
             availableTicketsType.valueProperty().addListener((observableValue, clientTicketType, t1) -> {
                 if (t1 != null) {
-					if (t1.ticketType == ClientTicketType.Screening) {
+					if (t1.ticketType == ClientTicketType.Screening && chosenMovie != null) {
 	                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.getTicketPrice()));
-	                } else if (t1.ticketType == ClientTicketType.Streaming) {
+	                } else if (t1.ticketType == ClientTicketType.Streaming && chosenMovie != null) {
 	                    movieTicketPriceTxt.setText(String.valueOf(chosenMovie.extraDayPrice));
 	                } else {
 	                    movieTicketPriceTxt.setText(String.valueOf(ClientPurchaseControl.getInstance().getVouchersInfo().price));
