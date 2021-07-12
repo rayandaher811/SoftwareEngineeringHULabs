@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.response.VoucherBalanceResponse;
 
@@ -53,7 +54,8 @@ public class CurrentPrePaidBalance extends BasicPresenterWithValidations impleme
 
     @Override
     protected boolean isDataValid() {
-        return isPurchaseIdValid(voucherIdTxt.getText()) &&
-                isIdCorrect(voucherBuyerId.getText());
+        boolean isPurchaseIdValid = isPurchaseIdValid(voucherIdTxt.getText());
+        boolean isIdCorrect = isIdCorrect(voucherBuyerId.getText());
+        return  isPurchaseIdValid && isIdCorrect;
     }
 }

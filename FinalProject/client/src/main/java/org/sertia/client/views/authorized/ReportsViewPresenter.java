@@ -41,14 +41,12 @@ public class ReportsViewPresenter implements Initializable {
         UserRole userRole = LoggedInUser.getInstance().getUserRole();
         ClientReportsResponse response = null;
         if (userRole == UserRole.BranchManager) {
-            // BG TODO: how to know cinema id, it's not related to role
-
             response = ClientReportsControl.getInstance().getCinemaReports(1);
         } else if (userRole == UserRole.CinemaManager) {
             response = ClientReportsControl.getInstance().getSertiaReports();
         }
 
-        if (!response.isSuccessful) {
+        if (response != null && !response.isSuccessful) {
             Utils.popAlert(Alert.AlertType.ERROR, FETCH_MOVIE_ERROR, response.failReason);
         } else {
             ObservableList<ClientReport> clientReports = FXCollections.observableList(new ArrayList<>(response.reports));

@@ -14,7 +14,7 @@ import org.sertia.client.global.MovieHolder;
 import org.sertia.client.global.NumberOfTicketsHolder;
 import org.sertia.client.global.ScreeningHolder;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;

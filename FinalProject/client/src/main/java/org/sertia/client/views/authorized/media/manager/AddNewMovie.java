@@ -7,12 +7,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.ClientMovie;
 import org.sertia.contracts.movies.catalog.ClientScreening;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
+import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -43,23 +45,6 @@ public class AddNewMovie extends BasicPresenterWithValidations {
     private TextField streamingPriceTxt;
     @FXML
     private CheckBox availableOnline;
-
-    @Override
-    protected boolean isDataValid() {
-        boolean isStreamingValid = true;
-        if (availableOnline.isSelected() && !isPriceValid(streamingPriceTxt.getText())) {
-            isStreamingValid = false;
-        }
-
-        return movieHebrewNameTxt != null && !movieHebrewNameTxt.getText().isBlank() && !movieHebrewNameTxt.getText().isEmpty()
-                && movieNameTxt != null && !movieNameTxt.getText().isBlank() && !movieNameTxt.getText().isEmpty()
-                && movieDescriptionTxt != null && !movieDescriptionTxt.getText().isBlank() && !movieDescriptionTxt.getText().isEmpty()
-                && mainActorsTxt != null && !mainActorsTxt.getText().isBlank() && !mainActorsTxt.getText().isEmpty()
-                && producerNameTxt != null && !producerNameTxt.getText().isBlank() && !producerNameTxt.getText().isEmpty()
-                && moviePhotoUrl != null && !moviePhotoUrl.getText().isBlank() && !moviePhotoUrl.getText().isEmpty()
-                && ticketPriceTxt != null && !ticketPriceTxt.getText().isBlank() && !ticketPriceTxt.getText().isEmpty()
-                && isPriceValid(ticketPriceTxt.getText()) && movieLengthValid(movieLengthTxt.getText()) && isStreamingValid;
-    }
 
     public void addMovie(MouseEvent mouseEvent) {
         if (isInputValid()) {
@@ -95,25 +80,57 @@ public class AddNewMovie extends BasicPresenterWithValidations {
         }
     }
 
-    public static boolean isPriceValid(String price) {
+    protected boolean isStreamingValid() {
+        if (!availableOnline.isSelected() && !isPriceValid(streamingPriceTxt.getText(), ClientTicketType.Streaming)) {
+            userMistakes.add(PURCHASE_LINK_WITH_PRICE);
+            return false;
+        }
+        return true;
+    }
+    @Override
+    protected boolean isDataValid() {
+        boolean isStreamingValid = true;
+        if (availableOnline.isSelected()) {
+            isStreamingValid = isStreamingValid();
+        }
+
+        boolean isHebrewNameValid = isStringNotEmpty(movieHebrewNameTxt.getText(), HEBREW_NAME_FOR_MOVIE_ERROR);
+        boolean isMovieNameValid = isStringNotEmpty(movieNameTxt.getText(), NAME_FOR_MOVIE_ERROR);
+        boolean isMovieDescriptionValid = isStringNotEmpty(movieDescriptionTxt.getText(), DESCRIPTION_FOR_MOVIE_ERROR);
+        boolean areMainActorsValid = isStringNotEmpty(mainActorsTxt.getText(), MAIN_ACTORS_FOR_MOVIE_ERROR);
+        boolean isProducerNameValid = isStringNotEmpty(producerNameTxt.getText(), PRODUCER_NAME_FOR_MOVIE_ERROR);
+        boolean isPhotoUrlValid = isStringNotEmpty(moviePhotoUrl.getText(), PHOTO_URL_FOR_MOVIE_ERROR);
+        boolean isTicketPriceValid = isPriceValid(ticketPriceTxt.getText(), ClientTicketType.Screening);
+        boolean isMovieLengthValid = movieLengthValid(movieLengthTxt.getText());
+        return isStreamingValid && isHebrewNameValid && isMovieNameValid && isMovieDescriptionValid &&
+                areMainActorsValid && isProducerNameValid && isPhotoUrlValid && isTicketPriceValid && isMovieLengthValid;
+    }
+
+    public boolean isPriceValid(String price, ClientTicketType ticketType) {
         if (price == null) {
             return false;
         }
         try {
             double d = Double.parseDouble(price);
         } catch (NumberFormatException nfe) {
+            if (ticketType == ClientTicketType.Screening){
+                userMistakes.add(MOVIE_SCREENING_PRICE_ERROR);
+            } else if (ticketType == ClientTicketType.Streaming){
+                userMistakes.add(MOVIE_STREAMING_PRICE_ERROR);
+            }
             return false;
         }
         return true;
     }
 
-    public static boolean movieLengthValid(String length) {
+    public boolean movieLengthValid(String length) {
         if (length == null) {
             return false;
         }
         try {
             int i = Integer.parseInt(length);
         } catch (NumberFormatException nfe) {
+            userMistakes.add("נא צייני אורך סרט בדקות");
             return false;
         }
         return true;

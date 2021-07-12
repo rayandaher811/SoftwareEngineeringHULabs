@@ -2,6 +2,7 @@ package org.sertia.client;
 
 import org.sertia.contracts.price.change.ClientTicketType;
 
+import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -56,10 +57,19 @@ public class Constants {
     public static final String IS_AVAILABLE = " זמינה!";
     public static final String BUY_ONLINE_STREAMING_LINK = "רכישת לינק לצפיה ביתית";
     public static final String DATES_RANGE_INVALID_ERROR_MSG = "נא בחרי טווח תקין של תאריכים, תאריך ההתחלה חייב להיות לפני תאריך הסוף";
+    public static final String PURCHASE_LINK_WITH_PRICE = "פרטי חבילת צפיה לא תקינים, במידה ותרצי להוסיף חבילת צפיה לסרט, יש לציין את המחיר לחבילה";
     public static final String PLEASE_CHOOSE_START_DATE_GREATER_THAN_TODAY = "נא בחרי תאריך התחלה מתקדם יותר מהיום";
     public static final String PLEAS_ENTER_VALID_HOURS = "אנא הכנס כמות שעות תקנית";
     public static final String STREMING_LINK_INFO = "פרטי הקישור לצפיה ביתית שרכשת: \n לינק: ";
     public static final String PRICE = "מחיר כולל: ";
+    public static final String MOVIE_SCREENING_PRICE_ERROR = "נא מלאי מחיר תקין במחיר הקרנת סרט";
+    public static final String MOVIE_STREAMING_PRICE_ERROR = "נא מלאי מחיר תקין במחיר חבילת צפיה";
+    public static final String HEBREW_NAME_FOR_MOVIE_ERROR = "נא צייני שם סרט בעברית";
+    public static final String NAME_FOR_MOVIE_ERROR = "נא צייני שם סרט ";
+    public static final String DESCRIPTION_FOR_MOVIE_ERROR = "נא צייני תקציר של הסרט";
+    public static final String MAIN_ACTORS_FOR_MOVIE_ERROR = "נא צייני שמות שחקנים ראשיים";
+    public static final String PHOTO_URL_FOR_MOVIE_ERROR = "נא צייני לינק לתמונת הסרט";
+    public static final String PRODUCER_NAME_FOR_MOVIE_ERROR = "נא צייני שם במאי";
     public static final String START_TIME_END_TIME = "זמן התחלה - זמן סיום: ";
     public static final String PURCHASE_USING_CREDIT_CARD = "רכישה באמצעות כרטיס אשראי";
     public static final String PURCHASE_SUMMARY = "רכשת כרטיס/ים להקרנות ואלו הם פרטי ההזמנה: \n";
@@ -146,9 +156,13 @@ public class Constants {
     public static final String REMOVE_SCREENING_ENDED_SUCCESSFULLY = "מחיקת הקרנה הסתיימה בהצלחה";
     public static final String EDIT_SCREENING_TIME = "עריכת זמני הקרנה";
     public static final String EDIT_SCREENING_TIME_ENDED_SUCESSFULLY = "עריכת זמני הקנה הסתיימה בהצלחה";
+    public static final String MAXIMUM_CAPACITY_SHOULD_BE_A_NUMNER = "אנא מלאי מספר אנשים מקסמילי, צריך להיות מספר";
 
     public static final Set<Integer> HOURS = IntStream.rangeClosed(0, 23).boxed().collect(Collectors.toSet());
     public static final Set<Integer> MINUTES = IntStream.rangeClosed(0, 59).boxed().collect(Collectors.toSet());
+    public static final Set<Integer> MONTHS = IntStream.rangeClosed(1, 12).boxed().collect(Collectors.toSet());
+    public static final Set<Integer> YEARS = IntStream.rangeClosed(YearMonth.now().getYear(), YearMonth.now().getYear() + 6).boxed().collect(Collectors.toSet());
+
 
     public static final HashMap<String, String> TICKET_TYPE_TRANSLATIONS = new HashMap<>(){{
             put(ClientTicketType.Screening.name(), "הקרנה");

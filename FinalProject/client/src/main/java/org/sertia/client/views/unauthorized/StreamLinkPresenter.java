@@ -2,18 +2,15 @@ package org.sertia.client.views.unauthorized;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.response.GetStreamingByLinkResponse;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 import static org.sertia.client.Constants.*;
 

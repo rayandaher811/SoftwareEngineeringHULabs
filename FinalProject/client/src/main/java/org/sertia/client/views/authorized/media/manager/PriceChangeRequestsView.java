@@ -1,7 +1,5 @@
 package org.sertia.client.views.authorized.media.manager;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -14,7 +12,7 @@ import org.sertia.client.controllers.ClientPriceChangeControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;

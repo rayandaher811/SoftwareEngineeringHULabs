@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.price.change.ClientTicketType;
 import org.sertia.contracts.screening.ticket.response.TicketCancellationResponse;
 
@@ -38,9 +38,10 @@ public class CancelPurhcasePresenter extends BasicPresenterWithValidations imple
 
     @Override
     protected boolean isDataValid() {
-        return isPurchaseIdValid(purchaseId.getText()) &&
-                isIdCorrect(clientId.getText()) &&
-                isPurchaseTypeValid();
+        boolean isPurchaseIdValid = isPurchaseIdValid(purchaseId.getText());
+        boolean isIdCorrect = isIdCorrect(clientId.getText());
+        boolean isPurchaseTypeValid = isPurchaseTypeValid();
+        return isPurchaseIdValid && isIdCorrect && isPurchaseTypeValid;
     }
 
     @FXML

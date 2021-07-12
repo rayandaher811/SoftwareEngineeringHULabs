@@ -34,7 +34,6 @@ public class AddScreeningsToMovie implements Initializable {
     public ComboBox<ClientHall> hallNumberCombo;
     @FXML
     private ComboBox<String> branchName;
-    private int cinemaId;
 
     public void addScreenings() throws IOException {
             CinemaScreeningMovie currentMovie = MovieHolder.getInstance().getCinemaScreeningMovie();
@@ -43,7 +42,7 @@ public class AddScreeningsToMovie implements Initializable {
             LocalDateTime screeningTime = LocalDateTime.of(inputDate.getYear(),
                     inputDate.getMonth(), inputDate.getDayOfMonth(), getHour(screeningHour), getMin(screeningHour));
             SertiaBasicResponse addScreeningResponse =
-                    ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, hallNumberCombo.getValue().hallId, cinemaId);
+                    ClientCatalogControl.getInstance().tryAddScreening(currentMovie.getMovieId(), screeningTime, hallNumberCombo.getValue().hallId, -1);
 
             if (addScreeningResponse.isSuccessful) {
                 Utils.popAlert(Alert.AlertType.INFORMATION, ADD_SCREENING_TO_MOVIE, SCREENING_ADDED_SUCCESSFULLY);

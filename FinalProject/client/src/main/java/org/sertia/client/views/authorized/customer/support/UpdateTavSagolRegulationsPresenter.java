@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCovidRegulationsControl;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.covidRegulations.responses.ClientCovidRegulationsStatus;
@@ -18,7 +19,7 @@ import java.util.ResourceBundle;
 
 import static org.sertia.client.Constants.*;
 
-public class UpdateTavSagolRegulationsPresenter implements Initializable {
+public class UpdateTavSagolRegulationsPresenter extends BasicPresenterWithValidations implements Initializable {
     public DatePicker fromDatePickerComp;
     public DatePicker toDatePickerComp;
     public TextField maxAllowedPeopleTxt;
@@ -28,21 +29,7 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
     public Button startOrStopRegulationsBtn;
     public Label tavSagolLabel;
     private ClientCovidRegulationsStatus covidRegulationsStatus;
-
-    private boolean areDatesValid() {
-        LocalDate fromDate = fromDatePickerComp.getValue();
-        LocalDate toDate = toDatePickerComp.getValue();
-        return fromDate.isBefore(toDate);
-    }
-
-    private boolean isMaximumCapacityIsNumber() {
-        try {
-            Integer.parseInt(maxAllowedPeopleTxt.getText());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    boolean updateRegulationsByDate;
 
     private LocalDateTime localDateToLocalDateTime(LocalDate date) {
         return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 0, 0, 0);
@@ -50,7 +37,7 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
 
     @FXML
     public void updateRegulations() {
-        if (areDatesValid()) {
+        if (isInputValid()) {
             LocalDate fromDate = fromDatePickerComp.getValue();
             LocalDate toDate = toDatePickerComp.getValue();
             LocalDateTime fromDateLocalDateTime = localDateToLocalDateTime(fromDate);
@@ -70,9 +57,11 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
         }
     }
 
+
     @FXML
     public void updateMaximumCapacity() {
-        if (isMaximumCapacityIsNumber()) {
+        updateRegulationsByDate = true;
+        if (isInputValid()) {
             int newMaxCapacity = Integer.parseInt(maxAllowedPeopleTxt.getText());
             SertiaBasicResponse response =
                     ClientCovidRegulationsControl.getInstance().updateCovidCrowdingRegulationsRequest(newMaxCapacity);
@@ -86,6 +75,7 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
             }
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, MAX_AMOUNT_OF_PEOPLE_ERROR);
+            updateRegulationsByDate = false;
         }
     }
 
@@ -111,6 +101,8 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
             startOrStopRegulationsBtn.setStyle("-fx-background-color: #00ff00");
             startOrStopRegulationsBtn.setText(START_TAV_SAGOL_REGULATIONS_TXT);
         }
+
+        updateRegulationsByDate = false;
     }
 
     public void startOrStopRegulation(ActionEvent actionEvent) {
@@ -126,6 +118,17 @@ public class UpdateTavSagolRegulationsPresenter implements Initializable {
             back();
         } else {
             Utils.popAlert(Alert.AlertType.ERROR, UPDATE_TAV_SAGOL_REGULATIONS, response.failReason);
+        }
+    }
+
+    @Override
+    protected boolean isDataValid() {
+        if (updateRegulationsByDate) {
+            boolean isMaximumCapacityValidNumber = isItNumber(maxAllowedPeopleTxt.getText(), MAXIMUM_CAPACITY_SHOULD_BE_A_NUMNER);
+            return isMaximumCapacityValidNumber;
+        } else {
+            boolean isFromDateBeforeToDate = areDatesIncremental(fromDatePickerComp.getValue(), toDatePickerComp.getValue());
+            return isFromDateBeforeToDate;
         }
     }
 }

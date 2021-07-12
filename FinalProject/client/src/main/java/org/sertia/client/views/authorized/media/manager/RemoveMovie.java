@@ -9,7 +9,7 @@ import javafx.scene.control.ComboBox;
 import org.sertia.client.App;
 import org.sertia.client.controllers.ClientCatalogControl;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
 import org.sertia.contracts.movies.catalog.SertiaMovie;
 import org.sertia.contracts.movies.catalog.response.SertiaCatalogResponse;

@@ -8,7 +8,7 @@ import org.sertia.client.App;
 import org.sertia.client.global.BuyOnlineScreeningLinkDataHolder;
 import org.sertia.client.global.MovieHolder;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 
 import java.io.IOException;

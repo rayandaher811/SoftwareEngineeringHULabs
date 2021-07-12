@@ -1,9 +1,10 @@
-package org.sertia.client.views.unauthorized;
+package org.sertia.client.views;
 
 import javafx.scene.control.Alert;
 import org.sertia.client.views.Utils;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,27 @@ public abstract class BasicPresenterWithValidations {
     }
 
     protected boolean isItNumber(String expectedToBeNumber, String msg) {
+        String regex = "[0-9]+";
+        Pattern p = Pattern.compile(regex);
+
+        if (isStringMatchesPattern(expectedToBeNumber, p)) {
+            return true;
+        } else {
+            userMistakes.add(msg);
+            return false;
+        }
+    }
+
+    protected boolean areDatesIncremental(LocalDate from, LocalDate to) {
+        if (from.isBefore(to)) {
+            return true;
+        } else {
+            userMistakes.add(DATES_RANGE_INVALID_ERROR_MSG);
+            return false;
+        }
+    }
+
+    protected boolean isItDouble(String expectedToBeNumber, String msg) {
         String regex = "[0-9]+";
         Pattern p = Pattern.compile(regex);
 

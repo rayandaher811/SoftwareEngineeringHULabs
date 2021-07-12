@@ -74,6 +74,8 @@ public class EditMovieScreeningTimePresenter implements Initializable {
             } else {
                 Utils.popAlert(Alert.AlertType.ERROR, EDIT_SCREENING_TIME, response.failReason);
             }
+        } else {
+            Utils.popAlert(Alert.AlertType.ERROR, EDIT_SCREENING_TIME, "נא ציין שעה ותאריך תקינים");
         }
     }
 

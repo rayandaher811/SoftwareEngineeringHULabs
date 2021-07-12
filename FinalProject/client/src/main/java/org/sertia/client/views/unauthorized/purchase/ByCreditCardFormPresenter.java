@@ -14,7 +14,7 @@ import org.sertia.client.controllers.ClientCovidRegulationsControl;
 import org.sertia.client.controllers.ClientPurchaseControl;
 import org.sertia.client.global.*;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.movies.catalog.CinemaScreeningMovie;
 import org.sertia.contracts.screening.ticket.HallSeat;
 import org.sertia.contracts.screening.ticket.request.CreditCardProvider;
@@ -188,8 +188,8 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         }
         topLabel.setFocusTraversable(true);
         creditCardProviderCombo.getItems().addAll(List.of(CreditCardProvider.values()));
-        initializeMonthCombo();
-        initializeYearCombo();
+        expirationMonthCombo.getItems().addAll(MONTHS);
+        expirationYearCombo.getItems().addAll(YEARS);
         isBuyingStreamingLink = MovieHolder.getInstance().isOnlineLinkPurchaseRequest();
     }
 
@@ -210,7 +210,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
                 && isCvvCorrect && isEmailCorrect && isPhoneCorrcet && isIdNumberCorrect;
     }
 
-    private boolean isCvvCorrect() {
+    protected boolean isCvvCorrect() {
         if (cvv.getText() == null || cvv.getText().isBlank() || cvv.getText().isEmpty() || cvv.getText().length() != 3) {
             userMistakes.add(CVV_HINT);
             return false;
@@ -218,7 +218,7 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
         return true;
     }
 
-    private boolean isCreditCardProviderCorrect() {
+    protected boolean isCreditCardProviderCorrect() {
         if (creditCardProviderCombo.getSelectionModel().getSelectedItem() == null || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isEmpty() || creditCardProviderCombo.getSelectionModel().getSelectedItem().toString().isBlank()) {
             userMistakes.add(CREDIT_CARD_PROVIDER_HINT);
             return false;
@@ -227,20 +227,6 @@ public class ByCreditCardFormPresenter extends BasicPresenterWithValidations imp
             return true;
         }
         return false;
-    }
-
-    private void initializeMonthCombo() {
-        ObservableList<Integer> months = expirationMonthCombo.getItems();
-        for (int i = 1; i <= 12; i++) {
-            months.add(i);
-        }
-    }
-
-    private void initializeYearCombo() {
-        ObservableList<Integer> years = expirationYearCombo.getItems();
-        for (int i = YearMonth.now().getYear(); i <= YearMonth.now().getYear() + 6; i++) {
-            years.add(i);
-        }
     }
 
     private String buildSuccessfulScreeningTicketPurchasingMessage(ScreeningPaymentResponse response) {

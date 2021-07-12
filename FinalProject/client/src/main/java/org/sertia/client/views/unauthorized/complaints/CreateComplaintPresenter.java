@@ -1,6 +1,5 @@
 package org.sertia.client.views.unauthorized.complaints;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,16 +10,13 @@ import org.sertia.client.App;
 import org.sertia.client.controllers.ClientComplaintControl;
 import org.sertia.client.views.TicketType;
 import org.sertia.client.views.Utils;
-import org.sertia.client.views.unauthorized.BasicPresenterWithValidations;
+import org.sertia.client.views.BasicPresenterWithValidations;
 import org.sertia.contracts.SertiaBasicResponse;
-import org.sertia.contracts.price.change.ClientTicketType;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import static org.sertia.client.Constants.*;
 
