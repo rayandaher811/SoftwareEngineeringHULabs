@@ -321,8 +321,6 @@ public class MoviesCatalogController extends Reportable {
                 }
                 session.flush();
 
-                session.remove(session.get(ScreenableMovie.class, movieId));
-
                 // Deleting all movie price changes request
                 for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class)) {
                     if(request.getMovie().getId() == movieId)
@@ -330,10 +328,12 @@ public class MoviesCatalogController extends Reportable {
                 }
 
                 session.flush();
+
+                session.remove(session.get(ScreenableMovie.class, movieId));
             }
 
             removeStreamingViaFoundSession(movieId, session);
-
+            session.flush();
             session.remove(session.get(Movie.class, movieId));
             session.flush();
             session.clear();
