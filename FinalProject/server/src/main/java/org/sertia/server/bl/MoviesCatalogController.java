@@ -322,6 +322,14 @@ public class MoviesCatalogController extends Reportable {
                 session.flush();
 
                 session.remove(session.get(ScreenableMovie.class, movieId));
+
+                // Deleting all movie price changes request
+                for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class)) {
+                    if(request.getMovie().getId() == movieId)
+                        session.remove(request);
+                }
+
+                session.flush();
             }
 
             removeStreamingViaFoundSession(movieId, session);
@@ -398,21 +406,42 @@ public class MoviesCatalogController extends Reportable {
         if (streaming == null)
             return;
 
-        LocalDateTime currentTime = LocalDateTime.now();
-
-        // Refunding all relevant canceled link + deleting them
-        for (StreamingLink link : streaming.getLinks()) {
-            if (link.getActivationEnd().isAfter(currentTime)) {
-                creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice(), RefundReason.StreamingService);
-                CustomerNotifier.getInstance().notify(link.getCustomerPaymentDetails().getEmail(), "your streaming link " + link.getLink() + " has been canceled");
-            }
-
-            // Deleting the canceled screening
-            session.remove(link);
-        }
+        deleteAllRelatedLinks(movieId, session);
 
         session.flush();
         session.remove(streaming);
+    }
+
+    private void deleteAllRelatedLinks(int movieId, Session session) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // Deleting and refund the relevant ones all movie related links
+        for (StreamingLink link : DbUtils.getAll(StreamingLink.class)) {
+            if(link.getMovie().id == movieId) {
+
+                // Refunding relevants
+                if(link.getActivationStart().isAfter(now) ||
+                        (now.isAfter(link.getActivationStart()) && now.isBefore(link.getActivationEnd())))
+                {
+                    creditCardService.refund(link.getCustomerPaymentDetails(), link.getPaidPrice(), RefundReason.StreamingService);
+                    notifier.notify(link.getCustomerPaymentDetails().getEmail(), "לינק הסטרים שרכשת " + link.getLink() + " התבטל בעקבות החלטת אדמינטרציה.");
+                }
+
+                // Deleting all link related complaints (The link has been already refunded)
+                for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+                    if(complaint.getTicketType() == TicketType.Streaming &&
+                            complaint.getStreamingLink().getId() == link.getId())
+                        session.remove(complaint);
+                }
+
+                session.flush();
+
+                // Deleting
+                session.remove(link);
+            }
+        }
+
+        session.flush();
     }
 
     private Streaming getMovieStreaming(Session session, int movieId) {

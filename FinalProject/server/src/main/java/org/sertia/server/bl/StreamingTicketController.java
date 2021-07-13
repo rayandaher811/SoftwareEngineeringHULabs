@@ -14,10 +14,7 @@ import org.sertia.server.bl.Services.ICreditCardService;
 import org.sertia.server.bl.Services.Reportable;
 import org.sertia.server.dl.DbUtils;
 import org.sertia.server.dl.HibernateSessionFactory;
-import org.sertia.server.dl.classes.CustomerPaymentDetails;
-import org.sertia.server.dl.classes.RefundReason;
-import org.sertia.server.dl.classes.Streaming;
-import org.sertia.server.dl.classes.StreamingLink;
+import org.sertia.server.dl.classes.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -140,6 +137,9 @@ public class StreamingTicketController extends Reportable {
 
             try (Session session = HibernateSessionFactory.getInstance().openSession()) {
                 session.beginTransaction();
+
+                deleteStreamingLinkRelatedComplaints(streamingTicket, session);
+
                 session.delete(streamingTicket);
                 session.flush();
                 session.getTransaction().commit();
@@ -152,6 +152,17 @@ public class StreamingTicketController extends Reportable {
             }
         }).orElseGet(() ->
                 Utils.createFailureResponse(response, "חבילת צפייה עם הפרטים הנוכחיים אינה קיימת"));
+    }
+
+    private void deleteStreamingLinkRelatedComplaints(StreamingLink link, Session session) {
+        // Deleting all link related complaints (The link has been already refunded)
+        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+            if(complaint.getTicketType() == TicketType.Streaming &&
+                    complaint.getStreamingLink().getId() == link.getId())
+                session.remove(complaint);
+        }
+
+        session.flush();
     }
 
     private long getHoursToLinkActivation(StreamingLink streamingLink) {

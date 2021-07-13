@@ -91,6 +91,9 @@ public class ScreeningTicketController extends Reportable {
 
                     try (Session session = HibernateSessionFactory.getInstance().openSession()) {
                         session.beginTransaction();
+
+                        deleteScreeningTicketRelatedComplaints(screeningTicket, session);
+
                         session.delete(screeningTicket);
                         session.getTransaction().commit();
                         double refundAmount = refundCreditForScreening(screeningTicket.getScreening(), screeningTicket.getPaymentInfo());
@@ -171,6 +174,17 @@ public class ScreeningTicketController extends Reportable {
 
             return response;
         });
+    }
+
+    private void deleteScreeningTicketRelatedComplaints(ScreeningTicket screeningTicket, Session session) {
+        // Deleting all ticket related complaints (The ticket has been already refunded)
+        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+            if(complaint.getTicketType() == TicketType.Screening &&
+                    complaint.getScreeningTicket().getId() == screeningTicket.getId())
+                session.remove(complaint);
+        }
+
+        session.flush();
     }
 
     public boolean useVoucher(ScreeningTicket ticket, int voucherId, Session session) {
