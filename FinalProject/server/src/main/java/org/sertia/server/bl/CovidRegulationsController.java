@@ -100,7 +100,7 @@ public class CovidRegulationsController extends Reportable {
         try {
             session = HibernateSessionFactory.getInstance().openSession();
 
-            List<Screening> screenings = DbUtils.getAll(Screening.class);
+            List<Screening> screenings = DbUtils.getAll(Screening.class, session);
 
             session.beginTransaction();
 

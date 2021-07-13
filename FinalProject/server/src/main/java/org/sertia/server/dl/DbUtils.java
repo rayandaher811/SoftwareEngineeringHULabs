@@ -19,6 +19,13 @@ public final class DbUtils {
         }
     }
 
+    public static <T> List<T> getAll(Class<T> clazz, Session session) {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<T> query = builder.createQuery(clazz);
+            query.from(clazz);
+            return session.createQuery(query).getResultList();
+    }
+
     public static <T> Optional<T> getById(Class<T> clazz, int id) {
         try (Session session = HibernateSessionFactory.getInstance().openSession()) {
             return Optional.ofNullable(session.get(clazz, id));

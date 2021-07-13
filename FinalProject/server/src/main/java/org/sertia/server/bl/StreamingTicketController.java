@@ -156,7 +156,7 @@ public class StreamingTicketController extends Reportable {
 
     private void deleteStreamingLinkRelatedComplaints(StreamingLink link, Session session) {
         // Deleting all link related complaints (The link has been already refunded)
-        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class, session)) {
             if(complaint.getTicketType() == TicketType.Streaming &&
                     complaint.getStreamingLink().getId() == link.getId())
                 session.remove(complaint);

@@ -178,7 +178,7 @@ public class ScreeningTicketController extends Reportable {
 
     private void deleteScreeningTicketRelatedComplaints(ScreeningTicket screeningTicket, Session session) {
         // Deleting all ticket related complaints (The ticket has been already refunded)
-        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+        for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class, session)) {
             if(complaint.getTicketType() == TicketType.Screening &&
                     complaint.getScreeningTicket().getId() == screeningTicket.getId())
                 session.remove(complaint);

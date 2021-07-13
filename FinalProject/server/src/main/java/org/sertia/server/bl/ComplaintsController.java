@@ -90,7 +90,7 @@ public class ComplaintsController extends Reportable {
 		try(Session session = HibernateSessionFactory.getInstance().openSession()) {
 			List<ClientOpenComplaint> complaintsToReturn = new LinkedList<>();
 
-			for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+			for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class, session)) {
 				if(complaint.getHandler() == null){
 					complaintsToReturn.add(parseDlComplaintToClientComplaint(complaint));
 				}

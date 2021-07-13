@@ -305,7 +305,7 @@ public class MoviesCatalogController extends Reportable {
                 throw new SertiaException("אין סרט במערכת עם המזהה " + movieId + ".");
 
             if (screenableMovie != null) {
-                List<Screening> screenings = DbUtils.getAll(Screening.class);
+                List<Screening> screenings = DbUtils.getAll(Screening.class, session);
                 LocalDateTime currentTime = LocalDateTime.now();
 
                 session.beginTransaction();
@@ -322,7 +322,7 @@ public class MoviesCatalogController extends Reportable {
                 session.flush();
 
                 // Deleting all movie price changes request
-                for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class)) {
+                for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class, session)) {
                     if(request.getMovie().getId() == movieId)
                         session.remove(request);
                 }
@@ -423,7 +423,7 @@ public class MoviesCatalogController extends Reportable {
         LocalDateTime now = LocalDateTime.now();
 
         // Deleting and refund the relevant ones all movie related links
-        for (StreamingLink link : DbUtils.getAll(StreamingLink.class)) {
+        for (StreamingLink link : DbUtils.getAll(StreamingLink.class, session)) {
             if(link.getMovie().id == movieId) {
 
                 // Refunding relevants
@@ -435,7 +435,7 @@ public class MoviesCatalogController extends Reportable {
                 }
 
                 // Deleting all link related complaints (The link has been already refunded)
-                for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+                for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class, session)) {
                     if(complaint.getTicketType() == TicketType.Streaming &&
                             complaint.getStreamingLink().getId() == link.getId())
                         session.remove(complaint);
@@ -479,7 +479,7 @@ public class MoviesCatalogController extends Reportable {
                     creditCardService.refund(paymentDetails, refundAmount, refundReason);
 
                     // Deleting all relevant complaints (They have been refunded)
-                    for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class)) {
+                    for (CostumerComplaint complaint : DbUtils.getAll(CostumerComplaint.class, session)) {
                         if((complaint.getTicketType() == TicketType.Screening || complaint.getTicketType() == TicketType.Voucher)){
                             for (ScreeningTicket ticket:screeningTickets) {
                                 if(complaint.getScreeningTicket().getId() == ticket.getId())
