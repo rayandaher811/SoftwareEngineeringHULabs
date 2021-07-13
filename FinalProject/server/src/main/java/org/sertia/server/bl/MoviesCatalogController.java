@@ -407,7 +407,7 @@ public class MoviesCatalogController extends Reportable {
             return;
 
         // Deleting all relevant movie price changes requests
-        for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class)) {
+        for (PriceChangeRequest request : DbUtils.getAll(PriceChangeRequest.class, session)) {
             if(request.getMovie().getId() == movieId && request.getTicketType() == TicketType.Streaming)
                 session.remove(request);
         }
