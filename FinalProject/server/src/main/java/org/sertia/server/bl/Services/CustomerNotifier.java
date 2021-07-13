@@ -53,7 +53,7 @@ public class CustomerNotifier implements ICustomerNotifier {
 
                 // Setting the email content
                 sentMessage.setSubject("Sertia Cinema Notification");
-                sentMessage.setText(message);
+                sentMessage.setText(message, "UTF-8");
 
                 Transport.send(sentMessage);
                 System.out.println("An email sent to " + receiverEmail + " with the message - " + message);
