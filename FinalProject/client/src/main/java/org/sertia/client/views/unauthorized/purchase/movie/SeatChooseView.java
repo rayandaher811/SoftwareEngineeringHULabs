@@ -61,8 +61,8 @@ public class SeatChooseView implements Initializable {
             for (HallSeat seat : hallSeats) {
                 seatMap[seat.getRow()][seat.getNumberInRow()] = !seat.isTaken;
             }
-            for (int indexRow = 0; indexRow < num_row; indexRow++) {
-                for (int indexSeat = 0; indexSeat < num_seats_in_row; indexSeat++) {
+            for (int indexRow = 0; indexRow <= num_row; indexRow++) {
+                for (int indexSeat = 0; indexSeat <= num_seats_in_row; indexSeat++) {
                     Button seat = new Button(String.valueOf(indexSeat + 1));
                     if (seatMap[indexRow][indexSeat]) {
                         seat.setStyle("-fx-background-color: #00ff00");
